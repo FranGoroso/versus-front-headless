@@ -1,0 +1,544 @@
+/**
+ * Servicio principal de WordPress API
+ * Funciones para conectar Next.js con WordPress Headless
+ */
+
+import {
+  Property,
+  PropertyCard,
+  PropertySearchParams,
+  PropertySearchResponse,
+  WPPost,
+  WPPage,
+  SiteConfig,
+  WPTaxonomy,
+  WPQueryParams,
+} from '@/types';
+import {
+  WORDPRESS_API_URL,
+  API_ENDPOINTS,
+  PAGINATION,
+  ERROR_MESSAGES,
+  DEFAULT_HEADERS,
+  IS_DEV,
+} from './constants';
+
+/**
+ * Función base para hacer peticiones a WordPress API
+ * Maneja errores, headers y logging en desarrollo
+ */
+async function fetchAPI<T>(
+  endpoint: string,
+  options: RequestInit = {}
+): Promise<T> {
+  const url = `${WORDPRESS_API_URL}${endpoint}`;
+
+  // Log en desarrollo
+  if (IS_DEV) {
+    console.log(`[WordPress API] Fetching: ${url}`);
+  }
+
+  try {
+    const response = await fetch(url, {
+      headers: {
+        ...DEFAULT_HEADERS,
+        ...options.headers,
+      },
+      ...options,
+    });
+
+    // Log de respuesta en desarrollo
+    if (IS_DEV) {
+      console.log(`[WordPress API] Response status: ${response.status}`);
+    }
+
+    // Manejar errores HTTP
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error(ERROR_MESSAGES.NOT_FOUND);
+      }
+      if (response.status >= 500) {
+        throw new Error(ERROR_MESSAGES.SERVER_ERROR);
+      }
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data as T;
+  } catch (error) {
+    // Log de error en desarrollo
+    if (IS_DEV) {
+      console.error(`[WordPress API] Error fetching ${url}:`, error);
+    }
+
+    // Re-lanzar el error para que el componente lo maneje
+    if (error instanceof Error) {
+      throw error;
+    }
+
+    throw new Error(ERROR_MESSAGES.FETCH_ERROR);
+  }
+}
+
+/**
+ * Construir query string desde parámetros
+ */
+function buildQueryString(params: Record<string, any>): string {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      if (Array.isArray(value)) {
+        value.forEach((v) => searchParams.append(key, String(v)));
+      } else {
+        searchParams.append(key, String(value));
+      }
+    }
+  });
+
+  const queryString = searchParams.toString();
+  return queryString ? `?${queryString}` : '';
+}
+
+/**
+ * PROPIEDADES
+ */
+
+/**
+ * Obtener lista de propiedades
+ * @param params - Parámetros de consulta (paginación, filtros, etc.)
+ * @returns Lista de propiedades
+ */
+export async function getProperties(
+  params: WPQueryParams = {}
+): Promise<Property[]> {
+  const defaultParams = {
+    per_page: PAGINATION.DEFAULT_PER_PAGE,
+    _embed: true,
+    ...params,
+  };
+
+  const queryString = buildQueryString(defaultParams);
+  const endpoint = `${API_ENDPOINTS.PROPERTIES}${queryString}`;
+
+  return fetchAPI<Property[]>(endpoint);
+}
+
+/**
+ * Obtener una propiedad por slug
+ * @param slug - Slug de la propiedad
+ * @returns Propiedad encontrada o null
+ */
+export async function getPropertyBySlug(
+  slug: string
+): Promise<Property | null> {
+  try {
+    const properties = await fetchAPI<Property[]>(
+      `${API_ENDPOINTS.PROPERTIES}?slug=${slug}&_embed=true`
+    );
+
+    return properties[0] || null;
+  } catch (error) {
+    console.error(`Error fetching property with slug ${slug}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Obtener propiedades destacadas
+ * @param limit - Número de propiedades a obtener
+ * @returns Lista de propiedades destacadas
+ */
+export async function getFeaturedProperties(
+  limit: number = PAGINATION.FEATURED_LIMIT
+): Promise<PropertyCard[]> {
+  try {
+    const endpoint = `${API_ENDPOINTS.FEATURED_PROPERTIES}?limit=${limit}`;
+    return fetchAPI<PropertyCard[]>(endpoint);
+  } catch (error) {
+    console.error('Error fetching featured properties:', error);
+    return [];
+  }
+}
+
+/**
+ * Buscar propiedades con filtros avanzados
+ * @param params - Parámetros de búsqueda
+ * @returns Respuesta con propiedades y metadatos de paginación
+ */
+export async function searchProperties(
+  params: PropertySearchParams
+): Promise<PropertySearchResponse> {
+  try {
+    const response = await fetchAPI<PropertySearchResponse>(
+      API_ENDPOINTS.PROPERTY_SEARCH,
+      {
+        method: 'POST',
+        body: JSON.stringify(params),
+      }
+    );
+
+    return response;
+  } catch (error) {
+    console.error('Error searching properties:', error);
+    return {
+      properties: [],
+      total: 0,
+      total_pages: 0,
+      current_page: 1,
+    };
+  }
+}
+
+/**
+ * Obtener todas las propiedades para generar rutas estáticas
+ * Útil para generateStaticParams en App Router
+ */
+export async function getAllPropertySlugs(): Promise<string[]> {
+  try {
+    const properties = await fetchAPI<Property[]>(
+      `${API_ENDPOINTS.PROPERTIES}?per_page=100&_fields=slug`
+    );
+    return properties.map((property) => property.slug);
+  } catch (error) {
+    console.error('Error fetching property slugs:', error);
+    return [];
+  }
+}
+
+/**
+ * POSTS DEL BLOG
+ */
+
+/**
+ * Obtener posts del blog
+ * @param params - Parámetros de consulta
+ * @returns Lista de posts
+ */
+export async function getPosts(params: WPQueryParams = {}): Promise<WPPost[]> {
+  const defaultParams = {
+    per_page: PAGINATION.DEFAULT_PER_PAGE,
+    _embed: true,
+    ...params,
+  };
+
+  const queryString = buildQueryString(defaultParams);
+  const endpoint = `${API_ENDPOINTS.POSTS}${queryString}`;
+
+  try {
+    return fetchAPI<WPPost[]>(endpoint);
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    return [];
+  }
+}
+
+/**
+ * Obtener un post por slug
+ * @param slug - Slug del post
+ * @returns Post encontrado o null
+ */
+export async function getPostBySlug(slug: string): Promise<WPPost | null> {
+  try {
+    const posts = await fetchAPI<WPPost[]>(
+      `${API_ENDPOINTS.POSTS}?slug=${slug}&_embed=true`
+    );
+
+    return posts[0] || null;
+  } catch (error) {
+    console.error(`Error fetching post with slug ${slug}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Obtener todos los slugs de posts para rutas estáticas
+ */
+export async function getAllPostSlugs(): Promise<string[]> {
+  try {
+    const posts = await fetchAPI<WPPost[]>(
+      `${API_ENDPOINTS.POSTS}?per_page=100&_fields=slug`
+    );
+    return posts.map((post) => post.slug);
+  } catch (error) {
+    console.error('Error fetching post slugs:', error);
+    return [];
+  }
+}
+
+/**
+ * PÁGINAS
+ */
+
+/**
+ * Obtener páginas de WordPress
+ * @param params - Parámetros de consulta
+ * @returns Lista de páginas
+ */
+export async function getPages(params: WPQueryParams = {}): Promise<WPPage[]> {
+  const defaultParams = {
+    per_page: PAGINATION.MAX_PER_PAGE,
+    _embed: true,
+    ...params,
+  };
+
+  const queryString = buildQueryString(defaultParams);
+  const endpoint = `${API_ENDPOINTS.PAGES}${queryString}`;
+
+  try {
+    return fetchAPI<WPPage[]>(endpoint);
+  } catch (error) {
+    console.error('Error fetching pages:', error);
+    return [];
+  }
+}
+
+/**
+ * Obtener una página por slug
+ * @param slug - Slug de la página
+ * @returns Página encontrada o null
+ */
+export async function getPageBySlug(slug: string): Promise<WPPage | null> {
+  try {
+    const pages = await fetchAPI<WPPage[]>(
+      `${API_ENDPOINTS.PAGES}?slug=${slug}&_embed=true`
+    );
+
+    return pages[0] || null;
+  } catch (error) {
+    console.error(`Error fetching page with slug ${slug}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Obtener todos los slugs de páginas para rutas estáticas
+ */
+export async function getAllPageSlugs(): Promise<string[]> {
+  try {
+    const pages = await fetchAPI<WPPage[]>(
+      `${API_ENDPOINTS.PAGES}?per_page=100&_fields=slug`
+    );
+    return pages.map((page) => page.slug);
+  } catch (error) {
+    console.error('Error fetching page slugs:', error);
+    return [];
+  }
+}
+
+/**
+ * TAXONOMÍAS
+ */
+
+/**
+ * Obtener términos de una taxonomía
+ * @param taxonomy - Nombre del endpoint de la taxonomía
+ * @param params - Parámetros de consulta
+ * @returns Lista de términos
+ */
+export async function getTaxonomy(
+  taxonomy: string,
+  params: Record<string, any> = {}
+): Promise<WPTaxonomy[]> {
+  const defaultParams = {
+    per_page: PAGINATION.MAX_PER_PAGE,
+    hide_empty: false,
+    ...params,
+  };
+
+  const queryString = buildQueryString(defaultParams);
+  const endpoint = `${taxonomy}${queryString}`;
+
+  try {
+    return fetchAPI<WPTaxonomy[]>(endpoint);
+  } catch (error) {
+    console.error(`Error fetching taxonomy ${taxonomy}:`, error);
+    return [];
+  }
+}
+
+/**
+ * Obtener tipos de propiedad
+ */
+export async function getPropertyTypes(): Promise<WPTaxonomy[]> {
+  return getTaxonomy(API_ENDPOINTS.PROPERTY_TYPES);
+}
+
+/**
+ * Obtener estados de propiedad (Venta, Alquiler, etc.)
+ */
+export async function getPropertyStatuses(): Promise<WPTaxonomy[]> {
+  return getTaxonomy(API_ENDPOINTS.PROPERTY_STATUS);
+}
+
+/**
+ * Obtener características de propiedad
+ */
+export async function getPropertyFeatures(): Promise<WPTaxonomy[]> {
+  return getTaxonomy(API_ENDPOINTS.PROPERTY_FEATURES);
+}
+
+/**
+ * Obtener ciudades
+ */
+export async function getPropertyCities(): Promise<WPTaxonomy[]> {
+  return getTaxonomy(API_ENDPOINTS.PROPERTY_CITIES);
+}
+
+/**
+ * Obtener áreas/zonas
+ */
+export async function getPropertyAreas(): Promise<WPTaxonomy[]> {
+  return getTaxonomy(API_ENDPOINTS.PROPERTY_AREAS);
+}
+
+/**
+ * Obtener todas las taxonomías de propiedades de una vez
+ */
+export async function getAllPropertyTaxonomies() {
+  try {
+    const [types, statuses, features, cities, areas] = await Promise.all([
+      getPropertyTypes(),
+      getPropertyStatuses(),
+      getPropertyFeatures(),
+      getPropertyCities(),
+      getPropertyAreas(),
+    ]);
+
+    return {
+      types,
+      statuses,
+      features,
+      cities,
+      areas,
+    };
+  } catch (error) {
+    console.error('Error fetching all property taxonomies:', error);
+    return {
+      types: [],
+      statuses: [],
+      features: [],
+      cities: [],
+      areas: [],
+    };
+  }
+}
+
+/**
+ * CONFIGURACIÓN DEL SITIO
+ */
+
+/**
+ * Obtener configuración completa del sitio
+ * Incluye nombre, descripción, menús, idiomas, etc.
+ */
+export async function getSiteConfig(): Promise<SiteConfig | null> {
+  try {
+    return fetchAPI<SiteConfig>(API_ENDPOINTS.SITE_CONFIG);
+  } catch (error) {
+    console.error('Error fetching site config:', error);
+    return null;
+  }
+}
+
+/**
+ * Obtener estadísticas del sitio
+ */
+export async function getSiteStats() {
+  try {
+    return fetchAPI(API_ENDPOINTS.SITE_STATS);
+  } catch (error) {
+    console.error('Error fetching site stats:', error);
+    return null;
+  }
+}
+
+/**
+ * UTILIDADES
+ */
+
+/**
+ * Extraer el texto limpio de un contenido HTML de WordPress
+ * @param html - HTML renderizado de WordPress
+ * @returns Texto limpio sin HTML
+ */
+export function stripHTML(html: string): string {
+  return html.replace(/<[^>]*>/g, '');
+}
+
+/**
+ * Obtener excerpt de un post/propiedad
+ * @param content - Contenido o excerpt de WordPress
+ * @param maxLength - Longitud máxima del excerpt
+ * @returns Excerpt limpio
+ */
+export function getExcerpt(
+  content: { rendered: string } | string,
+  maxLength: number = 160
+): string {
+  const text =
+    typeof content === 'string' ? content : stripHTML(content.rendered);
+
+  if (text.length <= maxLength) {
+    return text;
+  }
+
+  return text.substring(0, maxLength).trim() + '...';
+}
+
+/**
+ * Formatear precio con símbolo de moneda
+ * @param price - Precio como string o número
+ * @param currency - Símbolo de moneda (por defecto €)
+ * @returns Precio formateado
+ */
+export function formatPrice(
+  price: string | number,
+  currency: string = '€'
+): string {
+  if (!price || price === '0' || price === '') {
+    return 'Consultar precio';
+  }
+
+  const numericPrice =
+    typeof price === 'string' ? parseFloat(price.replace(/[^0-9.-]+/g, '')) : price;
+
+  if (isNaN(numericPrice)) {
+    return 'Consultar precio';
+  }
+
+  // Formatear con separadores de miles
+  const formatted = new Intl.NumberFormat('es-ES').format(numericPrice);
+
+  return `${formatted}${currency}`;
+}
+
+/**
+ * Construir URL completa de WordPress
+ * @param path - Ruta relativa
+ * @returns URL completa
+ */
+export function getWordPressURL(path: string): string {
+  const baseURL = process.env.NEXT_PUBLIC_WORDPRESS_URL || '';
+  return `${baseURL}${path}`;
+}
+
+/**
+ * Verificar si una URL es interna (del mismo sitio WordPress)
+ * @param url - URL a verificar
+ * @returns true si es interna, false si es externa
+ */
+export function isInternalURL(url: string): boolean {
+  const baseURL = process.env.NEXT_PUBLIC_WORDPRESS_URL || '';
+  return url.startsWith(baseURL) || url.startsWith('/');
+}
+
+/**
+ * Convertir URL de WordPress a ruta de Next.js
+ * @param wordpressURL - URL completa de WordPress
+ * @returns Ruta relativa para Next.js
+ */
+export function convertToNextRoute(wordpressURL: string): string {
+  const baseURL = process.env.NEXT_PUBLIC_WORDPRESS_URL || '';
+  return wordpressURL.replace(baseURL, '');
+}
