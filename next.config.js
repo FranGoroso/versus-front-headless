@@ -28,6 +28,13 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      // Permitir avatares de Gravatar (usuarios de WordPress)
+      {
+        protocol: 'https',
+        hostname: 'secure.gravatar.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
   

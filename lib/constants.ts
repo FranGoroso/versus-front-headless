@@ -23,7 +23,7 @@ export const API_ENDPOINTS = {
   
   // Custom post types
   PROPERTIES: '/wp/v2/properties',
-  AGENTS: '/wp/v2/agents',
+  AGENTS: '/wp/v2/team',
   
   // Taxonomías de propiedades
   PROPERTY_TYPES: '/wp/v2/property-type',

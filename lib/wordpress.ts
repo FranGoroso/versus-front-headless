@@ -542,3 +542,106 @@ export function convertToNextRoute(wordpressURL: string): string {
   const baseURL = process.env.NEXT_PUBLIC_WORDPRESS_URL || '';
   return wordpressURL.replace(baseURL, '');
 }
+
+/**
+ * EQUIPO / AGENTES
+ */
+
+/**
+ * Obtener miembros del equipo
+ * Intenta múltiples endpoints posibles para máxima compatibilidad
+ * @param params - Parámetros de consulta
+ * @returns Lista de miembros del equipo o array vacío
+ */
+export async function getTeamMembers(params: WPQueryParams = {}) {
+  const defaultParams = {
+    per_page: PAGINATION.MAX_PER_PAGE,
+    _embed: true,
+    ...params,
+  };
+
+  const queryString = buildQueryString(defaultParams);
+  
+  // Intentar diferentes endpoints en orden de preferencia
+  const possibleEndpoints = [
+    API_ENDPOINTS.AGENTS,           // /wp/v2/agents
+    '/wp/v2/team',                   // Posible CPT team
+    '/wp/v2/team_members',           // Posible CPT team_members
+    '/wp/v2/equipo',                 // Posible CPT en español
+  ];
+
+  for (const endpoint of possibleEndpoints) {
+    try {
+      const url = `${endpoint}${queryString}`;
+      const data = await fetchAPI(url);
+      
+      if (IS_DEV) {
+        console.log(`[WordPress API] Team members found at: ${endpoint}`);
+      }
+      
+      return data;
+    } catch (error) {
+      // Continuar con el siguiente endpoint
+      if (IS_DEV) {
+        console.log(`[WordPress API] Team endpoint not found: ${endpoint}`);
+      }
+    }
+  }
+
+  // Si ningún endpoint funciona, intentar con usuarios de WordPress
+  try {
+    if (IS_DEV) {
+      console.log('[WordPress API] Falling back to WordPress users');
+    }
+    
+    const users = await fetchAPI(`/wp/v2/users${queryString}`);
+    
+    // Filtrar solo usuarios con rol de autor o superior
+    // y transformar datos para compatibilidad
+    return users.map((user: any) => ({
+      id: user.id,
+      title: { rendered: user.name },
+      content: { rendered: user.description || '' },
+      featured_media: user.avatar_urls?.['96'] || '',
+      acf: {
+        email: user.email || '',
+        phone: user.acf?.phone || '',
+        position: user.acf?.position || 'Agente Inmobiliario',
+        linkedin: user.acf?.linkedin || '',
+        languages: user.acf?.languages || [],
+      },
+      ...user,
+    }));
+  } catch (error) {
+    console.error('Error fetching team members from any source:', error);
+    return [];
+  }
+}
+
+/**
+ * Obtener un miembro del equipo por ID
+ * @param id - ID del miembro
+ * @returns Miembro del equipo o null
+ */
+export async function getTeamMemberById(id: string | number) {
+  // Intentar primero con el endpoint de agentes
+  try {
+    const agent = await fetchAPI(`${API_ENDPOINTS.AGENTS}/${id}?_embed=true`);
+    return agent;
+  } catch (error) {
+    // Fallback a usuarios si falla
+    try {
+      const user = await fetchAPI(`/wp/v2/users/${id}`);
+      return {
+        id: user.id,
+        title: { rendered: user.name },
+        content: { rendered: user.description || '' },
+        featured_media: user.avatar_urls?.['96'] || '',
+        ...user,
+      };
+    } catch (err) {
+      console.error(`Error fetching team member with ID ${id}:`, err);
+      return null;
+    }
+  }
+}
