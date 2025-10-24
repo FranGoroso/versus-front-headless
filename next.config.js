@@ -28,6 +28,13 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      // Imágenes de Unsplash
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
+      },
       // Permitir avatares de Gravatar (usuarios de WordPress)
       {
         protocol: 'https',

@@ -15,6 +15,7 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Container } from '@/components/layout/Container';
 import { PropertyGrid } from '@/components/property/PropertyGrid';
+import { PropertySearchForm } from '@/components/sections/PropertySearchForm';
 import { PAGINATION } from '@/lib/constants';
 
 /**
@@ -108,25 +109,33 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
 
       <main className="min-h-screen bg-white">
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-gray-50 to-gray-100 py-20">
+        <section className="bg-gradient-to-b from-gray-50 to-white pt-32 pb-20">
           <Container>
-            <div className="text-center max-w-3xl mx-auto">
-              <h1 className="font-serif text-5xl md:text-6xl font-bold mb-6">
+            <div className="text-center max-w-3xl mx-auto mb-12">
+              <h1 className="text-5xl md:text-6xl font-light tracking-tight mb-6">
                 Todas las propiedades
               </h1>
-              <p className="text-gray-600 text-lg mb-8">
+              <p className="text-gray-600 text-lg mb-8 font-light">
                 Explora nuestra selección completa de inmuebles en Andorra. 
                 Encuentra la propiedad perfecta para ti.
               </p>
               
               {/* Breadcrumb */}
-              <nav className="flex justify-center items-center gap-2 text-sm text-gray-600">
+              <nav className="flex justify-center items-center gap-2 text-sm text-gray-600 font-light">
                 <Link href="/" className="hover:text-black transition-colors">
                   Inicio
                 </Link>
                 <span>›</span>
-                <span className="text-black font-medium">Propiedades</span>
+                <span className="text-black">Propiedades</span>
               </nav>
+            </div>
+            
+            {/* Buscador de propiedades */}
+            <div className="max-w-5xl mx-auto">
+              <PropertySearchForm 
+                variant="default"
+                className="shadow-xl border-0"
+              />
             </div>
           </Container>
         </section>
@@ -136,16 +145,16 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
           <Container>
             {/* Stats */}
             {properties.length > 0 && (
-              <div className="flex items-center justify-between mb-12 pb-8 border-b">
-                <p className="text-gray-600">
-                  Mostrando <span className="font-semibold">{properties.length}</span> propiedades
+              <div className="flex items-center justify-between mb-12 pb-8 border-b border-gray-100">
+                <p className="text-gray-600 font-light">
+                  Mostrando <span className="font-medium">{properties.length}</span> propiedades
                   {currentPage > 1 && ` (Página ${currentPage})`}
                 </p>
                 
                 {/* Ordenamiento (futuro) */}
                 <div className="hidden md:flex items-center gap-4">
-                  <span className="text-sm text-gray-600">Ordenar por:</span>
-                  <select className="border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black">
+                  <span className="text-sm text-gray-600 font-light">Ordenar por:</span>
+                  <select className="border border-gray-200 rounded-full px-4 py-2 text-sm font-light focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 transition-all duration-300">
                     <option>Más recientes</option>
                     <option>Precio: menor a mayor</option>
                     <option>Precio: mayor a menor</option>

@@ -16,6 +16,8 @@ import { Card } from '@/components/ui/card';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Container } from '@/components/layout/Container';
+import { PropertySearchForm } from '@/components/sections/PropertySearchForm';
+import { PropertyCard } from '@/components/property/PropertyCard';
 import { REVALIDATE_TIME } from '@/lib/constants';
 
 /**
@@ -104,9 +106,9 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
 
       <main className="min-h-screen bg-white">
         {/* Breadcrumb */}
-        <section className="bg-gray-50 py-6">
+        <section className="bg-gradient-to-b from-gray-50 to-white py-6">
           <Container>
-            <nav className="flex items-center gap-2 text-sm text-gray-600">
+            <nav className="flex items-center gap-2 text-sm text-gray-600 font-light">
               <Link href="/" className="hover:text-black transition-colors">
                 Inicio
               </Link>
@@ -115,7 +117,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                 Propiedades
               </Link>
               <span>›</span>
-              <span className="text-black font-medium line-clamp-1">
+              <span className="text-black line-clamp-1">
                 {title.rendered}
               </span>
             </nav>
@@ -182,16 +184,16 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
               <div className="lg:col-span-2">
                 {/* Título y precio */}
                 <div className="mb-8">
-                  <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">
+                  <h1 className="text-4xl md:text-5xl font-light tracking-tight mb-4">
                     {title.rendered}
                   </h1>
-                  <p className="text-gray-600 text-lg mb-4">{address}</p>
+                  <p className="text-gray-600 text-lg mb-4 font-light">{address}</p>
                   <div className="flex items-end gap-4">
-                    <p className="font-serif text-5xl font-bold">
+                    <p className="text-5xl font-light tracking-tight">
                       {formatPrice(price)}
                     </p>
                     {propertyId && (
-                      <p className="text-gray-500 text-sm mb-2">
+                      <p className="text-gray-500 text-sm mb-2 font-light">
                         Ref: {propertyId}
                       </p>
                     )}
@@ -199,33 +201,33 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                 </div>
 
                 {/* Características principales */}
-                <Card className="p-8 mb-8">
-                  <h2 className="font-serif text-2xl font-bold mb-6">
+                <Card className="p-8 mb-8 border-0 shadow-sm">
+                  <h2 className="text-2xl font-light tracking-tight mb-6">
                     Características principales
                   </h2>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                     {bedrooms && bedrooms !== '0' && (
                       <div>
-                        <p className="text-gray-500 text-sm mb-1">Habitaciones</p>
-                        <p className="font-semibold text-lg">{bedrooms}</p>
+                        <p className="text-gray-500 text-sm mb-1 font-light">Habitaciones</p>
+                        <p className="text-lg font-medium">{bedrooms}</p>
                       </div>
                     )}
                     {bathrooms && bathrooms !== '0' && (
                       <div>
-                        <p className="text-gray-500 text-sm mb-1">Baños</p>
-                        <p className="font-semibold text-lg">{bathrooms}</p>
+                        <p className="text-gray-500 text-sm mb-1 font-light">Baños</p>
+                        <p className="text-lg font-medium">{bathrooms}</p>
                       </div>
                     )}
                     {area && (
                       <div>
-                        <p className="text-gray-500 text-sm mb-1">Superficie</p>
-                        <p className="font-semibold text-lg">{area}{areaUnit}</p>
+                        <p className="text-gray-500 text-sm mb-1 font-light">Superficie</p>
+                        <p className="text-lg font-medium">{area}{areaUnit}</p>
                       </div>
                     )}
                     {yearBuilt && (
                       <div>
-                        <p className="text-gray-500 text-sm mb-1">Año construcción</p>
-                        <p className="font-semibold text-lg">{yearBuilt}</p>
+                        <p className="text-gray-500 text-sm mb-1 font-light">Año construcción</p>
+                        <p className="text-lg font-medium">{yearBuilt}</p>
                       </div>
                     )}
                   </div>
@@ -234,11 +236,11 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                 {/* Descripción */}
                 {content?.rendered && (
                   <div className="mb-8">
-                    <h2 className="font-serif text-2xl font-bold mb-4">
+                    <h2 className="text-2xl font-light tracking-tight mb-4">
                       Descripción
                     </h2>
                     <div 
-                      className="prose max-w-none text-gray-600 leading-relaxed"
+                      className="prose max-w-none text-gray-600 leading-relaxed font-light"
                       dangerouslySetInnerHTML={{ __html: content.rendered }}
                     />
                   </div>
@@ -248,15 +250,15 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
               {/* Columna derecha - Contacto */}
               <div className="lg:col-span-1">
                 <div className="sticky top-24">
-                  <Card className="p-8">
-                    <h3 className="font-serif text-2xl font-bold mb-6">
+                  <Card className="p-8 border-0 shadow-lg">
+                    <h3 className="text-2xl font-light tracking-tight mb-6">
                       Solicitar información
                     </h3>
 
                     {/* Agente */}
                     {agent && (
-                      <div className="mb-6 pb-6 border-b">
-                        <p className="text-sm text-gray-600 mb-2">Tu asesor</p>
+                      <div className="mb-6 pb-6 border-b border-gray-100">
+                        <p className="text-sm text-gray-600 mb-3 font-light">Tu asesor</p>
                         <div className="flex items-center gap-3">
                           {agent.image && (
                             <Image
@@ -268,9 +270,9 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                             />
                           )}
                           <div>
-                            <p className="font-semibold">{agent.name}</p>
+                            <p className="font-medium">{agent.name}</p>
                             {agent.phone && (
-                              <p className="text-sm text-gray-600">{agent.phone}</p>
+                              <p className="text-sm text-gray-600 font-light">{agent.phone}</p>
                             )}
                           </div>
                         </div>
@@ -283,49 +285,57 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                         <input 
                           type="text" 
                           placeholder="Nombre completo" 
-                          className="w-full h-12 px-4 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                          className="w-full h-12 px-4 border border-gray-200 rounded-full font-light
+                                   focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900
+                                   transition-all duration-300"
                         />
                       </div>
                       <div>
                         <input 
                           type="email" 
                           placeholder="Email" 
-                          className="w-full h-12 px-4 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                          className="w-full h-12 px-4 border border-gray-200 rounded-full font-light
+                                   focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900
+                                   transition-all duration-300"
                         />
                       </div>
                       <div>
                         <input 
                           type="tel" 
                           placeholder="Teléfono" 
-                          className="w-full h-12 px-4 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                          className="w-full h-12 px-4 border border-gray-200 rounded-full font-light
+                                   focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900
+                                   transition-all duration-300"
                         />
                       </div>
                       <div>
                         <textarea
                           placeholder="Mensaje (opcional)"
                           rows={4}
-                          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                          className="w-full px-4 py-3 border border-gray-200 rounded-2xl font-light
+                                   focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900
+                                   transition-all duration-300 resize-none"
                         />
                       </div>
-                      <Button type="submit" className="w-full rounded-full h-12">
+                      <Button type="submit" className="w-full rounded-full h-12 bg-gray-900 hover:bg-gray-800 transition-colors duration-300">
                         Enviar consulta
                       </Button>
                     </form>
 
                     {/* Acciones rápidas */}
-                    <div className="mt-6 pt-6 border-t space-y-3">
+                    <div className="mt-6 pt-6 border-t border-gray-100 space-y-3">
                       {agent?.whatsapp && (
                         <a
                           href={`https://wa.me/${agent.whatsapp}`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          <Button variant="outline" className="w-full rounded-full">
+                          <Button variant="outline" className="w-full rounded-full font-light hover:bg-gray-50 transition-colors duration-300">
                             💬 WhatsApp
                           </Button>
                         </a>
                       )}
-                      <Button variant="outline" className="w-full rounded-full">
+                      <Button variant="outline" className="w-full rounded-full font-light hover:bg-gray-50 transition-colors duration-300">
                         📅 Agendar visita
                       </Button>
                     </div>
@@ -336,15 +346,108 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
           </Container>
         </section>
 
-        {/* Propiedades similares (futuro) */}
-        <section className="py-20 bg-gray-50">
+        {/* Propiedades similares y Búsqueda */}
+        <section className="py-20 bg-gradient-to-b from-white to-gray-50">
           <Container>
-            <h2 className="font-serif text-4xl font-bold text-center mb-12">
-              Propiedades similares
-            </h2>
-            <p className="text-center text-gray-600">
-              Próximamente: Recomendaciones basadas en esta propiedad
-            </p>
+            {/* Propiedades similares mockeadas */}
+            <div className="mb-20">
+              <h2 className="text-4xl font-light tracking-tight text-center mb-4">
+                Propiedades similares
+              </h2>
+              <p className="text-center text-gray-600 font-light mb-12 max-w-2xl mx-auto">
+                Otras propiedades que podrían interesarte en la misma zona
+              </p>
+              
+              {/* Grid de propiedades similares */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {/* Propiedad similar 1 */}
+                <PropertyCard
+                  property={{
+                    id: 1,
+                    title: 'Ático dúplex con vistas panorámicas',
+                    slug: 'atico-duplex-vistas-panoramicas',
+                    excerpt: 'Espectacular ático dúplex de 180m² con terraza de 50m² y vistas inigualables a las montañas.',
+                    featured_image: 'https://images.pexels.com/photos/1732414/pexels-photo-1732414.jpeg?auto=compress&cs=tinysrgb&w=800',
+                    price: '895000',
+                    bedrooms: '3',
+                    bathrooms: '2',
+                    area: '180',
+                    area_unit: 'm²',
+                    address: 'Escaldes-Engordany, Andorra',
+                    type: null,
+                    status: null,
+                    city: null,
+                    link: '/propiedades/atico-duplex-vistas-panoramicas',
+                    date: '2024-01-15',
+                    featured: false,
+                  }}
+                />
+                
+                {/* Propiedad similar 2 */}
+                <PropertyCard
+                  property={{
+                    id: 2,
+                    title: 'Casa moderna con jardín privado',
+                    slug: 'casa-moderna-jardin-privado',
+                    excerpt: 'Impresionante casa de diseño moderno con acabados de lujo y jardín privado de 200m².',
+                    featured_image: 'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=800',
+                    price: '1250000',
+                    bedrooms: '4',
+                    bathrooms: '3',
+                    area: '280',
+                    area_unit: 'm²',
+                    address: 'La Massana, Andorra',
+                    type: null,
+                    status: null,
+                    city: null,
+                    link: '/propiedades/casa-moderna-jardin-privado',
+                    date: '2024-01-10',
+                    featured: true,
+                  }}
+                />
+                
+                {/* Propiedad similar 3 */}
+                <PropertyCard
+                  property={{
+                    id: 3,
+                    title: 'Apartamento renovado en el centro',
+                    slug: 'apartamento-renovado-centro',
+                    excerpt: 'Elegante apartamento completamente renovado en pleno centro, ideal para inversión.',
+                    featured_image: 'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=800',
+                    price: '425000',
+                    bedrooms: '2',
+                    bathrooms: '1',
+                    area: '95',
+                    area_unit: 'm²',
+                    address: 'Andorra la Vella, Andorra',
+                    type: null,
+                    status: null,
+                    city: null,
+                    link: '/propiedades/apartamento-renovado-centro',
+                    date: '2024-01-08',
+                    featured: false,
+                  }}
+                />
+              </div>
+            </div>
+            
+            {/* Separador visual */}
+            <div className="border-t border-gray-200 my-16"></div>
+            
+            {/* Buscador de propiedades */}
+            <div className="max-w-5xl mx-auto">
+              <h2 className="text-4xl font-light tracking-tight text-center mb-4">
+                Buscar más propiedades
+              </h2>
+              <p className="text-center text-gray-600 font-light mb-12 max-w-2xl mx-auto">
+                Utiliza nuestro buscador avanzado para encontrar exactamente lo que estás buscando
+              </p>
+              
+              <PropertySearchForm 
+                variant="default"
+                className="bg-white shadow-xl border-0"
+              />
+            </div>
           </Container>
         </section>
       </main>

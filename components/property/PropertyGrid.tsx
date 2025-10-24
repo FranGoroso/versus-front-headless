@@ -70,7 +70,7 @@ export function PropertyGrid({
    */
   if (loading) {
     return (
-      <div className={`grid ${gridClasses[columns]} gap-8`}>
+      <div className={`grid ${gridClasses[columns]} gap-6`}>
         {Array.from({ length: columns * 2 }).map((_, index) => (
           <PropertyCardSkeleton key={`skeleton-${index}`} />
         ))}
@@ -98,8 +98,8 @@ export function PropertyGrid({
               d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
             />
           </svg>
-          <p className="text-gray-500 text-lg">{emptyMessage}</p>
-          <p className="text-gray-400 text-sm mt-2">
+          <p className="text-gray-500 text-lg font-light">{emptyMessage}</p>
+          <p className="text-gray-400 text-sm mt-2 font-light">
             Intenta ajustar tus filtros de búsqueda
           </p>
         </div>
@@ -111,7 +111,7 @@ export function PropertyGrid({
    * Renderizar grid de propiedades
    */
   return (
-    <div className={`grid ${gridClasses[columns]} gap-8`}>
+    <div className={`grid ${gridClasses[columns]} gap-6`}>
       {sortedProperties.map((property, index) => (
         <PropertyCard
           key={property.id}
@@ -146,12 +146,12 @@ export function PropertyGridSection({
       {(title || description || action) && (
         <div className="mb-12">
           {title && (
-            <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4 text-center">
+            <h2 className="text-4xl md:text-5xl font-light tracking-tight mb-4 text-center">
               {title}
             </h2>
           )}
           {description && (
-            <p className="text-gray-600 text-lg text-center max-w-2xl mx-auto mb-6">
+            <p className="text-gray-600 text-lg font-light text-center max-w-2xl mx-auto mb-6">
               {description}
             </p>
           )}

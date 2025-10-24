@@ -16,6 +16,7 @@ import { Footer } from '@/components/layout/Footer';
 import { Container } from '@/components/layout/Container';
 import { PropertyGrid } from '@/components/property/PropertyGrid';
 import { ErrorMessage } from '@/components/common/ErrorMessage';
+import { HeroSection } from '@/components/sections/HeroSection';
 
 /**
  * Configurar revalidación ISR
@@ -89,49 +90,17 @@ export default async function Home() {
       <Header config={siteConfig} />
 
       <main className="min-h-screen bg-white">
-        {/* Hero Section */}
-        <section className="relative h-screen flex items-center justify-center overflow-hidden">
-          <div className="absolute inset-0">
-            <Image
-              src="https://images.pexels.com/photos/1370704/pexels-photo-1370704.jpeg?auto=compress&cs=tinysrgb&w=1920"
-              alt="Luxury property"
-              fill
-              className="object-cover"
-              priority
-            />
-            <div className="absolute inset-0 bg-black/30" />
-          </div>
-          
-          <div className="relative z-10 text-center text-white px-6 max-w-4xl">
-            <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight">
-              Tu hogar perfecto<br />te está esperando
-            </h1>
-            <p className="text-lg md:text-xl mb-12 text-white/90 max-w-2xl mx-auto">
-              {siteConfig?.site_description || 'Descubre propiedades exclusivas con el servicio personalizado que mereces'}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/propiedades">
-                <Button size="lg" className="bg-white text-black hover:bg-gray-100 rounded-full px-8">
-                  Ver propiedades
-                </Button>
-              </Link>
-              <Link href="/contacto">
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 rounded-full px-8">
-                  Agendar visita
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
+        {/* Hero Section con efecto parallax */}
+        <HeroSection />
 
         {/* Propiedades Destacadas */}
         <section className="py-32 bg-white">
           <Container>
             <div className="text-center mb-20">
-              <h2 className="font-serif text-4xl md:text-5xl font-bold mb-6">
+              <h2 className="text-4xl md:text-5xl font-light tracking-tight mb-6">
                 Propiedades destacadas
               </h2>
-              <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              <p className="text-gray-600 text-lg max-w-2xl mx-auto font-light">
                 Selección exclusiva de inmuebles con las mejores ubicaciones y amenidades
               </p>
             </div>
@@ -182,25 +151,25 @@ export default async function Home() {
           </div>
           
           <div className="relative z-10 max-w-4xl mx-auto text-center text-white">
-            <h2 className="font-serif text-4xl md:text-6xl font-bold mb-8">
+            <h2 className="text-4xl md:text-6xl font-light tracking-tight mb-8">
               Experiencia que marca la diferencia
             </h2>
-            <p className="text-xl mb-12 text-white/90 leading-relaxed">
+            <p className="text-xl mb-12 text-white/90 leading-relaxed font-light">
               En Versus, cada propiedad cuenta una historia única. Nuestro compromiso es conectarte con espacios que reflejen tu estilo de vida y aspiraciones.
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mt-16">
               <div>
-                <div className="text-5xl font-serif font-bold mb-2">500+</div>
-                <div className="text-white/80">Propiedades vendidas</div>
+                <div className="text-5xl font-light tracking-tight mb-2">500+</div>
+                <div className="text-white/80 font-light">Propiedades vendidas</div>
               </div>
               <div>
-                <div className="text-5xl font-serif font-bold mb-2">15</div>
-                <div className="text-white/80">Años de experiencia</div>
+                <div className="text-5xl font-light tracking-tight mb-2">15</div>
+                <div className="text-white/80 font-light">Años de experiencia</div>
               </div>
               <div>
-                <div className="text-5xl font-serif font-bold mb-2">98%</div>
-                <div className="text-white/80">Clientes satisfechos</div>
+                <div className="text-5xl font-light tracking-tight mb-2">98%</div>
+                <div className="text-white/80 font-light">Clientes satisfechos</div>
               </div>
             </div>
           </div>
@@ -210,10 +179,10 @@ export default async function Home() {
         <section id="servicios" className="py-32 bg-white">
           <Container>
             <div className="text-center mb-20">
-              <h2 className="font-serif text-4xl md:text-5xl font-bold mb-6">
+              <h2 className="text-4xl md:text-5xl font-light tracking-tight mb-6">
                 Nuestros servicios
               </h2>
-              <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              <p className="text-gray-600 text-lg max-w-2xl mx-auto font-light">
                 Soluciones integrales para todas tus necesidades inmobiliarias
               </p>
             </div>
@@ -250,10 +219,10 @@ export default async function Home() {
                       className="object-cover group-hover:scale-105 transition-transform duration-700"
                     />
                   </div>
-                  <h3 className="font-serif text-3xl font-bold mb-4">
+                  <h3 className="text-3xl font-light tracking-tight mb-4">
                     {service.title}
                   </h3>
-                  <p className="text-gray-600 text-lg leading-relaxed">
+                  <p className="text-gray-600 text-lg leading-relaxed font-light">
                     {service.description}
                   </p>
                 </div>
@@ -266,10 +235,10 @@ export default async function Home() {
         <section id="contacto" className="py-32 px-6 lg:px-12 bg-gray-50">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="font-serif text-4xl md:text-5xl font-bold mb-6">
+              <h2 className="text-4xl md:text-5xl font-light tracking-tight mb-6">
                 Hablemos
               </h2>
-              <p className="text-gray-600 text-lg">
+              <p className="text-gray-600 text-lg font-light">
                 Estamos aquí para ayudarte a encontrar tu próximo hogar
               </p>
             </div>
@@ -278,51 +247,51 @@ export default async function Home() {
               <form className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Nombre</label>
+                    <label className="block text-sm font-light mb-2">Nombre</label>
                     <input 
                       type="text" 
                       placeholder="Tu nombre" 
-                      className="w-full h-12 px-4 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                      className="w-full h-12 px-4 border border-gray-200 rounded-full font-light focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 transition-all duration-300"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">Apellido</label>
+                    <label className="block text-sm font-light mb-2">Apellido</label>
                     <input 
                       type="text" 
                       placeholder="Tu apellido" 
-                      className="w-full h-12 px-4 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                      className="w-full h-12 px-4 border border-gray-200 rounded-full font-light focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 transition-all duration-300"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Email</label>
+                  <label className="block text-sm font-light mb-2">Email</label>
                   <input 
                     type="email" 
                     placeholder="tu@email.com" 
-                    className="w-full h-12 px-4 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                    className="w-full h-12 px-4 border border-gray-200 rounded-full font-light focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 transition-all duration-300"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Teléfono</label>
+                  <label className="block text-sm font-light mb-2">Teléfono</label>
                   <input 
                     type="tel" 
                     placeholder="+376 600 000" 
-                    className="w-full h-12 px-4 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                    className="w-full h-12 px-4 border border-gray-200 rounded-full font-light focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 transition-all duration-300"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Mensaje</label>
+                  <label className="block text-sm font-light mb-2">Mensaje</label>
                   <textarea
                     placeholder="Cuéntanos qué estás buscando..."
                     rows={6}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-2xl font-light focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 transition-all duration-300 resize-none"
                   />
                 </div>
 
-                <Button type="submit" size="lg" className="w-full rounded-full h-14 text-base">
+                <Button type="submit" size="lg" className="w-full rounded-full h-14 text-base bg-gray-900 hover:bg-gray-800 transition-colors duration-300">
                   Enviar mensaje
                 </Button>
               </form>

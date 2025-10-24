@@ -1,5 +1,5 @@
 /**
- * Header Component
+ * Header Component - BACKUP 24/10/2024
  * 
  * Header principal del sitio con diseño premium y minimalista.
  * Incluye navegación dinámica con dropdowns, selector de idiomas y logo.
@@ -474,7 +474,7 @@ export function Header({ config }: HeaderProps) {
               {/* Hamburger Menu */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="relative w-8 h-8 flex flex-col justify-center items-center group text-gray-900 z-[300]"
+                className="relative w-8 h-8 flex flex-col justify-center items-center group text-gray-900"
                 aria-label="Toggle menu"
               >
                 <span className={`
@@ -493,37 +493,45 @@ export function Header({ config }: HeaderProps) {
             </div>
           </div>
         </nav>
-      </header>
 
-      {/* Mobile Menu - FUERA del header */}
-      <div className={`
-        lg:hidden fixed inset-0 bg-gray-50 transition-all duration-300 ease-in-out z-[100]
-        ${isMobileMenuOpen 
-          ? 'opacity-100 visible' 
-          : 'opacity-0 invisible'
-        }
-      `}>
-          <div className="flex flex-col h-full pt-20 px-6 pb-6 overflow-y-auto">
+        {/* Mobile Menu */}
+        <div className={`
+          lg:hidden fixed inset-0 bg-white transition-all duration-500 ease-in-out
+          ${isMobileMenuOpen 
+            ? 'opacity-100 translate-x-0' 
+            : 'opacity-0 translate-x-full pointer-events-none'
+          }
+        `}>
+          <div className="flex flex-col h-full pt-24 px-8 pb-8 overflow-y-auto">
             {/* Mobile Menu Items */}
-            <nav className="flex flex-col space-y-1 mt-4">
+            <nav className="flex-1 flex flex-col justify-center -mt-20">
               {menuItems.map((item, index) => {
                 const isActive = isActiveLink(item.url);
                 
                 // Si tiene dropdown (Propiedades)
                 if (item.hasDropdown && item.dropdownType === 'properties') {
                   return (
-                    <div key={item.id} className="border-b border-gray-200 last:border-0">
+                    <div key={item.id} className="py-2">
                       <button
                         onClick={() => setIsMobilePropertiesOpen(!isMobilePropertiesOpen)}
-                        className="w-full py-4 text-left flex items-center justify-between group hover:bg-white/50 px-4 rounded-lg transition-colors"
+                        className="w-full text-left group flex items-center justify-between"
+                        style={{
+                          animation: isMobileMenuOpen 
+                            ? `slideInFromRight ${0.4 + index * 0.1}s ease-out`
+                            : ''
+                        }}
                       >
-                        <span className={`text-lg font-light tracking-wide ${
-                          isActive ? 'text-gray-900 font-normal' : 'text-gray-700'
-                        }`}>
+                        <span className={`
+                          text-2xl font-light tracking-wide transition-colors duration-300
+                          ${isActive 
+                            ? 'text-gray-900' 
+                            : 'text-gray-600 group-hover:text-gray-900'
+                          }
+                        `}>
                           {item.title}
                         </span>
                         <svg 
-                          className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${
+                          className={`w-5 h-5 text-gray-600 transition-transform duration-300 ${
                             isMobilePropertiesOpen ? 'rotate-180' : ''
                           }`}
                           fill="none" 
@@ -536,52 +544,49 @@ export function Header({ config }: HeaderProps) {
 
                       {/* Mobile Dropdown Content */}
                       {isMobilePropertiesOpen && (
-                        <div className="pb-3 px-4 bg-white/30 rounded-b-lg">
-                          <div className="space-y-1 pt-2">
-                            <div className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 px-2">
+                        <div className="mt-4 ml-4 space-y-4">
+                          {/* Parroquias */}
+                          <div>
+                            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
                               Parroquias
+                            </h3>
+                            <div className="space-y-2">
+                              {parishes.map((parish) => (
+                                <Link
+                                  key={parish.slug}
+                                  href={`/propiedades?parroquia=${parish.slug}`}
+                                  onClick={() => {
+                                    setIsMobileMenuOpen(false);
+                                    setIsMobilePropertiesOpen(false);
+                                  }}
+                                  className="block text-base text-gray-600 hover:text-gray-900 transition-colors duration-200 font-light"
+                                >
+                                  {parish.name}
+                                </Link>
+                              ))}
                             </div>
-                            {parishes.slice(0, 4).map((parish) => (
-                              <Link
-                                key={parish.slug}
-                                href={`/propiedades?parroquia=${parish.slug}`}
-                                onClick={() => {
-                                  setIsMobileMenuOpen(false);
-                                  setIsMobilePropertiesOpen(false);
-                                }}
-                                className="block py-2 px-2 text-sm text-gray-700 hover:text-gray-900 hover:bg-white/50 rounded font-light transition-colors"
-                              >
-                                {parish.name}
-                              </Link>
-                            ))}
-                            
-                            <div className="text-xs font-medium text-gray-500 uppercase tracking-wider mt-3 mb-2 px-2">
-                              Tipo de propiedad
+                          </div>
+
+                          {/* Tipos */}
+                          <div>
+                            <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
+                              Tipo
+                            </h3>
+                            <div className="space-y-2">
+                              {propertyTypes.map((type) => (
+                                <Link
+                                  key={type.slug}
+                                  href={`/propiedades?tipo=${type.slug}`}
+                                  onClick={() => {
+                                    setIsMobileMenuOpen(false);
+                                    setIsMobilePropertiesOpen(false);
+                                  }}
+                                  className="block text-base text-gray-600 hover:text-gray-900 transition-colors duration-200 font-light"
+                                >
+                                  {type.name}
+                                </Link>
+                              ))}
                             </div>
-                            {propertyTypes.slice(0, 4).map((type) => (
-                              <Link
-                                key={type.slug}
-                                href={`/propiedades?tipo=${type.slug}`}
-                                onClick={() => {
-                                  setIsMobileMenuOpen(false);
-                                  setIsMobilePropertiesOpen(false);
-                                }}
-                                className="block py-2 px-2 text-sm text-gray-700 hover:text-gray-900 hover:bg-white/50 rounded font-light transition-colors"
-                              >
-                                {type.name}
-                              </Link>
-                            ))}
-                            
-                            <Link
-                              href="/propiedades"
-                              onClick={() => {
-                                setIsMobileMenuOpen(false);
-                                setIsMobilePropertiesOpen(false);
-                              }}
-                              className="block py-2 px-2 mt-2 text-sm text-gray-900 font-medium hover:bg-white/50 rounded transition-colors"
-                            >
-                              Ver todas →
-                            </Link>
                           </div>
                         </div>
                       )}
@@ -592,18 +597,27 @@ export function Header({ config }: HeaderProps) {
                 // Si tiene dropdown (Sobre Nosotros) - Móvil
                 if (item.hasDropdown && item.dropdownType === 'about') {
                   return (
-                    <div key={item.id} className="border-b border-gray-200 last:border-0">
+                    <div key={item.id} className="py-2">
                       <button
                         onClick={() => setIsMobileAboutOpen(!isMobileAboutOpen)}
-                        className="w-full py-4 text-left flex items-center justify-between group hover:bg-white/50 px-4 rounded-lg transition-colors"
+                        className="w-full text-left group flex items-center justify-between"
+                        style={{
+                          animation: isMobileMenuOpen 
+                            ? `slideInFromRight ${0.4 + index * 0.1}s ease-out`
+                            : ''
+                        }}
                       >
-                        <span className={`text-lg font-light tracking-wide ${
-                          isActive ? 'text-gray-900 font-normal' : 'text-gray-700'
-                        }`}>
+                        <span className={`
+                          text-2xl font-light tracking-wide transition-colors duration-300
+                          ${isActive 
+                            ? 'text-gray-900' 
+                            : 'text-gray-600 group-hover:text-gray-900'
+                          }
+                        `}>
                           {item.title}
                         </span>
                         <svg 
-                          className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${
+                          className={`w-5 h-5 text-gray-600 transition-transform duration-300 ${
                             isMobileAboutOpen ? 'rotate-180' : ''
                           }`}
                           fill="none" 
@@ -616,29 +630,27 @@ export function Header({ config }: HeaderProps) {
 
                       {/* Mobile Dropdown Content - Sobre Nosotros */}
                       {isMobileAboutOpen && (
-                        <div className="pb-3 px-4 bg-white/30 rounded-b-lg">
-                          <div className="space-y-1 pt-2">
-                            <Link
-                              href="/nosotros"
-                              onClick={() => {
-                                setIsMobileMenuOpen(false);
-                                setIsMobileAboutOpen(false);
-                              }}
-                              className="block py-2 px-2 text-sm text-gray-700 hover:text-gray-900 hover:bg-white/50 rounded font-light transition-colors"
-                            >
-                              Quiénes somos
-                            </Link>
-                            <Link
-                              href="/nuestro-equipo"
-                              onClick={() => {
-                                setIsMobileMenuOpen(false);
-                                setIsMobileAboutOpen(false);
-                              }}
-                              className="block py-2 px-2 text-sm text-gray-700 hover:text-gray-900 hover:bg-white/50 rounded font-light transition-colors"
-                            >
-                              Nuestro equipo
-                            </Link>
-                          </div>
+                        <div className="mt-4 ml-4 space-y-2">
+                          <Link
+                            href="/nosotros"
+                            onClick={() => {
+                              setIsMobileMenuOpen(false);
+                              setIsMobileAboutOpen(false);
+                            }}
+                            className="block text-base text-gray-600 hover:text-gray-900 transition-colors duration-200 font-light"
+                          >
+                            Quiénes somos
+                          </Link>
+                          <Link
+                            href="/nuestro-equipo"
+                            onClick={() => {
+                              setIsMobileMenuOpen(false);
+                              setIsMobileAboutOpen(false);
+                            }}
+                            className="block text-base text-gray-600 hover:text-gray-900 transition-colors duration-200 font-light"
+                          >
+                            Nuestro equipo
+                          </Link>
                         </div>
                       )}
                     </div>
@@ -647,39 +659,80 @@ export function Header({ config }: HeaderProps) {
                 
                 // Items normales
                 return (
-                  <div key={item.id} className="border-b border-gray-200 last:border-0">
-                    <Link
-                      href={item.url}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="block py-4 px-4 hover:bg-white/50 rounded-lg transition-colors"
-                    >
-                      <span className={`text-lg font-light tracking-wide ${
-                        isActive ? 'text-gray-900 font-normal' : 'text-gray-700'
-                      }`}>
-                        {item.title}
-                      </span>
-                    </Link>
-                  </div>
+                  <Link
+                    key={item.id}
+                    href={item.url}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="group py-4"
+                    style={{
+                      animation: isMobileMenuOpen 
+                        ? `slideInFromRight ${0.4 + index * 0.1}s ease-out`
+                        : ''
+                    }}
+                  >
+                    <span className={`
+                      text-2xl font-light tracking-wide transition-colors duration-300
+                      ${isActive 
+                        ? 'text-gray-900' 
+                        : 'text-gray-600 group-hover:text-gray-900'
+                      }
+                    `}>
+                      {item.title}
+                    </span>
+                  </Link>
                 );
               })}
             </nav>
 
             {/* Mobile CTA */}
-            <div className="mt-6 pt-6 border-t border-gray-200">
+            <div 
+              className="pt-8 border-t border-gray-200"
+              style={{
+                animation: isMobileMenuOpen 
+                  ? `slideInFromBottom 0.6s ease-out`
+                  : ''
+              }}
+            >
               <Link 
                 href="/contacto" 
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <Button className="w-full py-4 bg-gray-900 text-white hover:bg-gray-800 rounded-full text-base font-light tracking-wide shadow-lg hover:shadow-xl transition-all">
+                <Button className="w-full py-6 bg-gray-900 text-white hover:bg-gray-800 rounded-full text-base font-light tracking-wide">
                   Contactar
                 </Button>
               </Link>
             </div>
           </div>
         </div>
+      </header>
 
       {/* Spacer para páginas que no son el home */}
       {pathname !== '/' && <div className="h-24" />}
+
+      {/* Estilos para animaciones */}
+      <style jsx>{`
+        @keyframes slideInFromRight {
+          from {
+            opacity: 0;
+            transform: translateX(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes slideInFromBottom {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
     </>
   );
 }
