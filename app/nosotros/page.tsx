@@ -267,12 +267,12 @@ export default async function AboutPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link href="/propiedades">
-                  <button className="bg-white text-black px-8 py-4 rounded-full hover:bg-gray-100 transition-colors font-medium">
+                  <button className="bg-white text-black px-8 py-4 rounded-full hover:bg-brand hover:text-black transition-colors font-medium">
                     Ver propiedades
                   </button>
                 </Link>
                 <Link href="/contacto">
-                  <button className="border-2 border-white text-white px-8 py-4 rounded-full hover:bg-white/10 transition-colors font-medium">
+                  <button className="border-2 border-white text-white px-8 py-4 rounded-full hover:bg-brand hover:text-black hover:border-brand transition-colors font-medium">
                     Contactar
                   </button>
                 </Link>

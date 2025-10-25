@@ -75,7 +75,7 @@ export default async function SellPage() {
                     <ScrollToButton 
                       targetId="valuation-form"
                       size="lg" 
-                      className="w-full rounded-full h-14 text-base font-light"
+                      className="w-full rounded-full h-14 text-base font-light hover:bg-brand hover:text-black hover:border-brand"
                     >
                       Solicitar valoración gratuita
                     </ScrollToButton>
@@ -363,7 +363,7 @@ export default async function SellPage() {
                     <Button 
                       type="submit" 
                       size="lg" 
-                      className="w-full rounded-full h-12 font-light"
+                      className="w-full rounded-full h-12 font-light hover:bg-brand hover:text-black hover:border-brand"
                     >
                       Solicitar valoración gratuita
                     </Button>
@@ -449,7 +449,7 @@ export default async function SellPage() {
                   <ScrollToButton 
                     targetId="valuation-form"
                     size="lg" 
-                    className="rounded-full px-8 h-12 font-light"
+                    className="rounded-full px-8 h-12 font-light hover:bg-brand hover:text-black hover:border-brand"
                   >
                     Solicitar valoración
                   </ScrollToButton>

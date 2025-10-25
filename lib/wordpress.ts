@@ -24,13 +24,28 @@ import {
 } from './constants';
 
 /**
+ * MODO FALLBACK TEMPORAL - WordPress deshabilitado
+ * Cambiar WORDPRESS_DISABLED a false cuando WordPress esté disponible
+ */
+const WORDPRESS_DISABLED = false;
+
+/**
  * Función base para hacer peticiones a WordPress API
  * Maneja errores, headers y logging en desarrollo
+ * MODO FALLBACK: Retorna datos vacíos si WordPress está deshabilitado
  */
 async function fetchAPI<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
+  // MODO FALLBACK: Si WordPress está deshabilitado, retornar array vacío
+  if (WORDPRESS_DISABLED) {
+    if (IS_DEV) {
+      console.log(`[WordPress API] DISABLED MODE - Returning empty data for: ${endpoint}`);
+    }
+    return [] as T;
+  }
+
   const url = `${WORDPRESS_API_URL}${endpoint}`;
 
   // Log en desarrollo
@@ -45,6 +60,8 @@ async function fetchAPI<T>(
         ...options.headers,
       },
       ...options,
+      // Agregar timeout para evitar esperas largas
+      signal: AbortSignal.timeout(5000),
     });
 
     // Log de respuesta en desarrollo
@@ -69,14 +86,11 @@ async function fetchAPI<T>(
     // Log de error en desarrollo
     if (IS_DEV) {
       console.error(`[WordPress API] Error fetching ${url}:`, error);
+      console.warn(`[WordPress API] Returning empty data as fallback`);
     }
 
-    // Re-lanzar el error para que el componente lo maneje
-    if (error instanceof Error) {
-      throw error;
-    }
-
-    throw new Error(ERROR_MESSAGES.FETCH_ERROR);
+    // FALLBACK: Retornar datos vacíos en lugar de lanzar error
+    return [] as T;
   }
 }
 
@@ -433,6 +447,20 @@ export async function getAllPropertyTaxonomies() {
  * Incluye nombre, descripción, menús, idiomas, etc.
  */
 export async function getSiteConfig(): Promise<SiteConfig | null> {
+  // MODO FALLBACK: Retornar config por defecto si WordPress está deshabilitado
+  if (WORDPRESS_DISABLED) {
+    if (IS_DEV) {
+      console.log('[WordPress API] DISABLED MODE - Returning default site config');
+    }
+    return {
+      site_name: 'Versus Andorra',
+      site_description: 'La mejor rentabilidad como inversión inmobiliaria en Andorra',
+      site_url: 'http://localhost:3000',
+      contact_email: 'info@versusandorra.com',
+      contact_phone: '+376 600 000 000',
+    } as SiteConfig;
+  }
+
   try {
     return fetchAPI<SiteConfig>(API_ENDPOINTS.SITE_CONFIG);
   } catch (error) {

@@ -5,7 +5,7 @@
  * Diseño limpio que complementa la estética premium del sitio.
  * 
  * @component
- * @version 2.0.0
+ * @version 3.0.0
  */
 
 'use client';
@@ -97,7 +97,7 @@ export function Footer({ config }: FooterProps) {
   ];
 
   return (
-    <footer className="bg-white border-t border-gray-100">
+    <footer className="bg-black border-t border-white/10">
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8">
@@ -105,29 +105,29 @@ export function Footer({ config }: FooterProps) {
           {/* Brand Column - Spans 4 columns */}
           <div className="lg:col-span-4">
             <Link href="/" className="inline-block mb-6">
-              <span className="text-2xl font-light tracking-[0.2em] text-gray-900">
+              <span className="text-2xl font-light tracking-[0.2em] text-white">
                 {siteName}
               </span>
             </Link>
-            <p className="text-gray-600 font-light leading-relaxed mb-8 max-w-xs">
+            <p className="text-white/80 font-light leading-relaxed mb-8 max-w-xs">
               Tu socio de confianza en el mercado inmobiliario de Andorra. 
               Experiencia, dedicación y resultados excepcionales.
             </p>
 
             {/* Newsletter Subscription */}
             <div className="space-y-3">
-              <p className="text-sm font-light text-gray-700">
+              <p className="text-sm font-light text-white/90">
                 Suscríbete a nuestro newsletter
               </p>
               <form className="flex gap-2" onSubmit={(e) => e.preventDefault()}>
                 <input
                   type="email"
                   placeholder="Tu email"
-                  className="flex-1 px-4 py-2.5 text-sm border border-gray-200 rounded-full focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 transition-all duration-300"
+                  className="flex-1 px-4 py-2.5 text-sm bg-white/10 border border-white/20 rounded-full text-white placeholder:text-white/50 focus:outline-none focus:ring-1 focus:ring-brand focus:border-brand transition-all duration-300"
                 />
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-gray-900 text-white text-sm rounded-full hover:bg-gray-800 transition-colors duration-300"
+                  className="px-6 py-2.5 bg-brand text-black text-sm rounded-full hover:bg-brand/90 transition-colors duration-300 font-medium"
                 >
                   Suscribir
                 </button>
@@ -139,7 +139,7 @@ export function Footer({ config }: FooterProps) {
           <div className="lg:col-span-4 grid grid-cols-2 gap-8">
             {quickLinks.map((section) => (
               <div key={section.title}>
-                <h3 className="text-sm font-medium text-gray-900 mb-4 tracking-wide">
+                <h3 className="text-sm font-medium text-white mb-4 tracking-wide">
                   {section.title}
                 </h3>
                 <ul className="space-y-3">
@@ -147,7 +147,7 @@ export function Footer({ config }: FooterProps) {
                     <li key={link.href}>
                       <Link
                         href={link.href}
-                        className="text-sm text-gray-600 hover:text-gray-900 transition-colors duration-300 font-light"
+                        className="text-sm text-white/70 hover:text-brand transition-colors duration-300 font-light"
                       >
                         {link.label}
                       </Link>
@@ -160,7 +160,7 @@ export function Footer({ config }: FooterProps) {
 
           {/* Contact Info - Spans 4 columns */}
           <div className="lg:col-span-4">
-            <h3 className="text-sm font-medium text-gray-900 mb-4 tracking-wide">
+            <h3 className="text-sm font-medium text-white mb-4 tracking-wide">
               Contacto
             </h3>
             
@@ -169,9 +169,9 @@ export function Footer({ config }: FooterProps) {
               <div>
                 <a
                   href={`mailto:${contactInfo.email}`}
-                  className="group flex items-center gap-3 text-sm text-gray-600 hover:text-gray-900 transition-colors duration-300"
+                  className="group flex items-center gap-3 text-sm text-white/70 hover:text-brand transition-colors duration-300"
                 >
-                  <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-900 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-white/50 group-hover:text-brand transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                   <span className="font-light">{contactInfo.email}</span>
@@ -182,9 +182,9 @@ export function Footer({ config }: FooterProps) {
               <div>
                 <a
                   href={`tel:${contactInfo.phone.replace(/\s/g, '')}`}
-                  className="group flex items-center gap-3 text-sm text-gray-600 hover:text-gray-900 transition-colors duration-300"
+                  className="group flex items-center gap-3 text-sm text-white/70 hover:text-brand transition-colors duration-300"
                 >
-                  <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-900 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-white/50 group-hover:text-brand transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
                   <span className="font-light">{contactInfo.phone}</span>
@@ -193,11 +193,11 @@ export function Footer({ config }: FooterProps) {
 
               {/* Address */}
               <div className="flex items-start gap-3">
-                <svg className="w-4 h-4 text-gray-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-white/50 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                <div className="text-sm text-gray-600 font-light">
+                <div className="text-sm text-white/70 font-light">
                   {contactInfo.address.map((line, index) => (
                     <div key={index}>{line}</div>
                   ))}
@@ -212,7 +212,7 @@ export function Footer({ config }: FooterProps) {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2.5 bg-gray-50 text-gray-600 rounded-full hover:bg-gray-900 hover:text-white transition-all duration-300"
+                    className="p-2.5 bg-white/10 text-white/70 rounded-full hover:bg-brand hover:text-black transition-all duration-300"
                     aria-label={social.name}
                   >
                     {social.icon}
@@ -225,11 +225,11 @@ export function Footer({ config }: FooterProps) {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-gray-100">
+      <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             {/* Copyright */}
-            <p className="text-sm text-gray-500 font-light">
+            <p className="text-sm text-white/60 font-light">
               © {currentYear} {siteName}. Todos los derechos reservados.
             </p>
 
@@ -237,19 +237,19 @@ export function Footer({ config }: FooterProps) {
             <div className="flex items-center gap-6">
               <Link
                 href="/privacidad"
-                className="text-sm text-gray-500 hover:text-gray-900 transition-colors duration-300 font-light"
+                className="text-sm text-white/60 hover:text-brand transition-colors duration-300 font-light"
               >
                 Política de Privacidad
               </Link>
               <Link
                 href="/terminos"
-                className="text-sm text-gray-500 hover:text-gray-900 transition-colors duration-300 font-light"
+                className="text-sm text-white/60 hover:text-brand transition-colors duration-300 font-light"
               >
                 Términos y Condiciones
               </Link>
               <Link
                 href="/cookies"
-                className="text-sm text-gray-500 hover:text-gray-900 transition-colors duration-300 font-light"
+                className="text-sm text-white/60 hover:text-brand transition-colors duration-300 font-light"
               >
                 Cookies
               </Link>

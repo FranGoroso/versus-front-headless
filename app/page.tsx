@@ -131,7 +131,7 @@ export default async function Home() {
             {featuredProperties.length > 0 && (
               <div className="text-center mt-16">
                 <Link href="/propiedades">
-                  <Button size="lg" variant="outline" className="rounded-full px-12">
+                  <Button size="lg" variant="outline" className="rounded-full px-12 hover:bg-brand hover:text-black hover:border-brand">
                     Ver todas las propiedades
                   </Button>
                 </Link>
@@ -288,7 +288,7 @@ export default async function Home() {
                 {/* CTAs */}
                 <div className="flex flex-col sm:flex-row gap-4 pt-4">
                   <Link href="/vender">
-                    <Button size="lg" className="rounded-full px-8 h-14 text-base font-light w-full sm:w-auto">
+                    <Button size="lg" className="rounded-full px-8 h-14 text-base font-light w-full sm:w-auto hover:bg-brand hover:text-black hover:border-brand">
                       Solicitar valoración gratuita
                     </Button>
                   </Link>
@@ -370,7 +370,7 @@ export default async function Home() {
                   />
                 </div>
 
-                <Button type="submit" size="lg" className="w-full rounded-full h-14 text-base bg-gray-900 hover:bg-gray-800 transition-colors duration-300">
+                <Button type="submit" size="lg" className="w-full rounded-full h-14 text-base bg-gray-900 hover:bg-brand hover:text-black hover:border-brand transition-colors duration-300">
                   Enviar mensaje
                 </Button>
               </form>

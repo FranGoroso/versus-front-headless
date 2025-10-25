@@ -234,7 +234,7 @@ export default async function ContactPage() {
                       />
                     </div>
 
-                    <Button type="submit" size="lg" className="w-full rounded-full h-14">
+                    <Button type="submit" size="lg" className="w-full rounded-full h-14 hover:bg-brand hover:text-black hover:border-brand">
                       Enviar mensaje
                     </Button>
 

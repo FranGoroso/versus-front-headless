@@ -312,12 +312,12 @@ export default async function TeamPage() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Link href="/contacto">
-                    <button className="bg-gray-900 text-white px-8 py-3 rounded-full hover:bg-gray-800 transition-colors duration-300 font-light">
+                    <button className="bg-gray-900 text-white px-8 py-3 rounded-full hover:bg-brand hover:text-black hover:border-brand transition-colors duration-300 font-light">
                       Contactar con el equipo
                     </button>
                   </Link>
                   <Link href="/propiedades">
-                    <button className="border border-gray-900 text-gray-900 px-8 py-3 rounded-full hover:bg-gray-50 transition-colors duration-300 font-light">
+                    <button className="border border-gray-900 text-gray-900 px-8 py-3 rounded-full hover:bg-brand hover:text-black hover:border-brand transition-colors duration-300 font-light">
                       Ver propiedades
                     </button>
                   </Link>

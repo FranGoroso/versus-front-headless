@@ -154,7 +154,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
                 {/* Página anterior */}
                 {currentPage > 1 && (
                   <Link href={`/propiedades?page=${currentPage - 1}`}>
-                    <Button variant="outline" className="rounded-full">
+                    <Button variant="outline" className="rounded-full hover:bg-brand hover:text-black hover:border-brand">
                       ← Anterior
                     </Button>
                   </Link>
@@ -168,7 +168,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
                 {/* Página siguiente */}
                 {currentPage < totalPages && (
                   <Link href={`/propiedades?page=${currentPage + 1}`}>
-                    <Button variant="outline" className="rounded-full">
+                    <Button variant="outline" className="rounded-full hover:bg-brand hover:text-black hover:border-brand">
                       Siguiente →
                     </Button>
                   </Link>
@@ -183,7 +183,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
                   ¿No encuentras lo que buscas?
                 </p>
                 <Link href="/contacto">
-                  <Button variant="outline" className="rounded-full">
+                  <Button variant="outline" className="rounded-full hover:bg-brand hover:text-black hover:border-brand">
                     Contactar con un asesor
                   </Button>
                 </Link>

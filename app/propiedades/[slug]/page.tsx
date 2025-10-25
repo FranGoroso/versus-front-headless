@@ -18,6 +18,7 @@ import { Footer } from '@/components/layout/Footer';
 import { Container } from '@/components/layout/Container';
 import { PropertySearchForm } from '@/components/sections/PropertySearchForm';
 import { PropertyCard } from '@/components/property/PropertyCard';
+import { PropertyGallery } from '@/components/property/PropertyGallery';
 import { REVALIDATE_TIME } from '@/lib/constants';
 
 /**
@@ -124,55 +125,14 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
           </Container>
         </section>
 
-        {/* Galería de Imágenes */}
+        {/* Galería de Imágenes con Lightbox */}
         <section className="py-8">
           <Container>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Imagen principal */}
-              <div className="relative h-[500px] rounded-2xl overflow-hidden">
-                {featured_image?.url ? (
-                  <Image
-                    src={featured_image.url}
-                    alt={title.rendered}
-                    fill
-                    className="object-cover"
-                    priority
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                    <span className="text-gray-400">Sin imagen</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Grid de galería */}
-              <div className="grid grid-cols-2 gap-4">
-                {gallery && gallery.slice(0, 4).map((image, index) => (
-                  <div key={image.id} className="relative h-[240px] rounded-xl overflow-hidden">
-                    <Image
-                      src={image.url}
-                      alt={image.alt || `Galería ${index + 1}`}
-                      fill
-                      className="object-cover hover:scale-110 transition-transform duration-500"
-                    />
-                  </div>
-                ))}
-                {(!gallery || gallery.length === 0) && (
-                  Array.from({ length: 4 }).map((_, index) => (
-                    <div key={index} className="relative h-[240px] rounded-xl bg-gray-100" />
-                  ))
-                )}
-              </div>
-            </div>
-
-            {/* Botón ver todas las fotos */}
-            {gallery && gallery.length > 4 && (
-              <div className="mt-4 text-center">
-                <Button variant="outline" className="rounded-full">
-                  Ver todas las fotos ({gallery.length})
-                </Button>
-              </div>
-            )}
+            <PropertyGallery
+              featuredImage={featured_image}
+              gallery={gallery}
+              title={title.rendered}
+            />
           </Container>
         </section>
 
@@ -240,7 +200,14 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                       Descripción
                     </h2>
                     <div 
-                      className="prose max-w-none text-gray-600 leading-relaxed font-light"
+                      className="prose prose-lg prose-gray max-w-none
+                                 prose-headings:font-light prose-headings:tracking-tight prose-headings:text-gray-900
+                                 prose-p:text-gray-600 prose-p:leading-relaxed prose-p:font-light prose-p:mb-6
+                                 prose-ul:text-gray-600 prose-ul:my-6 prose-li:mb-2 prose-li:leading-relaxed
+                                 prose-ol:text-gray-600 prose-ol:my-6
+                                 prose-strong:text-gray-900 prose-strong:font-medium
+                                 prose-a:text-gray-900 prose-a:underline hover:prose-a:text-gray-700
+                                 prose-blockquote:border-l-gray-300 prose-blockquote:text-gray-600"
                       dangerouslySetInnerHTML={{ __html: content.rendered }}
                     />
                   </div>
@@ -331,12 +298,12 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                           rel="noopener noreferrer"
                         >
                           <Button variant="outline" className="w-full rounded-full font-light hover:bg-gray-50 transition-colors duration-300">
-                            💬 WhatsApp
+                            WhatsApp
                           </Button>
                         </a>
                       )}
                       <Button variant="outline" className="w-full rounded-full font-light hover:bg-gray-50 transition-colors duration-300">
-                        📅 Agendar visita
+                        Agendar visita
                       </Button>
                     </div>
                   </Card>
