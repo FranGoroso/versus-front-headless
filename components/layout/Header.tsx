@@ -226,7 +226,7 @@ export function Header({ config }: HeaderProps) {
                             <div className="grid grid-cols-2 divide-x divide-gray-100">
                               {/* Columna Parroquias */}
                               <div className="p-4">
-                                <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3 px-2">
+                                <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3 px-4">
                                   Parroquias
                                 </h3>
                                 <div className="space-y-1">
@@ -235,7 +235,7 @@ export function Header({ config }: HeaderProps) {
                                       key={parish.slug}
                                       href={`/propiedades?parroquia=${parish.slug}`}
                                       onClick={() => setIsPropertiesDropdownOpen(false)}
-                                      className="block px-2 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors duration-200 font-light"
+                                      className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors duration-200 font-light"
                                     >
                                       {parish.name}
                                     </Link>
@@ -245,7 +245,7 @@ export function Header({ config }: HeaderProps) {
 
                               {/* Columna Tipos */}
                               <div className="p-4">
-                                <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3 px-2">
+                                <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3 px-4">
                                   Tipo
                                 </h3>
                                 <div className="space-y-1">
@@ -254,7 +254,7 @@ export function Header({ config }: HeaderProps) {
                                       key={type.slug}
                                       href={`/propiedades?tipo=${type.slug}`}
                                       onClick={() => setIsPropertiesDropdownOpen(false)}
-                                      className="block px-2 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors duration-200 font-light"
+                                      className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors duration-200 font-light"
                                     >
                                       {type.name}
                                     </Link>
@@ -538,7 +538,7 @@ export function Header({ config }: HeaderProps) {
                       {isMobilePropertiesOpen && (
                         <div className="pb-3 px-4 bg-white/30 rounded-b-lg">
                           <div className="space-y-1 pt-2">
-                            <div className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 px-2">
+                            <div className="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2 px-2">
                               Parroquias
                             </div>
                             {parishes.slice(0, 4).map((parish) => (
@@ -555,7 +555,10 @@ export function Header({ config }: HeaderProps) {
                               </Link>
                             ))}
                             
-                            <div className="text-xs font-medium text-gray-500 uppercase tracking-wider mt-3 mb-2 px-2">
+                            {/* Separador elegante */}
+                            <div className="border-t border-gray-200 my-3 mx-2"></div>
+                            
+                            <div className="text-xs font-semibold text-gray-700 uppercase tracking-wider mt-3 mb-2 px-2">
                               Tipo de propiedad
                             </div>
                             {propertyTypes.slice(0, 4).map((type) => (

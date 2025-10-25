@@ -245,7 +245,7 @@ export function Footer({ config }: FooterProps) {
                 href="/terminos"
                 className="text-sm text-gray-500 hover:text-gray-900 transition-colors duration-300 font-light"
               >
-                Términos de Uso
+                Términos y Condiciones
               </Link>
               <Link
                 href="/cookies"

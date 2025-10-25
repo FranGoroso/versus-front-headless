@@ -232,6 +232,77 @@ export default async function Home() {
           </Container>
         </section>
 
+        {/* CTA Vender Propiedad */}
+        <section className="py-32 bg-white">
+          <Container>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+              {/* Columna Izquierda: Imagen */}
+              <div className="relative h-[500px] lg:h-[600px] overflow-hidden rounded-2xl group">
+                <Image
+                  src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=1973&auto=format&fit=crop"
+                  alt="Vende tu propiedad con Versus Andorra"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent" />
+              </div>
+
+              {/* Columna Derecha: Contenido */}
+              <div className="space-y-8">
+                <div>
+                  <h2 className="text-4xl md:text-5xl font-light tracking-tight mb-6">
+                    ¿Pensando en vender tu propiedad?
+                  </h2>
+                  <p className="text-xl text-gray-600 font-light leading-relaxed">
+                    Obtén una valoración profesional gratuita en menos de 24 horas. 
+                    Sin compromiso, sin costes ocultos.
+                  </p>
+                </div>
+
+                {/* Beneficios */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <svg className="w-5 h-5 text-gray-900 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-gray-600 font-light">Valoración gratuita y sin compromiso</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <svg className="w-5 h-5 text-gray-900 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-gray-600 font-light">Marketing profesional y fotografía de alta calidad</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <svg className="w-5 h-5 text-gray-900 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-gray-600 font-light">Asesoramiento personalizado durante todo el proceso</span>
+                  </div>
+                </div>
+
+                {/* CTAs */}
+                <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                  <Link href="/vender">
+                    <Button size="lg" className="rounded-full px-8 h-14 text-base font-light w-full sm:w-auto">
+                      Solicitar valoración gratuita
+                    </Button>
+                  </Link>
+                  <a 
+                    href="tel:+376600000000"
+                    className="flex items-center justify-center gap-2 h-14 px-8 border border-gray-200 rounded-full hover:border-gray-900 transition-all duration-300 font-light"
+                  >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                    </svg>
+                    <span>+376 600 000 000</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </Container>
+        </section>
+
         {/* Reseñas de Google */}
         <GoogleReviews />
 

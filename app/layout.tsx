@@ -2,6 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Inter, Playfair_Display } from 'next/font/google';
 import { FloatingWhatsApp } from '@/components/common/FloatingWhatsApp';
+import { CookieBanner } from '@/components/common/CookieBanner';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' });
@@ -24,6 +25,7 @@ export default function RootLayout({
           phoneNumber="+376600000000"
           message="Hola, estoy interesado en obtener más información sobre las propiedades en Andorra"
         />
+        <CookieBanner />
       </body>
     </html>
   );
