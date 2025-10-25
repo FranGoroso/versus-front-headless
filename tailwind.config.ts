@@ -64,6 +64,20 @@ const config: Config = {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
+        // Color de acento personalizado para la marca
+        brand: {
+          DEFAULT: '#E6E258',
+          50: '#FDFDF2',
+          100: '#FAFAE0',
+          200: '#F5F5BC',
+          300: '#F0F098',
+          400: '#EBEB74',
+          500: '#E6E258', // Color principal
+          600: '#D9D52E',
+          700: '#B8B425',
+          800: '#8A881C',
+          900: '#5C5B12',
+        },
       },
       keyframes: {
         'accordion-down': {

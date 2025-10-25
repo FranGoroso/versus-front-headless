@@ -18,6 +18,7 @@ import { PropertyGrid } from '@/components/property/PropertyGrid';
 import { ErrorMessage } from '@/components/common/ErrorMessage';
 import { HeroSection } from '@/components/sections/HeroSection';
 import { GoogleReviews } from '@/components/sections/GoogleReviews';
+import { PropertyCategoriesSection } from '@/components/sections/PropertyCategoriesSection';
 
 /**
  * Configurar revalidación ISR
@@ -138,6 +139,9 @@ export default async function Home() {
             )}
           </Container>
         </section>
+
+        {/* Propiedades en Venta - Categorías */}
+        <PropertyCategoriesSection />
 
         {/* Sección Experiencia */}
         <section className="relative py-40 px-6 overflow-hidden">

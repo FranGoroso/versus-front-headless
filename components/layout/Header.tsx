@@ -146,7 +146,7 @@ export function Header({ config }: HeaderProps) {
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           isTransparent
             ? 'bg-transparent py-6'
-            : 'bg-white/95 backdrop-blur-md shadow-sm py-4'
+            : 'bg-black/95 backdrop-blur-md shadow-lg py-4'
         }`}
       >
         <nav className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -154,18 +154,10 @@ export function Header({ config }: HeaderProps) {
             {/* Logo */}
             <Link href="/" className="flex items-center">
               <div className="flex items-center gap-2">
-                <span 
-                  className={`text-2xl md:text-3xl font-light tracking-[0.2em] transition-colors duration-300 ${
-                    isTransparent ? 'text-white' : 'text-gray-900'
-                  }`}
-                >
+                <span className="text-2xl md:text-3xl font-light tracking-[0.2em] text-white">
                   VERSUS
                 </span>
-                <span 
-                  className={`text-xs font-light tracking-wider transition-colors duration-300 ${
-                    isTransparent ? 'text-white/70' : 'text-gray-600'
-                  }`}
-                >
+                <span className="text-xs font-light tracking-wider text-white/70">
                   ANDORRA
                 </span>
               </div>
@@ -188,34 +180,30 @@ export function Header({ config }: HeaderProps) {
                         >
                           <span 
                             className={`text-sm font-light tracking-wide transition-all duration-300 ${
-                              isTransparent
-                                ? isActive 
-                                  ? 'text-white' 
-                                  : 'text-white/80 hover:text-white'
-                                : isActive
-                                  ? 'text-gray-900'
-                                  : 'text-gray-600 hover:text-gray-900'
+                              isActive 
+                                ? 'text-white' 
+                                : 'text-white/80 hover:text-white'
                             }`}
                           >
                             {item.title}
                           </span>
                           <svg 
-                            className={`w-4 h-4 transition-all duration-300 ${
-                              isPropertiesDropdownOpen ? 'rotate-180' : ''
-                            } ${
-                              isTransparent ? 'text-white/80' : 'text-gray-600'
-                            }`}
+                            className="w-4 h-4 transition-all duration-300 text-white/80"
                             fill="none" 
                             stroke="currentColor" 
                             viewBox="0 0 24 24"
                           >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            <path 
+                              strokeLinecap="round" 
+                              strokeLinejoin="round" 
+                              strokeWidth={2} 
+                              d="M19 9l-7 7-7-7" 
+                              className={isPropertiesDropdownOpen ? 'rotate-180' : ''}
+                            />
                           </svg>
                           <span 
-                            className={`absolute -bottom-0 left-0 h-[1px] transition-all duration-300 ${
+                            className={`absolute -bottom-0 left-0 h-[1px] transition-all duration-300 bg-brand ${
                               isActive ? 'w-full' : 'w-0 group-hover:w-full'
-                            } ${
-                              isTransparent ? 'bg-white' : 'bg-gray-900'
                             }`}
                           />
                         </button>
@@ -278,34 +266,30 @@ export function Header({ config }: HeaderProps) {
                         >
                           <span 
                             className={`text-sm font-light tracking-wide transition-all duration-300 ${
-                              isTransparent
-                                ? isActive 
-                                  ? 'text-white' 
-                                  : 'text-white/80 hover:text-white'
-                                : isActive
-                                  ? 'text-gray-900'
-                                  : 'text-gray-600 hover:text-gray-900'
+                              isActive 
+                                ? 'text-white' 
+                                : 'text-white/80 hover:text-white'
                             }`}
                           >
                             {item.title}
                           </span>
                           <svg 
-                            className={`w-4 h-4 transition-all duration-300 ${
-                              isAboutDropdownOpen ? 'rotate-180' : ''
-                            } ${
-                              isTransparent ? 'text-white/80' : 'text-gray-600'
-                            }`}
+                            className="w-4 h-4 transition-all duration-300 text-white/80"
                             fill="none" 
                             stroke="currentColor" 
                             viewBox="0 0 24 24"
                           >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            <path 
+                              strokeLinecap="round" 
+                              strokeLinejoin="round" 
+                              strokeWidth={2} 
+                              d="M19 9l-7 7-7-7"
+                              className={isAboutDropdownOpen ? 'rotate-180' : ''}
+                            />
                           </svg>
                           <span 
-                            className={`absolute -bottom-0 left-0 h-[1px] transition-all duration-300 ${
+                            className={`absolute -bottom-0 left-0 h-[1px] transition-all duration-300 bg-brand ${
                               isActive ? 'w-full' : 'w-0 group-hover:w-full'
-                            } ${
-                              isTransparent ? 'bg-white' : 'bg-gray-900'
                             }`}
                           />
                         </button>
@@ -346,22 +330,16 @@ export function Header({ config }: HeaderProps) {
                     >
                       <span 
                         className={`text-sm font-light tracking-wide transition-all duration-300 ${
-                          isTransparent
-                            ? isActive 
-                              ? 'text-white' 
-                              : 'text-white/80 hover:text-white'
-                            : isActive
-                              ? 'text-gray-900'
-                              : 'text-gray-600 hover:text-gray-900'
+                          isActive 
+                            ? 'text-white' 
+                            : 'text-white/80 hover:text-white'
                         }`}
                       >
                         {item.title}
                       </span>
                       <span 
-                        className={`absolute -bottom-0 left-0 h-[1px] transition-all duration-300 ${
+                        className={`absolute -bottom-0 left-0 h-[1px] transition-all duration-300 bg-brand ${
                           isActive ? 'w-full' : 'w-0 group-hover:w-full'
-                        } ${
-                          isTransparent ? 'bg-white' : 'bg-gray-900'
                         }`}
                       />
                     </Link>
@@ -373,11 +351,7 @@ export function Header({ config }: HeaderProps) {
               <div className="relative mr-6" ref={langDropdownRef}>
                 <button
                   onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 ${
-                    isTransparent
-                      ? 'text-white/80 hover:text-white hover:bg-white/10'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                  }`}
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 text-white/80 hover:text-white hover:bg-white/10"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} 
@@ -421,14 +395,7 @@ export function Header({ config }: HeaderProps) {
               {/* CTA Button */}
               <Link href="/contacto">
                 <Button 
-                  variant={isTransparent ? "outline" : "default"}
-                  className={`
-                    relative px-8 py-5 rounded-full transition-all duration-300 overflow-hidden group
-                    ${isTransparent
-                      ? 'border-white text-white hover:bg-white hover:text-gray-900' 
-                      : 'bg-gray-900 text-white hover:bg-gray-800 border-gray-900'
-                    }
-                  `}
+                  className="relative px-8 py-5 rounded-full transition-all duration-300 overflow-hidden group bg-white text-black hover:bg-brand hover:text-black border-0"
                 >
                   <span className="relative z-10 text-sm font-light tracking-wide">
                     Contactar
@@ -442,7 +409,7 @@ export function Header({ config }: HeaderProps) {
               {/* Mobile Language Button */}
               <button
                 onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
-                className="p-2 rounded-lg transition-colors duration-300 text-gray-900 hover:bg-gray-100"
+                className="p-2 rounded-lg transition-colors duration-300 text-white hover:bg-white/10"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} 
@@ -474,19 +441,19 @@ export function Header({ config }: HeaderProps) {
               {/* Hamburger Menu */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="relative w-8 h-8 flex flex-col justify-center items-center group text-gray-900 z-[300]"
+                className="relative w-8 h-8 flex flex-col justify-center items-center group text-white z-[300]"
                 aria-label="Toggle menu"
               >
                 <span className={`
-                  block w-6 h-[1.5px] bg-gray-900 transition-all duration-300 ease-out
+                  block w-6 h-[1.5px] bg-white transition-all duration-300 ease-out
                   ${isMobileMenuOpen ? 'rotate-45 translate-y-[3.5px]' : '-translate-y-1'}
                 `} />
                 <span className={`
-                  block w-6 h-[1.5px] bg-gray-900 transition-all duration-300 ease-out
+                  block w-6 h-[1.5px] bg-white transition-all duration-300 ease-out
                   ${isMobileMenuOpen ? 'opacity-0' : 'opacity-100'}
                 `} />
                 <span className={`
-                  block w-6 h-[1.5px] bg-gray-900 transition-all duration-300 ease-out
+                  block w-6 h-[1.5px] bg-white transition-all duration-300 ease-out
                   ${isMobileMenuOpen ? '-rotate-45 -translate-y-[3.5px]' : 'translate-y-1'}
                 `} />
               </button>
@@ -497,7 +464,7 @@ export function Header({ config }: HeaderProps) {
 
       {/* Mobile Menu - FUERA del header */}
       <div className={`
-        lg:hidden fixed inset-0 bg-gray-50 transition-all duration-300 ease-in-out z-[100]
+        lg:hidden fixed inset-0 bg-black transition-all duration-300 ease-in-out z-[100]
         ${isMobileMenuOpen 
           ? 'opacity-100 visible' 
           : 'opacity-0 invisible'
@@ -512,18 +479,18 @@ export function Header({ config }: HeaderProps) {
                 // Si tiene dropdown (Propiedades)
                 if (item.hasDropdown && item.dropdownType === 'properties') {
                   return (
-                    <div key={item.id} className="border-b border-gray-200 last:border-0">
+                    <div key={item.id} className="border-b border-white/10 last:border-0">
                       <button
                         onClick={() => setIsMobilePropertiesOpen(!isMobilePropertiesOpen)}
-                        className="w-full py-4 text-left flex items-center justify-between group hover:bg-white/50 px-4 rounded-lg transition-colors"
+                        className="w-full py-4 text-left flex items-center justify-between group hover:bg-white/10 px-4 rounded-lg transition-colors"
                       >
                         <span className={`text-lg font-light tracking-wide ${
-                          isActive ? 'text-gray-900 font-normal' : 'text-gray-700'
+                          isActive ? 'text-white font-normal' : 'text-white/80'
                         }`}>
                           {item.title}
                         </span>
                         <svg 
-                          className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${
+                          className={`w-5 h-5 text-white/60 transition-transform duration-200 ${
                             isMobilePropertiesOpen ? 'rotate-180' : ''
                           }`}
                           fill="none" 
@@ -536,9 +503,9 @@ export function Header({ config }: HeaderProps) {
 
                       {/* Mobile Dropdown Content */}
                       {isMobilePropertiesOpen && (
-                        <div className="pb-3 px-4 bg-white/30 rounded-b-lg">
+                        <div className="pb-3 px-4 bg-white/5 rounded-b-lg">
                           <div className="space-y-1 pt-2">
-                            <div className="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2 px-2">
+                            <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-2 px-2">
                               Parroquias
                             </div>
                             {parishes.slice(0, 4).map((parish) => (
@@ -549,16 +516,15 @@ export function Header({ config }: HeaderProps) {
                                   setIsMobileMenuOpen(false);
                                   setIsMobilePropertiesOpen(false);
                                 }}
-                                className="block py-2 px-2 text-sm text-gray-700 hover:text-gray-900 hover:bg-white/50 rounded font-light transition-colors"
+                                className="block py-2 px-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded font-light transition-colors"
                               >
                                 {parish.name}
                               </Link>
                             ))}
                             
-                            {/* Separador elegante */}
-                            <div className="border-t border-gray-200 my-3 mx-2"></div>
+                            <div className="border-t border-white/10 my-3 mx-2"></div>
                             
-                            <div className="text-xs font-semibold text-gray-700 uppercase tracking-wider mt-3 mb-2 px-2">
+                            <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mt-3 mb-2 px-2">
                               Tipo de propiedad
                             </div>
                             {propertyTypes.slice(0, 4).map((type) => (
@@ -569,7 +535,7 @@ export function Header({ config }: HeaderProps) {
                                   setIsMobileMenuOpen(false);
                                   setIsMobilePropertiesOpen(false);
                                 }}
-                                className="block py-2 px-2 text-sm text-gray-700 hover:text-gray-900 hover:bg-white/50 rounded font-light transition-colors"
+                                className="block py-2 px-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded font-light transition-colors"
                               >
                                 {type.name}
                               </Link>
@@ -581,7 +547,7 @@ export function Header({ config }: HeaderProps) {
                                 setIsMobileMenuOpen(false);
                                 setIsMobilePropertiesOpen(false);
                               }}
-                              className="block py-2 px-2 mt-2 text-sm text-gray-900 font-medium hover:bg-white/50 rounded transition-colors"
+                              className="block py-2 px-2 mt-2 text-sm text-brand font-medium hover:bg-white/10 rounded transition-colors"
                             >
                               Ver todas →
                             </Link>
@@ -595,18 +561,18 @@ export function Header({ config }: HeaderProps) {
                 // Si tiene dropdown (Sobre Nosotros) - Móvil
                 if (item.hasDropdown && item.dropdownType === 'about') {
                   return (
-                    <div key={item.id} className="border-b border-gray-200 last:border-0">
+                    <div key={item.id} className="border-b border-white/10 last:border-0">
                       <button
                         onClick={() => setIsMobileAboutOpen(!isMobileAboutOpen)}
-                        className="w-full py-4 text-left flex items-center justify-between group hover:bg-white/50 px-4 rounded-lg transition-colors"
+                        className="w-full py-4 text-left flex items-center justify-between group hover:bg-white/10 px-4 rounded-lg transition-colors"
                       >
                         <span className={`text-lg font-light tracking-wide ${
-                          isActive ? 'text-gray-900 font-normal' : 'text-gray-700'
+                          isActive ? 'text-white font-normal' : 'text-white/80'
                         }`}>
                           {item.title}
                         </span>
                         <svg 
-                          className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${
+                          className={`w-5 h-5 text-white/60 transition-transform duration-200 ${
                             isMobileAboutOpen ? 'rotate-180' : ''
                           }`}
                           fill="none" 
@@ -619,7 +585,7 @@ export function Header({ config }: HeaderProps) {
 
                       {/* Mobile Dropdown Content - Sobre Nosotros */}
                       {isMobileAboutOpen && (
-                        <div className="pb-3 px-4 bg-white/30 rounded-b-lg">
+                        <div className="pb-3 px-4 bg-white/5 rounded-b-lg">
                           <div className="space-y-1 pt-2">
                             <Link
                               href="/nosotros"
@@ -627,7 +593,7 @@ export function Header({ config }: HeaderProps) {
                                 setIsMobileMenuOpen(false);
                                 setIsMobileAboutOpen(false);
                               }}
-                              className="block py-2 px-2 text-sm text-gray-700 hover:text-gray-900 hover:bg-white/50 rounded font-light transition-colors"
+                              className="block py-2 px-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded font-light transition-colors"
                             >
                               Quiénes somos
                             </Link>
@@ -637,7 +603,7 @@ export function Header({ config }: HeaderProps) {
                                 setIsMobileMenuOpen(false);
                                 setIsMobileAboutOpen(false);
                               }}
-                              className="block py-2 px-2 text-sm text-gray-700 hover:text-gray-900 hover:bg-white/50 rounded font-light transition-colors"
+                              className="block py-2 px-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded font-light transition-colors"
                             >
                               Nuestro equipo
                             </Link>
@@ -650,14 +616,14 @@ export function Header({ config }: HeaderProps) {
                 
                 // Items normales
                 return (
-                  <div key={item.id} className="border-b border-gray-200 last:border-0">
+                  <div key={item.id} className="border-b border-white/10 last:border-0">
                     <Link
                       href={item.url}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="block py-4 px-4 hover:bg-white/50 rounded-lg transition-colors"
+                      className="block py-4 px-4 hover:bg-white/10 rounded-lg transition-colors"
                     >
                       <span className={`text-lg font-light tracking-wide ${
-                        isActive ? 'text-gray-900 font-normal' : 'text-gray-700'
+                        isActive ? 'text-white font-normal' : 'text-white/80'
                       }`}>
                         {item.title}
                       </span>
@@ -668,12 +634,12 @@ export function Header({ config }: HeaderProps) {
             </nav>
 
             {/* Mobile CTA */}
-            <div className="mt-6 pt-6 border-t border-gray-200">
+            <div className="mt-6 pt-6 border-t border-white/10">
               <Link 
                 href="/contacto" 
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <Button className="w-full py-4 bg-gray-900 text-white hover:bg-gray-800 rounded-full text-base font-light tracking-wide shadow-lg hover:shadow-xl transition-all">
+                <Button className="w-full py-4 bg-white text-black hover:bg-brand hover:text-black rounded-full text-base font-light tracking-wide shadow-lg hover:shadow-xl transition-all">
                   Contactar
                 </Button>
               </Link>

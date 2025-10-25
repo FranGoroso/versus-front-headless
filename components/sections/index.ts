@@ -19,6 +19,9 @@ export { HeroSection } from './HeroSection';
 // Google Reviews Section
 export { GoogleReviews } from './GoogleReviews';
 
+// Property Categories Section
+export { PropertyCategoriesSection } from './PropertyCategoriesSection';
+
 // Agregar aquí futuras secciones conforme se creen
 // export { TestimonialsSection } from './TestimonialsSection';
 // export { CTASection } from './CTASection';
