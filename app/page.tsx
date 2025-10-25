@@ -17,6 +17,7 @@ import { Container } from '@/components/layout/Container';
 import { PropertyGrid } from '@/components/property/PropertyGrid';
 import { ErrorMessage } from '@/components/common/ErrorMessage';
 import { HeroSection } from '@/components/sections/HeroSection';
+import { GoogleReviews } from '@/components/sections/GoogleReviews';
 
 /**
  * Configurar revalidación ISR
@@ -230,6 +231,9 @@ export default async function Home() {
             </div>
           </Container>
         </section>
+
+        {/* Reseñas de Google */}
+        <GoogleReviews />
 
         {/* Contacto */}
         <section id="contacto" className="py-32 px-6 lg:px-12 bg-gray-50">

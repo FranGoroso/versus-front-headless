@@ -1,6 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter, Playfair_Display } from 'next/font/google';
+import { FloatingWhatsApp } from '@/components/common/FloatingWhatsApp';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' });
@@ -17,7 +18,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
-      <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>{children}</body>
+      <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
+        {children}
+        <FloatingWhatsApp 
+          phoneNumber="+376600000000"
+          message="Hola, estoy interesado en obtener más información sobre las propiedades en Andorra"
+        />
+      </body>
     </html>
   );
 }

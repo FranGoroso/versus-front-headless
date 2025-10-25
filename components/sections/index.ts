@@ -16,6 +16,9 @@ export { PropertySearchForm } from './PropertySearchForm';
 // Hero Section con parallax
 export { HeroSection } from './HeroSection';
 
+// Google Reviews Section
+export { GoogleReviews } from './GoogleReviews';
+
 // Agregar aquí futuras secciones conforme se creen
 // export { TestimonialsSection } from './TestimonialsSection';
 // export { CTASection } from './CTASection';

@@ -5,3 +5,5 @@
 
 export { PropertyCard, PropertyCardSkeleton } from './PropertyCard';
 export { PropertyGrid, PropertyGridSection } from './PropertyGrid';
+export { PropertyFilters } from './PropertyFilters';
+export { PriceRangeModal } from './PriceRangeModal';
