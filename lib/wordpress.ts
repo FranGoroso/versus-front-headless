@@ -576,10 +576,107 @@ export function convertToNextRoute(wordpressURL: string): string {
  */
 
 /**
+ * Obtener datos completos de un media por ID
+ * Función auxiliar para cuando _embed no incluye el media
+ * @param mediaId - ID del media en WordPress
+ * @returns Objeto con datos del media o null si falla
+ */
+async function getMediaById(mediaId: number) {
+  try {
+    const media = await fetchAPI(`/wp/v2/media/${mediaId}`);
+    
+    if (IS_DEV) {
+      console.log(`[WordPress API] Media ID ${mediaId} obtenido:`, media?.source_url || 'No URL');
+    }
+    
+    return media;
+  } catch (error) {
+    if (IS_DEV) {
+      console.error(`[WordPress API] Error obteniendo media ID ${mediaId}:`, error);
+    }
+    return null;
+  }
+}
+
+/**
+ * Resolver media IDs faltantes en _embed
+ * Detecta miembros con featured_media ID pero sin _embedded['wp:featuredmedia']
+ * y hace fetch de los media faltantes para inyectarlos en el objeto
+ * @param members - Array de miembros del equipo
+ * @returns Array de miembros con todos los medias resueltos
+ */
+async function resolveMissingMedia(members: any[]) {
+  if (!members || members.length === 0) {
+    return members;
+  }
+  
+  // Detectar miembros con featured_media pero sin _embedded
+  const membersNeedingMedia: Array<{ member: any; index: number }> = [];
+  
+  members.forEach((member, index) => {
+    const hasFeaturedMediaId = member.featured_media && typeof member.featured_media === 'number' && member.featured_media > 0;
+    const hasEmbeddedMedia = member._embedded?.['wp:featuredmedia']?.[0]?.source_url;
+    
+    if (hasFeaturedMediaId && !hasEmbeddedMedia) {
+      membersNeedingMedia.push({ member, index });
+      
+      if (IS_DEV) {
+        console.log(`[WordPress API] Miembro "${member.title?.rendered || member.name}" necesita resolver media ID ${member.featured_media}`);
+      }
+    }
+  });
+  
+  // Si no hay medias faltantes, retornar original
+  if (membersNeedingMedia.length === 0) {
+    if (IS_DEV) {
+      console.log('[WordPress API] Todos los miembros tienen sus medias embebidos correctamente');
+    }
+    return members;
+  }
+  
+  // Hacer fetch de todos los medias faltantes en paralelo
+  if (IS_DEV) {
+    console.log(`[WordPress API] Resolviendo ${membersNeedingMedia.length} media(s) faltante(s)...`);
+  }
+  
+  const mediaPromises = membersNeedingMedia.map(({ member }) => 
+    getMediaById(member.featured_media)
+  );
+  
+  const mediaResults = await Promise.all(mediaPromises);
+  
+  // Inyectar los medias obtenidos en los miembros
+  membersNeedingMedia.forEach(({ member, index }, i) => {
+    const media = mediaResults[i];
+    
+    if (media && media.source_url) {
+      // Inicializar _embedded si no existe
+      if (!member._embedded) {
+        member._embedded = {};
+      }
+      
+      // Inyectar el media en _embedded
+      member._embedded['wp:featuredmedia'] = [media];
+      
+      if (IS_DEV) {
+        console.log(`[WordPress API] ✅ Media resuelto para "${member.title?.rendered || member.name}": ${media.source_url}`);
+      }
+    } else {
+      if (IS_DEV) {
+        console.warn(`[WordPress API] ❌ No se pudo resolver media ID ${member.featured_media} para "${member.title?.rendered || member.name}"`);
+      }
+    }
+  });
+  
+  return members;
+}
+
+/**
  * Obtener miembros del equipo
  * Intenta múltiples endpoints posibles para máxima compatibilidad
+ * Hace fetch adicional de featured_media si _embed no lo incluye
  * @param params - Parámetros de consulta
- * @returns Lista de miembros del equipo o array vacío
+ * @returns Lista de miembros del equipo con imágenes resueltas
  */
 export async function getTeamMembers(params: WPQueryParams = {}) {
   const defaultParams = {
@@ -607,7 +704,9 @@ export async function getTeamMembers(params: WPQueryParams = {}) {
         console.log(`[WordPress API] Team members found at: ${endpoint}`);
       }
       
-      return data;
+      // Resolver media IDs faltantes antes de retornar
+      const resolvedData = await resolveMissingMedia(data);
+      return resolvedData;
     } catch (error) {
       // Continuar con el siguiente endpoint
       if (IS_DEV) {
@@ -626,7 +725,7 @@ export async function getTeamMembers(params: WPQueryParams = {}) {
     
     // Filtrar solo usuarios con rol de autor o superior
     // y transformar datos para compatibilidad
-    return users.map((user: any) => ({
+    const transformedUsers = users.map((user: any) => ({
       id: user.id,
       title: { rendered: user.name },
       content: { rendered: user.description || '' },
@@ -640,6 +739,10 @@ export async function getTeamMembers(params: WPQueryParams = {}) {
       },
       ...user,
     }));
+    
+    // Resolver media IDs faltantes antes de retornar
+    const resolvedUsers = await resolveMissingMedia(transformedUsers);
+    return resolvedUsers;
   } catch (error) {
     console.error('Error fetching team members from any source:', error);
     return [];

@@ -40,7 +40,7 @@ export default async function AboutPage() {
           </div>
           
           <Container className="relative z-10 text-center text-white">
-            <h1 className="font-serif text-5xl md:text-7xl font-bold mb-6">
+            <h1 className="text-5xl md:text-7xl mb-6">
               Sobre Nosotros
             </h1>
             <nav className="flex justify-center items-center gap-2 text-sm">
@@ -48,7 +48,7 @@ export default async function AboutPage() {
                 Inicio
               </Link>
               <span>›</span>
-              <span className="font-medium">Nosotros</span>
+              <span>Nosotros</span>
             </nav>
           </Container>
         </section>
@@ -58,7 +58,7 @@ export default async function AboutPage() {
           <Container>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div>
-                <h2 className="font-serif text-4xl md:text-5xl font-bold mb-6">
+                <h2 className="text-4xl md:text-5xl mb-6">
                   Nuestra Historia
                 </h2>
                 <div className="space-y-4 text-gray-600 leading-relaxed">
@@ -97,19 +97,19 @@ export default async function AboutPage() {
           <Container>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
               <div className="text-center">
-                <div className="font-serif text-5xl md:text-6xl font-bold mb-2">15+</div>
+                <div className="text-5xl md:text-6xl mb-2">15+</div>
                 <div className="text-white/80">Años de experiencia</div>
               </div>
               <div className="text-center">
-                <div className="font-serif text-5xl md:text-6xl font-bold mb-2">500+</div>
+                <div className="text-5xl md:text-6xl mb-2">500+</div>
                 <div className="text-white/80">Propiedades vendidas</div>
               </div>
               <div className="text-center">
-                <div className="font-serif text-5xl md:text-6xl font-bold mb-2">98%</div>
+                <div className="text-5xl md:text-6xl mb-2">98%</div>
                 <div className="text-white/80">Clientes satisfechos</div>
               </div>
               <div className="text-center">
-                <div className="font-serif text-5xl md:text-6xl font-bold mb-2">24/7</div>
+                <div className="text-5xl md:text-6xl mb-2">24/7</div>
                 <div className="text-white/80">Atención disponible</div>
               </div>
             </div>
@@ -120,7 +120,7 @@ export default async function AboutPage() {
         <section className="py-20">
           <Container>
             <div className="text-center mb-16">
-              <h2 className="font-serif text-4xl md:text-5xl font-bold mb-6">
+              <h2 className="text-4xl md:text-5xl mb-6">
                 Nuestros Valores
               </h2>
               <p className="text-gray-600 text-lg max-w-2xl mx-auto">
@@ -135,7 +135,7 @@ export default async function AboutPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-2xl font-bold mb-4">Confianza</h3>
+                <h3 className="text-2xl mb-4">Confianza</h3>
                 <p className="text-gray-600 leading-relaxed">
                   Construimos relaciones duraderas basadas en la transparencia, 
                   honestidad y profesionalismo en cada transacción.
@@ -148,7 +148,7 @@ export default async function AboutPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-2xl font-bold mb-4">Excelencia</h3>
+                <h3 className="text-2xl mb-4">Excelencia</h3>
                 <p className="text-gray-600 leading-relaxed">
                   Nos comprometemos a ofrecer servicios de la más alta calidad, 
                   superando las expectativas en cada proyecto.
@@ -161,7 +161,7 @@ export default async function AboutPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                 </div>
-                <h3 className="font-serif text-2xl font-bold mb-4">Compromiso</h3>
+                <h3 className="text-2xl mb-4">Compromiso</h3>
                 <p className="text-gray-600 leading-relaxed">
                   Estamos dedicados al éxito de nuestros clientes, acompañándoles 
                   en cada paso con atención personalizada.
@@ -185,18 +185,18 @@ export default async function AboutPage() {
               </div>
 
               <div>
-                <h2 className="font-serif text-4xl md:text-5xl font-bold mb-8">
+                <h2 className="text-4xl md:text-5xl mb-8">
                   ¿Por qué elegirnos?
                 </h2>
                 <div className="space-y-6">
                   <div className="flex gap-4">
                     <div className="flex-shrink-0">
-                      <div className="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center font-bold">
+                      <div className="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center">
                         1
                       </div>
                     </div>
                     <div>
-                      <h3 className="font-semibold text-lg mb-2">Conocimiento Local</h3>
+                      <h3 className="text-lg mb-2">Conocimiento Local</h3>
                       <p className="text-gray-600">
                         Conocemos Andorra como nadie. Nuestro expertise local nos permite 
                         ofrecerte las mejores oportunidades del mercado.
@@ -206,12 +206,12 @@ export default async function AboutPage() {
 
                   <div className="flex gap-4">
                     <div className="flex-shrink-0">
-                      <div className="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center font-bold">
+                      <div className="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center">
                         2
                       </div>
                     </div>
                     <div>
-                      <h3 className="font-semibold text-lg mb-2">Servicio Personalizado</h3>
+                      <h3 className="text-lg mb-2">Servicio Personalizado</h3>
                       <p className="text-gray-600">
                         No hay dos clientes iguales. Adaptamos nuestro servicio a tus 
                         necesidades específicas y objetivos particulares.
@@ -221,12 +221,12 @@ export default async function AboutPage() {
 
                   <div className="flex gap-4">
                     <div className="flex-shrink-0">
-                      <div className="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center font-bold">
+                      <div className="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center">
                         3
                       </div>
                     </div>
                     <div>
-                      <h3 className="font-semibold text-lg mb-2">Red de Contactos</h3>
+                      <h3 className="text-lg mb-2">Red de Contactos</h3>
                       <p className="text-gray-600">
                         Contamos con una amplia red de propietarios, compradores e 
                         inversores que facilita operaciones rápidas y eficientes.
@@ -236,12 +236,12 @@ export default async function AboutPage() {
 
                   <div className="flex gap-4">
                     <div className="flex-shrink-0">
-                      <div className="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center font-bold">
+                      <div className="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center">
                         4
                       </div>
                     </div>
                     <div>
-                      <h3 className="font-semibold text-lg mb-2">Asesoramiento Integral</h3>
+                      <h3 className="text-lg mb-2">Asesoramiento Integral</h3>
                       <p className="text-gray-600">
                         Te acompañamos desde la búsqueda hasta la firma, incluyendo 
                         aspectos legales, financieros y fiscales.
@@ -258,7 +258,7 @@ export default async function AboutPage() {
         <section className="py-20">
           <Container>
             <div className="bg-gradient-to-br from-gray-900 to-black text-white rounded-3xl p-12 md:p-16 text-center">
-              <h2 className="font-serif text-4xl md:text-5xl font-bold mb-6">
+              <h2 className="text-4xl md:text-5xl mb-6">
                 Comienza tu búsqueda hoy
               </h2>
               <p className="text-white/80 text-lg mb-8 max-w-2xl mx-auto">
@@ -267,12 +267,12 @@ export default async function AboutPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link href="/propiedades">
-                  <button className="bg-white text-black px-8 py-4 rounded-full hover:bg-brand hover:text-black transition-colors font-medium">
+                  <button className="bg-white text-black px-8 py-4 rounded-full hover:bg-brand hover:text-black transition-colors">
                     Ver propiedades
                   </button>
                 </Link>
                 <Link href="/contacto">
-                  <button className="border-2 border-white text-white px-8 py-4 rounded-full hover:bg-brand hover:text-black hover:border-brand transition-colors font-medium">
+                  <button className="border-2 border-white text-white px-8 py-4 rounded-full hover:bg-brand hover:text-black hover:border-brand transition-colors">
                     Contactar
                   </button>
                 </Link>

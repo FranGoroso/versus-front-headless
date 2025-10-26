@@ -31,12 +31,49 @@ export const metadata = {
 
 /**
  * Función auxiliar para extraer la URL de imagen
+ * Busca en múltiples ubicaciones posibles de WordPress
+ * NOTA: Los media IDs faltantes ya se resuelven en getTeamMembers()
  */
 function getImageUrl(member: any): string {
+  // 1. Prioridad: Imagen destacada embebida (ya resuelta por resolveMissingMedia)
   if (member._embedded?.['wp:featuredmedia']?.[0]?.source_url) {
     return member._embedded['wp:featuredmedia'][0].source_url;
   }
   
+  // 3. Media URL directa
+  if (member.featured_media_url) {
+    return member.featured_media_url;
+  }
+  
+  // 4. Campos ACF (Advanced Custom Fields)
+  if (member.acf?.photo) {
+    if (typeof member.acf.photo === 'string') {
+      return member.acf.photo;
+    }
+    if (member.acf.photo?.url) {
+      return member.acf.photo.url;
+    }
+  }
+  
+  if (member.acf?.image) {
+    if (typeof member.acf.image === 'string') {
+      return member.acf.image;
+    }
+    if (member.acf.image?.url) {
+      return member.acf.image.url;
+    }
+  }
+  
+  if (member.acf?.profile_image) {
+    if (typeof member.acf.profile_image === 'string') {
+      return member.acf.profile_image;
+    }
+    if (member.acf.profile_image?.url) {
+      return member.acf.profile_image.url;
+    }
+  }
+  
+  // 5. Avatar URLs (para usuarios de WordPress)
   if (member.avatar_urls) {
     const sizes = Object.keys(member.avatar_urls).map(Number).sort((a, b) => b - a);
     if (sizes.length > 0) {
@@ -44,17 +81,14 @@ function getImageUrl(member: any): string {
     }
   }
   
-  if (member.acf?.photo || member.acf?.image) {
-    const imageField = member.acf.photo || member.acf.image;
-    if (typeof imageField === 'string') {
-      return imageField;
-    }
-    if (imageField?.url) {
-      return imageField.url;
-    }
+  // 6. URL directa en el objeto
+  if (member.image_url) {
+    return member.image_url;
   }
   
-  return 'https://images.pexels.com/photos/3184435/pexels-photo-3184435.jpeg?auto=compress&cs=tinysrgb&w=400';
+  // 7. FALLBACK: Imagen genérica de equipo profesional
+  console.warn(`No se encontró imagen para el miembro: ${member.title?.rendered || member.name || 'desconocido'}`);
+  return 'https://images.pexels.com/photos/3184435/pexels-photo-3184435.jpeg?auto=compress&cs=tinysrgb&w=800';
 }
 
 /**
@@ -102,6 +136,24 @@ function stripHtml(html: string): string {
 export default async function TeamPage() {
   const siteConfig = await getSiteConfig();
   const teamMembers = await getTeamMembers();
+  
+  // DEBUG: Ver datos crudos de WordPress
+  if (teamMembers && teamMembers.length > 0) {
+    console.log('='.repeat(60));
+    console.log('[TEAM DEBUG] Datos recibidos de WordPress:');
+    console.log('='.repeat(60));
+    teamMembers.forEach((member: any, index: number) => {
+      console.log(`\nMiembro #${index + 1}:`);
+      console.log('Nombre:', member.title?.rendered || member.name);
+      console.log('Featured Media ID:', member.featured_media);
+      console.log('Featured Media (embedded):', member._embedded?.['wp:featuredmedia']?.[0]?.source_url || 'NO');
+      console.log('ACF Photo:', member.acf?.photo || 'NO');
+      console.log('ACF Image:', member.acf?.image || 'NO');
+      console.log('Avatar URLs:', member.avatar_urls ? Object.keys(member.avatar_urls).length + ' tamaños' : 'NO');
+    });
+    console.log('='.repeat(60));
+  }
+  
   const processedTeam = teamMembers.map(getMemberData);
   const hasTeamMembers = processedTeam.length > 0;
 
@@ -142,8 +194,8 @@ export default async function TeamPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {processedTeam.map((member) => (
                     <Card key={member.id} className="group overflow-hidden border-0 shadow-sm hover:shadow-lg transition-all duration-500 bg-white">
-                      {/* Foto del miembro - más compacta */}
-                      <div className="relative h-64 overflow-hidden bg-gray-100">
+                      {/* Foto del miembro - más grande para ver mejor */}
+                      <div className="relative h-96 overflow-hidden bg-gray-100">
                         <Image
                           src={member.image}
                           alt={member.name}
@@ -269,34 +321,6 @@ export default async function TeamPage() {
             )}
           </Container>
         </section>
-
-        {/* Stats Section - Nueva sección minimalista */}
-        {hasTeamMembers && (
-          <section className="py-20 bg-gray-50">
-            <Container>
-              <div className="max-w-4xl mx-auto">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                  <div>
-                    <div className="text-3xl font-light tracking-tight text-gray-900 mb-2">15+</div>
-                    <div className="text-sm text-gray-600 font-light">Años experiencia</div>
-                  </div>
-                  <div>
-                    <div className="text-3xl font-light tracking-tight text-gray-900 mb-2">500+</div>
-                    <div className="text-sm text-gray-600 font-light">Propiedades vendidas</div>
-                  </div>
-                  <div>
-                    <div className="text-3xl font-light tracking-tight text-gray-900 mb-2">98%</div>
-                    <div className="text-sm text-gray-600 font-light">Clientes satisfechos</div>
-                  </div>
-                  <div>
-                    <div className="text-3xl font-light tracking-tight text-gray-900 mb-2">5</div>
-                    <div className="text-sm text-gray-600 font-light">Idiomas</div>
-                  </div>
-                </div>
-              </div>
-            </Container>
-          </section>
-        )}
 
         {/* CTA - Diseño minimalista */}
         {hasTeamMembers && (

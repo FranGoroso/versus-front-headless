@@ -39,12 +39,24 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+    /* APLICAR FONT-LIGHT GLOBALMENTE */
+    font-weight: 300;
   }
   
-  /* Tipografía mejorada */
+  /* Clase para elementos que NO deben usar font-light (Header, Footer, etc.) */
+  .font-normal-override {
+    font-weight: 400 !important;
+  }
+  
+  .font-normal-override * {
+    font-weight: 400 !important;
+  }
+  
+  /* Tipografía mejorada - Headings con font-light para estética premium */
   h1, h2, h3, h4, h5, h6 {
     @apply tracking-tight;
     text-rendering: optimizeLegibility;
+    font-weight: 300;
   }
   
   /* Focus visible mejorado */

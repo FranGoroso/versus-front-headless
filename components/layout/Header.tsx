@@ -143,7 +143,7 @@ export function Header({ config }: HeaderProps) {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        className={`font-normal-override fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           isTransparent
             ? 'bg-transparent py-6'
             : 'bg-black/95 backdrop-blur-md shadow-lg py-4'
@@ -153,13 +153,16 @@ export function Header({ config }: HeaderProps) {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link href="/" className="flex items-center">
-              <div className="flex items-center gap-2">
-                <span className="text-2xl md:text-3xl font-light tracking-[0.2em] text-white">
-                  VERSUS
-                </span>
-                <span className="text-xs font-light tracking-wider text-white/70">
-                  ANDORRA
-                </span>
+              <div className="relative h-12">
+                <Image
+                  src="/img/versusandorraMA-1.png"
+                  alt="Versus Andorra Real Estate"
+                  width={180}
+                  height={48}
+                  className="h-12 w-auto object-contain"
+                  style={{ width: 'auto', height: '48px' }}
+                  priority
+                />
               </div>
             </Link>
 

@@ -97,7 +97,7 @@ export function Footer({ config }: FooterProps) {
   ];
 
   return (
-    <footer className="bg-black border-t border-white/10">
+    <footer className="font-normal-override bg-black border-t border-white/10">
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8">
