@@ -16,7 +16,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getPropertyBySlug, getAllPropertySlugs, getSiteConfig, formatPrice } from '@/lib/wordpress';
+import { getPropertyBySlug, getAllPropertySlugs, getSiteConfig, formatPrice, getProperties, transformToPropertyCard } from '@/lib/wordpress';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Header } from '@/components/layout/Header';
@@ -121,6 +121,57 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
   const propertyId = property_meta?.REAL_HOMES_property_id 
                   || property_meta?.property_id 
                   || '';
+
+  /**
+   * Obtener propiedades similares
+   * Criterios:
+   * 1. Misma ciudad (si existe)
+   * 2. Mismo tipo (si existe)
+   * 3. Excluir la propiedad actual
+   * 4. Limitar a 3 propiedades
+   */
+  let similarProperties = [];
+  try {
+    // Obtener propiedades (más de las que necesitamos para poder filtrar)
+    const allProps = await getProperties({ per_page: 20 });
+    
+    // Filtrar propiedades similares
+    const filtered = allProps
+      .filter(prop => prop.id !== property.id) // Excluir la actual
+      .filter(prop => {
+        // Si la propiedad actual tiene ciudad, filtrar por la misma ciudad
+        if (property.property_cities && property.property_cities.length > 0) {
+          const currentCity = property.property_cities[0].id;
+          return prop.property_cities?.some(city => city.id === currentCity);
+        }
+        return true; // Si no hay ciudad, incluir todas
+      })
+      .filter(prop => {
+        // Si la propiedad actual tiene tipo, priorizar el mismo tipo
+        if (property.property_types && property.property_types.length > 0) {
+          const currentType = property.property_types[0].id;
+          return prop.property_types?.some(type => type.id === currentType);
+        }
+        return true; // Si no hay tipo, incluir todas
+      })
+      .slice(0, 3); // Limitar a 3
+    
+    // Si no hay suficientes propiedades similares, obtener las más recientes
+    if (filtered.length < 3) {
+      const remaining = allProps
+        .filter(prop => prop.id !== property.id)
+        .filter(prop => !filtered.find(f => f.id === prop.id))
+        .slice(0, 3 - filtered.length);
+      
+      filtered.push(...remaining);
+    }
+    
+    // Transformar a PropertyCard
+    similarProperties = filtered.map(transformToPropertyCard);
+  } catch (error) {
+    console.error('Error fetching similar properties:', error);
+    // Si hay error, similarProperties queda como array vacío
+  }
 
   return (
     <>
@@ -392,87 +443,27 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
         {/* Propiedades similares y Búsqueda */}
         <section className="py-20 bg-gradient-to-b from-white to-gray-50">
           <Container>
-            {/* Propiedades similares mockeadas */}
-            <div className="mb-20">
-              <h2 className="text-4xl font-light tracking-tight text-center mb-4">
-                Propiedades similares
-              </h2>
-              <p className="text-center text-gray-600 font-light mb-12 max-w-2xl mx-auto">
-                Otras propiedades que podrían interesarte en la misma zona
-              </p>
-              
-              {/* Grid de propiedades similares */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {/* Propiedad similar 1 */}
-                <PropertyCard
-                  property={{
-                    id: 1,
-                    title: 'Ático dúplex con vistas panorámicas',
-                    slug: 'atico-duplex-vistas-panoramicas',
-                    excerpt: 'Espectacular ático dúplex de 180m² con terraza de 50m² y vistas inigualables a las montañas.',
-                    featured_image: 'https://images.pexels.com/photos/1732414/pexels-photo-1732414.jpeg?auto=compress&cs=tinysrgb&w=800',
-                    price: '895000',
-                    bedrooms: '3',
-                    bathrooms: '2',
-                    area: '180',
-                    area_unit: 'm²',
-                    address: 'Escaldes-Engordany, Andorra',
-                    type: null,
-                    status: null,
-                    city: null,
-                    link: '/propiedades/atico-duplex-vistas-panoramicas',
-                    date: '2024-01-15',
-                    featured: false,
-                  }}
-                />
+            {/* Propiedades similares REALES */}
+            {similarProperties.length > 0 && (
+              <div className="mb-20">
+                <h2 className="text-4xl font-light tracking-tight text-center mb-4">
+                  Propiedades similares
+                </h2>
+                <p className="text-center text-gray-600 font-light mb-12 max-w-2xl mx-auto">
+                  Otras propiedades que podrían interesarte en la misma zona
+                </p>
                 
-                {/* Propiedad similar 2 */}
-                <PropertyCard
-                  property={{
-                    id: 2,
-                    title: 'Casa moderna con jardín privado',
-                    slug: 'casa-moderna-jardin-privado',
-                    excerpt: 'Impresionante casa de diseño moderno con acabados de lujo y jardín privado de 200m².',
-                    featured_image: 'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=800',
-                    price: '1250000',
-                    bedrooms: '4',
-                    bathrooms: '3',
-                    area: '280',
-                    area_unit: 'm²',
-                    address: 'La Massana, Andorra',
-                    type: null,
-                    status: null,
-                    city: null,
-                    link: '/propiedades/casa-moderna-jardin-privado',
-                    date: '2024-01-10',
-                    featured: true,
-                  }}
-                />
-                
-                {/* Propiedad similar 3 */}
-                <PropertyCard
-                  property={{
-                    id: 3,
-                    title: 'Apartamento renovado en el centro',
-                    slug: 'apartamento-renovado-centro',
-                    excerpt: 'Elegante apartamento completamente renovado en pleno centro, ideal para inversión.',
-                    featured_image: 'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=800',
-                    price: '425000',
-                    bedrooms: '2',
-                    bathrooms: '1',
-                    area: '95',
-                    area_unit: 'm²',
-                    address: 'Andorra la Vella, Andorra',
-                    type: null,
-                    status: null,
-                    city: null,
-                    link: '/propiedades/apartamento-renovado-centro',
-                    date: '2024-01-08',
-                    featured: false,
-                  }}
-                />
+                {/* Grid de propiedades similares */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {similarProperties.map((similarProp) => (
+                    <PropertyCard
+                      key={similarProp.id}
+                      property={similarProp}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
             
             {/* Separador visual */}
             <div className="border-t border-gray-200 my-16"></div>
