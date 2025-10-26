@@ -4,6 +4,7 @@
  */
 
 import { WPPost, WPFeaturedImage, WPGalleryImage } from './wordpress';
+import { WPTaxonomy } from './taxonomy';
 
 /**
  * Propiedad inmobiliaria completa
@@ -23,6 +24,12 @@ export interface Property extends WPPost {
   
   // Imagen destacada con información completa
   featured_image: WPFeaturedImage | null;
+  
+  // Taxonomías (extraídas de _embedded['wp:term'])
+  property_types?: WPTaxonomy[];
+  property_statuses?: WPTaxonomy[];
+  property_features?: WPTaxonomy[];
+  property_cities?: WPTaxonomy[];
 }
 
 /**

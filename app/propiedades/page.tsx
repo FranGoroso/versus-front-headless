@@ -8,7 +8,7 @@
  */
 
 import Link from 'next/link';
-import { getProperties, getSiteConfig } from '@/lib/wordpress';
+import { getProperties, getSiteConfig, transformToPropertyCard } from '@/lib/wordpress';
 import { PropertyCard as PropertyCardType } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Header } from '@/components/layout/Header';
@@ -71,26 +71,8 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
       page: currentPage,
     });
 
-    // Transformar a PropertyCard
-    properties = allProperties.map(prop => ({
-      id: prop.id,
-      title: prop.title.rendered,
-      slug: prop.slug,
-      excerpt: prop.excerpt.rendered,
-      featured_image: prop.featured_image?.url || null,
-      price: prop.property_meta?.property_price || '',
-      bedrooms: prop.property_meta?.property_bedrooms || '0',
-      bathrooms: prop.property_meta?.property_bathrooms || '0',
-      area: prop.property_meta?.property_size || '',
-      area_unit: prop.property_meta?.property_size_postfix || 'm²',
-      address: prop.property_meta?.property_address || '',
-      type: null,
-      status: null,
-      city: null,
-      link: prop.link,
-      date: prop.date,
-      featured: prop.property_meta?.featured === '1',
-    }));
+    // Transformar a PropertyCard usando la función helper (con búsqueda multi-ubicación de precio)
+    properties = allProperties.map(transformToPropertyCard);
 
     // Calcular total de páginas (estimado, WordPress no siempre devuelve headers)
     // En una implementación real, usarías los headers X-WP-TotalPages

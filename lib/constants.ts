@@ -25,7 +25,7 @@ export const API_ENDPOINTS = {
   PROPERTIES: '/wp/v2/properties',
   AGENTS: '/wp/v2/team',
   
-  // Taxonomías de propiedades
+  // Taxonomías de propiedades (singular según Easy Real Estate)
   PROPERTY_TYPES: '/wp/v2/property-type',
   PROPERTY_STATUS: '/wp/v2/property-status',
   PROPERTY_FEATURES: '/wp/v2/property-feature',
@@ -43,7 +43,7 @@ export const API_ENDPOINTS = {
  * Configuración de paginación por defecto
  */
 export const PAGINATION = {
-  DEFAULT_PER_PAGE: 12,
+  DEFAULT_PER_PAGE: 100, // Aumentado para mostrar todas las propiedades
   MAX_PER_PAGE: 100,
   FEATURED_LIMIT: 6,
 } as const;

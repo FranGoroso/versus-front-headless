@@ -6,6 +6,7 @@
 import {
   Property,
   PropertyCard,
+  PropertyCard as PropertyCardType,
   PropertySearchParams,
   PropertySearchResponse,
   WPPost,
@@ -115,13 +116,67 @@ function buildQueryString(params: Record<string, any>): string {
 }
 
 /**
+ * Extraer taxonomías del objeto _embedded['wp:term']
+ * WordPress devuelve las taxonomías en un array anidado cuando usamos ?_embed
+ * Estructura: _embedded['wp:term'] = [[features...], [types...], [cities...], [statuses...]]
+ * 
+ * @param embedded - Objeto _embedded de la respuesta de WordPress
+ * @returns Objeto con taxonomías organizadas por tipo
+ */
+function extractTaxonomiesFromEmbed(embedded: any): {
+  types: WPTaxonomy[];
+  statuses: WPTaxonomy[];
+  features: WPTaxonomy[];
+  cities: WPTaxonomy[];
+} {
+  const result = {
+    types: [] as WPTaxonomy[],
+    statuses: [] as WPTaxonomy[],
+    features: [] as WPTaxonomy[],
+    cities: [] as WPTaxonomy[],
+  };
+
+  // Verificar que existe el array de términos embebidos
+  if (!embedded || !embedded['wp:term'] || !Array.isArray(embedded['wp:term'])) {
+    return result;
+  }
+
+  const wpTermArray = embedded['wp:term'];
+
+  // Recorrer cada subarray y clasificar por taxonomy
+  wpTermArray.forEach((termGroup: any[]) => {
+    if (!Array.isArray(termGroup)) return;
+
+    termGroup.forEach((term: any) => {
+      // Clasificar según el tipo de taxonomía
+      switch (term.taxonomy) {
+        case 'property-type':
+          result.types.push(term);
+          break;
+        case 'property-status':
+          result.statuses.push(term);
+          break;
+        case 'property-feature':
+          result.features.push(term);
+          break;
+        case 'property-city':
+          result.cities.push(term);
+          break;
+      }
+    });
+  });
+
+  return result;
+}
+
+/**
  * PROPIEDADES
  */
 
 /**
  * Obtener lista de propiedades
  * @param params - Parámetros de consulta (paginación, filtros, etc.)
- * @returns Lista de propiedades
+ * @returns Lista de propiedades con taxonomías procesadas
  */
 export async function getProperties(
   params: WPQueryParams = {}
@@ -135,7 +190,26 @@ export async function getProperties(
   const queryString = buildQueryString(defaultParams);
   const endpoint = `${API_ENDPOINTS.PROPERTIES}${queryString}`;
 
-  return fetchAPI<Property[]>(endpoint);
+  const properties = await fetchAPI<Property[]>(endpoint);
+
+  // Procesar taxonomías embebidas en cada propiedad
+  const propertiesWithTaxonomies = properties.map((property: any) => {
+    if (property._embedded) {
+      const taxonomies = extractTaxonomiesFromEmbed(property._embedded);
+      
+      return {
+        ...property,
+        property_types: taxonomies.types,
+        property_statuses: taxonomies.statuses,
+        property_features: taxonomies.features,
+        property_cities: taxonomies.cities,
+      };
+    }
+    
+    return property;
+  });
+
+  return propertiesWithTaxonomies;
 }
 
 /**
@@ -151,7 +225,22 @@ export async function getPropertyBySlug(
       `${API_ENDPOINTS.PROPERTIES}?slug=${slug}&_embed=true`
     );
 
-    return properties[0] || null;
+    const property = properties[0] || null;
+    
+    // Procesar taxonomías si la propiedad existe
+    if (property && (property as any)._embedded) {
+      const taxonomies = extractTaxonomiesFromEmbed((property as any)._embedded);
+      
+      return {
+        ...property,
+        property_types: taxonomies.types,
+        property_statuses: taxonomies.statuses,
+        property_features: taxonomies.features,
+        property_cities: taxonomies.cities,
+      } as Property;
+    }
+
+    return property;
   } catch (error) {
     console.error(`Error fetching property with slug ${slug}:`, error);
     return null;
@@ -482,6 +571,68 @@ export async function getSiteStats() {
 }
 
 /**
+ * Transformar Property de WordPress a PropertyCard para el frontend
+ * Busca el precio en múltiples ubicaciones posibles para máxima compatibilidad
+ * @param prop - Propiedad raw de WordPress
+ * @returns PropertyCard listo para usar en el frontend
+ */
+export function transformToPropertyCard(prop: any): PropertyCardType {
+  // DEBUG: Log temporal para diagnóstico
+  if (IS_DEV) {
+    console.log('[transformToPropertyCard] Procesando:', prop.title?.rendered || prop.id);
+    console.log('[transformToPropertyCard] property_meta:', prop.property_meta);
+    console.log('[transformToPropertyCard] acf:', prop.acf);
+    console.log('[transformToPropertyCard] meta:', prop.meta);
+  }
+  
+  // Buscar precio en múltiples ubicaciones posibles
+  // RealHomes plugin usa REAL_HOMES_property_price
+  const price = prop.property_meta?.REAL_HOMES_property_price
+             || prop.property_meta?.property_price 
+             || prop.property_meta?.price 
+             || prop.acf?.property_price 
+             || prop.acf?.price 
+             || prop.meta?.property_price
+             || '';
+  
+  // DEBUG: Log del precio encontrado
+  if (IS_DEV) {
+    console.log('[transformToPropertyCard] Precio encontrado:', price);
+    console.log('[transformToPropertyCard] ---');
+  }
+  
+  return {
+    id: prop.id,
+    title: prop.title.rendered,
+    slug: prop.slug,
+    excerpt: prop.excerpt.rendered,
+    featured_image: prop.featured_image?.url || null,
+    price: price,
+    // RealHomes usa campos con prefijo REAL_HOMES_
+    bedrooms: prop.property_meta?.REAL_HOMES_property_bedrooms 
+           || prop.property_meta?.property_bedrooms 
+           || '0',
+    bathrooms: prop.property_meta?.REAL_HOMES_property_bathrooms 
+            || prop.property_meta?.property_bathrooms 
+            || '0',
+    area: prop.property_meta?.REAL_HOMES_property_size 
+       || prop.property_meta?.property_size 
+       || '',
+    area_unit: prop.property_meta?.property_size_postfix || 'm²',
+    address: prop.property_meta?.REAL_HOMES_property_address 
+          || prop.property_meta?.property_address 
+          || '',
+    // Extraer taxonomías de los arrays procesados por getProperties()
+    type: prop.property_types?.[0]?.name || null,
+    status: prop.property_statuses?.[0]?.name || null,
+    city: prop.property_cities?.[0]?.name || null,
+    link: prop.link,
+    date: prop.date,
+    featured: prop.property_meta?.featured === '1',
+  };
+}
+
+/**
  * UTILIDADES
  */
 
@@ -524,14 +675,26 @@ export function formatPrice(
   price: string | number,
   currency: string = '€'
 ): string {
-  if (!price || price === '0' || price === '') {
+  // Validar precio vacío o nulo
+  if (!price || price === '0' || price === '' || price === null || price === undefined) {
     return 'Consultar precio';
   }
 
-  const numericPrice =
-    typeof price === 'string' ? parseFloat(price.replace(/[^0-9.-]+/g, '')) : price;
+  // Convertir a string para procesamiento uniforme
+  const priceStr = String(price).trim();
+  
+  // Si el precio ya es "Consultar precio" o similar, retornarlo directamente
+  if (priceStr.toLowerCase().includes('consultar')) {
+    return priceStr;
+  }
 
-  if (isNaN(numericPrice)) {
+  // Extraer solo números, puntos y guiones
+  const numericPrice = typeof price === 'string' 
+    ? parseFloat(price.replace(/[^0-9.-]+/g, '')) 
+    : Number(price);
+
+  // Validar que sea un número válido y mayor a 0
+  if (isNaN(numericPrice) || numericPrice <= 0) {
     return 'Consultar precio';
   }
 

@@ -4,17 +4,20 @@
  * Tarjeta de propiedad minimalista y elegante con detalles en color brand.
  * Diseño compacto con énfasis en la simplicidad y toques visuales sutiles.
  * 
- * Mejoras visuales v2.0:
+ * Mejoras visuales v3.0:
  * - Borde superior amarillo en hover (sutil pero elegante)
  * - Badge "Destacada" con fondo brand (#E6E258)
+ * - Badge de tipo de propiedad (Chalet, Ático, etc.)
+ * - Badge de estado (Venta/Alquiler) en esquina superior derecha
+ * - Ciudad mostrada si no hay dirección específica
  * - Precio con acento brand al hacer hover
  * - Iconos con transición suave a color brand
  * - Flecha de navegación con efecto brand en hover
  * - Overlay de imagen con gradiente más rico
  * 
  * @component
- * @version 2.0.0
- * @updated 2025-10-25
+ * @version 3.0.0
+ * @updated 2025-10-26
  * @example
  * ```tsx
  * <PropertyCard property={propertyData} />
@@ -69,10 +72,27 @@ export function PropertyCard({ property, priority = false }: PropertyCardProps) 
           </div>
         )}
         
-        {/* Badge de destacado - estilo sutil */}
-        {property.featured && (
-          <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-gray-900 px-3 py-1 rounded-full text-xs font-light">
-            Destacada
+        {/* Badges de taxonomías - lado izquierdo */}
+        <div className="absolute top-3 left-3 flex gap-2">
+          {/* Badge de destacado */}
+          {property.featured && (
+            <div className="bg-brand text-gray-900 px-3 py-1 rounded-full text-xs font-medium shadow-lg">
+              Destacada
+            </div>
+          )}
+          
+          {/* Badge de tipo de propiedad */}
+          {property.type && (
+            <div className="bg-white/90 backdrop-blur-sm text-gray-900 px-3 py-1 rounded-full text-xs font-light shadow-md">
+              {property.type}
+            </div>
+          )}
+        </div>
+
+        {/* Badge de estado (Venta/Alquiler) - esquina superior derecha */}
+        {property.status && (
+          <div className="absolute top-3 right-3 bg-gray-900/80 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-light shadow-md">
+            {property.status}
           </div>
         )}
 
@@ -89,10 +109,10 @@ export function PropertyCard({ property, priority = false }: PropertyCardProps) 
 
       {/* Contenido de la tarjeta */}
       <div className="p-5">
-        {/* Ubicación */}
-        {(property.address || property.city) && (
+        {/* Ubicación - priorizar ciudad si no hay address */}
+        {(property.city || property.address) && (
           <p className="text-gray-500 text-xs font-light mb-2 uppercase tracking-wider">
-            {property.address || property.city || 'Andorra'}
+            {property.address || property.city}
           </p>
         )}
 
@@ -235,7 +255,7 @@ export function PropertyCardCompact({ property }: PropertyCardProps) {
           </h4>
           <p className="text-xs text-gray-500 font-light mb-2 
                         group-hover/compact:text-brand transition-colors duration-300">
-            {property.address || property.city || 'Andorra'}
+            {property.city || property.address || 'Andorra'}
           </p>
           <p className="text-base font-light text-gray-900 group-hover/compact:text-brand transition-colors duration-300">
             {formatPrice(property.price)}

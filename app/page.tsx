@@ -7,7 +7,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { getFeaturedProperties, getSiteConfig } from "@/lib/wordpress";
+import { getFeaturedProperties, getSiteConfig, transformToPropertyCard } from "@/lib/wordpress";
 import { PropertyCard as PropertyCardType } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -65,25 +65,8 @@ export default async function Home() {
     const { getProperties } = await import("@/lib/wordpress");
     try {
       const allProperties = await getProperties({ per_page: 6 });
-      featuredProperties = allProperties.map((prop) => ({
-        id: prop.id,
-        title: prop.title.rendered,
-        slug: prop.slug,
-        excerpt: prop.excerpt.rendered,
-        featured_image: prop.featured_image?.url || null,
-        price: prop.property_meta?.property_price || "",
-        bedrooms: prop.property_meta?.property_bedrooms || "0",
-        bathrooms: prop.property_meta?.property_bathrooms || "0",
-        area: prop.property_meta?.property_size || "",
-        area_unit: prop.property_meta?.property_size_postfix || "m²",
-        address: prop.property_meta?.property_address || "",
-        type: null,
-        status: null,
-        city: null,
-        link: prop.link,
-        date: prop.date,
-        featured: prop.property_meta?.featured === "1",
-      }));
+      // Usar función helper para transformación consistente (con búsqueda multi-ubicación de precio)
+      featuredProperties = allProperties.map(transformToPropertyCard);
     } catch (err) {
       console.error("Error loading properties:", err);
     }

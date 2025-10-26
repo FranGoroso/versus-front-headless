@@ -4,7 +4,13 @@
  * Página de detalle individual de una propiedad.
  * Genera rutas estáticas en build time usando generateStaticParams.
  * 
+ * Mejoras v2.0:
+ * - Badges de taxonomías (tipo, estado, ciudades)
+ * - Sección de características completas de la propiedad
+ * 
  * @page /propiedades/[slug]
+ * @version 2.0.0
+ * @updated 2025-10-26
  */
 
 import Image from 'next/image';
@@ -80,6 +86,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
 
   /**
    * Extraer datos de la propiedad
+   * RealHomes usa campos con prefijo REAL_HOMES_
    */
   const {
     title,
@@ -91,14 +98,29 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
     agent,
   } = property;
 
-  const price = property_meta?.property_price || '';
-  const bedrooms = property_meta?.property_bedrooms || '0';
-  const bathrooms = property_meta?.property_bathrooms || '0';
-  const area = property_meta?.property_size || '';
+  // Buscar precio en múltiples ubicaciones (RealHomes usa REAL_HOMES_property_price)
+  const price = property_meta?.REAL_HOMES_property_price 
+             || property_meta?.property_price 
+             || '';
+  const bedrooms = property_meta?.REAL_HOMES_property_bedrooms 
+                || property_meta?.property_bedrooms 
+                || '0';
+  const bathrooms = property_meta?.REAL_HOMES_property_bathrooms 
+                 || property_meta?.property_bathrooms 
+                 || '0';
+  const area = property_meta?.REAL_HOMES_property_size 
+            || property_meta?.property_size 
+            || '';
   const areaUnit = property_meta?.property_size_postfix || 'm²';
-  const address = property_meta?.property_address || '';
-  const yearBuilt = property_meta?.property_year_built || '';
-  const propertyId = property_meta?.property_id || '';
+  const address = property_meta?.REAL_HOMES_property_address 
+               || property_meta?.property_address 
+               || '';
+  const yearBuilt = property_meta?.REAL_HOMES_year_built 
+                 || property_meta?.property_year_built 
+                 || '';
+  const propertyId = property_meta?.REAL_HOMES_property_id 
+                  || property_meta?.property_id 
+                  || '';
 
   return (
     <>
@@ -142,12 +164,34 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
               {/* Columna izquierda - Información */}
               <div className="lg:col-span-2">
-                {/* Título y precio */}
+                {/* Título, badges y precio */}
                 <div className="mb-8">
                   <h1 className="text-4xl md:text-5xl font-light tracking-tight mb-4">
                     {title.rendered}
                   </h1>
                   <p className="text-gray-600 text-lg mb-4 font-light">{address}</p>
+                  
+                  {/* Badges de taxonomías: tipo, estado y ciudades */}
+                  <div className="flex flex-wrap items-center gap-2 mb-6">
+                    {property.property_types && property.property_types.length > 0 && (
+                      <span className="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-light bg-gray-100 text-gray-900">
+                        {property.property_types[0].name}
+                      </span>
+                    )}
+                    
+                    {property.property_statuses && property.property_statuses.length > 0 && (
+                      <span className="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-light bg-gray-900 text-white">
+                        {property.property_statuses[0].name}
+                      </span>
+                    )}
+                    
+                    {property.property_cities && property.property_cities.length > 0 && (
+                      <span className="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-light bg-brand/20 text-gray-900">
+                        📍 {property.property_cities.map(city => city.name).join(', ')}
+                      </span>
+                    )}
+                  </div>
+                  
                   <div className="flex items-end gap-4">
                     <p className="text-5xl font-light tracking-tight">
                       {formatPrice(price)}
@@ -192,6 +236,38 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                     )}
                   </div>
                 </Card>
+
+                {/* Características y servicios */}
+                {property.property_features && property.property_features.length > 0 && (
+                  <Card className="p-8 mb-8 border-0 shadow-sm">
+                    <h2 className="text-2xl font-light tracking-tight mb-6">
+                      Características y servicios
+                    </h2>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                      {property.property_features.map((feature) => (
+                        <div 
+                          key={feature.id}
+                          className="flex items-center gap-2 text-gray-700"
+                        >
+                          <svg 
+                            className="w-5 h-5 text-brand flex-shrink-0" 
+                            fill="none" 
+                            viewBox="0 0 24 24" 
+                            stroke="currentColor"
+                          >
+                            <path 
+                              strokeLinecap="round" 
+                              strokeLinejoin="round" 
+                              strokeWidth={2} 
+                              d="M5 13l4 4L19 7" 
+                            />
+                          </svg>
+                          <span className="font-light">{feature.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </Card>
+                )}
 
                 {/* Descripción */}
                 {content?.rendered && (
