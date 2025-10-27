@@ -3,26 +3,26 @@
  * 
  * Página de detalle de cada post del blog.
  * Diseño minimalista con tipografía optimizada para lectura.
+ * Conectado a WordPress REST API.
  * 
- * Mejoras v2.0:
+ * Mejoras v3.0:
+ * - Conectado a WordPress REST API
+ * - Server Component para mejor SEO
+ * - Datos dinámicos del CMS
+ * - Manejo de 404 para posts no encontrados
  * - Espaciado generoso entre elementos para mejor respiración visual
  * - Primer párrafo destacado con drop cap (letra capital)
  * - Headings con mayor jerarquía visual y separación
  * - Blockquotes con diseño elegante y destacado
- * - Listas más espaciadas y legibles
- * - Line-height optimizado para lectura prolongada
- * - Elementos decorativos sutiles
  * 
  * @page /blog/[slug]
- * @version 2.0.0
+ * @version 3.0.0
  */
-
-'use client';
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { notFound } from 'next/navigation';
+import { getSiteConfig, getPostBySlug, getPosts } from '@/lib/wordpress';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Container } from '@/components/layout/Container';
@@ -42,118 +42,68 @@ function formatDate(dateString: string): string {
 }
 
 /**
- * Mock de posts relacionados
- * En producción, estos datos vendrían de la API de WordPress
+ * Función para extraer texto limpio de HTML
  */
-const relatedPosts = [
-  {
-    id: 1,
-    title: 'Guía para inversores: Cómo comprar propiedad en Andorra',
-    slug: 'guia-comprar-propiedad-andorra',
-    image: 'https://images.pexels.com/photos/280222/pexels-photo-280222.jpeg?auto=compress&cs=tinysrgb&w=400',
-    date: '2024-01-10T10:00:00',
-    readTime: '8 min'
-  },
-  {
-    id: 2,
-    title: 'Las mejores zonas para vivir en Andorra la Vella',
-    slug: 'mejores-zonas-andorra-la-vella',
-    image: 'https://images.pexels.com/photos/2462015/pexels-photo-2462015.jpeg?auto=compress&cs=tinysrgb&w=400',
-    date: '2024-01-05T10:00:00',
-    readTime: '6 min'
-  },
-  {
-    id: 3,
-    title: '5 razones para invertir en propiedades de lujo en Andorra',
-    slug: 'invertir-propiedades-lujo-andorra',
-    image: 'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=400',
-    date: '2024-01-03T10:00:00',
-    readTime: '7 min'
-  }
-];
+function stripHtml(html: string): string {
+  if (!html) return '';
+  return html.replace(/<[^>]*>/g, '').trim();
+}
 
 /**
  * Componente principal de la página de detalle del blog
+ * Ahora es un Server Component que obtiene datos de WordPress
  */
-export default function BlogPostPage() {
-  const params = useParams();
-  const [siteConfig, setSiteConfig] = useState(null);
-  
-  /**
-   * Mock del post actual
-   * En producción, estos datos se obtendrían de WordPress via API
-   */
-  const post = {
-    id: 1,
-    title: { rendered: 'El mercado inmobiliario en Andorra: Tendencias 2025' },
-    content: { rendered: `
-      <p class="lead">El mercado inmobiliario en Andorra continúa mostrando una solidez notable en 2025, consolidándose como uno de los destinos más atractivos para inversores internacionales. En este análisis exhaustivo, exploramos las tendencias clave que están definiendo el sector y las oportunidades que presenta para los próximos meses.</p>
-      
-      <h2>Un mercado en constante evolución</h2>
-      <p>Andorra ha experimentado una transformación significativa en su mercado inmobiliario durante los últimos años. La combinación de estabilidad política, ventajas fiscales competitivas y una calidad de vida excepcional ha atraído a un número creciente de residentes de alto poder adquisitivo.</p>
-      
-      <p>Según los últimos datos del Departamento de Estadística de Andorra, el precio medio de la vivienda ha experimentado un incremento del 8.5% interanual, situándose en 4.200€/m² en las zonas prime de Andorra la Vella y Escaldes-Engordany. Esta tendencia alcista, aunque moderada en comparación con años anteriores, refleja la salud y madurez del mercado.</p>
-      
-      <h2>Factores clave que impulsan el mercado</h2>
-      
-      <h3>1. Demanda internacional sostenida</h3>
-      <p>La demanda de propiedades por parte de compradores internacionales, especialmente de Francia, España y países del norte de Europa, continúa siendo robusta. El perfil del comprador ha evolucionado hacia profesionales del sector tecnológico y financiero que buscan establecer su residencia fiscal en el principado.</p>
-      
-      <blockquote>
-        <p>"Estamos observando un interés particular en propiedades que combinan lujo con sostenibilidad. Los compradores actuales valoran enormemente las certificaciones energéticas y las tecnologías smart home."</p>
-        <cite>— Análisis de Versus Andorra Real Estate</cite>
-      </blockquote>
-      
-      <h3>2. Escasez de suelo edificable</h3>
-      <p>La geografía montañosa de Andorra y las estrictas regulaciones urbanísticas limitan naturalmente la oferta de nuevas construcciones. Esta escasez estructural de suelo edificable actúa como un factor de soporte fundamental para los precios, garantizando la estabilidad a largo plazo del valor de las propiedades.</p>
-      
-      <h3>3. Proyectos de infraestructura</h3>
-      <p>Los importantes proyectos de infraestructura en marcha, incluyendo la mejora de las conexiones viarias y el desarrollo de nuevas zonas comerciales y de ocio, están revalorizando áreas específicas del principado. Destacan especialmente los desarrollos en la parroquia de Encamp y la modernización del eje comercial de Andorra la Vella.</p>
-      
-      <h2>Tendencias emergentes en 2025</h2>
-      
-      <h3>Sostenibilidad y eficiencia energética</h3>
-      <p>La sostenibilidad se ha convertido en un factor decisivo en las decisiones de compra. Las propiedades con certificación energética A o B comandadas primas de precio de hasta un 15% sobre propiedades comparables sin estas certificaciones. Los desarrolladores locales están respondiendo a esta demanda con proyectos que integran tecnologías de energía renovable y sistemas de gestión inteligente del consumo.</p>
-      
-      <h3>Espacios flexibles y teletrabajo</h3>
-      <p>La consolidación del teletrabajo ha redefinido las prioridades de los compradores. Las propiedades con espacios dedicados para oficina en casa, buena conectividad y terrazas o jardines privados están experimentando una demanda particularmente alta. Este cambio en las preferencias está influyendo en el diseño de las nuevas promociones.</p>
-      
-      <h2>Oportunidades de inversión</h2>
-      
-      <p>Para los inversores que buscan oportunidades en el mercado andorrano, identificamos varios segmentos con potencial especialmente atractivo:</p>
-      
-      <ul>
-        <li><strong>Propiedades para reforma en el centro histórico:</strong> Con precios de entrada más accesibles y alto potencial de revalorización post-reforma.</li>
-        <li><strong>Apartamentos de 2-3 habitaciones en zonas consolidadas:</strong> Alta demanda de alquiler por parte de profesionales expatriados.</li>
-        <li><strong>Chalets y propiedades de montaña:</strong> Creciente interés por propiedades que ofrecen privacidad y conexión con la naturaleza.</li>
-        <li><strong>Locales comerciales en ejes principales:</strong> El sector retail de lujo continúa expandiéndose, creando oportunidades interesantes.</li>
-      </ul>
-      
-      <h2>Perspectivas para los próximos meses</h2>
-      
-      <p>Las proyecciones para el resto de 2025 son cautamente optimistas. Se espera que los precios continúen su tendencia alcista moderada, con incrementos proyectados entre el 5% y 7% anual. La demanda seguirá superando a la oferta en los segmentos prime, mientras que el mercado medio podría ver una mayor estabilización de precios.</p>
-      
-      <p>Los factores a monitorear incluyen la evolución de los tipos de interés en la zona euro, los cambios regulatorios en materia de residencia fiscal y el impacto de los nuevos desarrollos urbanísticos programados para los próximos años.</p>
-      
-      <h2>Conclusión</h2>
-      
-      <p>El mercado inmobiliario de Andorra en 2025 presenta un escenario de oportunidades para inversores con visión a largo plazo. La combinación de fundamentales sólidos, demanda internacional sostenida y oferta limitada configura un entorno propicio para la preservación y apreciación del capital.</p>
-      
-      <p>En Versus Andorra Real Estate, continuamos comprometidos con proporcionar a nuestros clientes el asesoramiento experto necesario para navegar este mercado dinámico y aprovechar las mejores oportunidades de inversión que ofrece el principado.</p>
-    ` },
-    excerpt: { rendered: '<p>Análisis completo de las tendencias del mercado inmobiliario andorrano y las oportunidades de inversión para este año.</p>' },
-    slug: 'mercado-inmobiliario-andorra-2025',
-    date: '2024-01-15T10:00:00',
-    featured_image: 'https://images.pexels.com/photos/1370704/pexels-photo-1370704.jpeg?auto=compress&cs=tinysrgb&w=1920',
-    author: { 
-      name: 'Txema Anaya',
-      bio: 'CEO de Versus Andorra con más de 15 años de experiencia en el sector inmobiliario.',
-      avatar: 'https://via.placeholder.com/100'
+export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+  // Obtener configuración del sitio y post desde WordPress
+  const [siteConfig, post] = await Promise.all([
+    getSiteConfig(),
+    getPostBySlug(params.slug)
+  ]);
+
+  // Si el post no existe, mostrar página 404
+  if (!post) {
+    notFound();
+  }
+
+  // Extraer datos del post de WordPress
+  const postData = {
+    id: post.id,
+    title: post.title?.rendered || 'Sin título',
+    content: post.content?.rendered || '',
+    excerpt: post.excerpt?.rendered || '',
+    slug: post.slug,
+    date: post.date,
+    // Extraer imagen destacada de _embedded
+    featured_image: post._embedded?.['wp:featuredmedia']?.[0]?.source_url || 
+                   'https://images.pexels.com/photos/1370704/pexels-photo-1370704.jpeg?auto=compress&cs=tinysrgb&w=1920',
+    // Extraer autor de _embedded
+    author: {
+      name: post._embedded?.author?.[0]?.name || 'Versus Andorra',
+      bio: post._embedded?.author?.[0]?.description || 'Experto en el mercado inmobiliario de Andorra.',
+      avatar: post._embedded?.author?.[0]?.avatar_urls?.['96'] || ''
     },
-    category: 'Mercado Inmobiliario',
-    tags: ['inversión', 'tendencias', 'mercado', '2025'],
-    readTime: '12 min'
+    // Extraer categoría de _embedded
+    category: post._embedded?.['wp:term']?.[0]?.[0]?.name || 'General',
+    // Extraer tags de _embedded
+    tags: post._embedded?.['wp:term']?.[1]?.map((tag: any) => tag.name) || [],
+    // Calcular tiempo de lectura (250 palabras por minuto)
+    readTime: `${Math.max(1, Math.round(stripHtml(post.content?.rendered || '').split(' ').length / 250))} min`
   };
+
+  // Obtener posts relacionados (últimos 3 posts excluyendo el actual)
+  const relatedPostsData = await getPosts({ per_page: 4 });
+  const relatedPosts = (relatedPostsData || [])
+    .filter((p: any) => p.id !== post.id)
+    .slice(0, 3)
+    .map((p: any) => ({
+      id: p.id,
+      title: p.title?.rendered || '',
+      slug: p.slug,
+      image: p._embedded?.['wp:featuredmedia']?.[0]?.source_url || 
+             'https://images.pexels.com/photos/280222/pexels-photo-280222.jpeg?auto=compress&cs=tinysrgb&w=400',
+      date: p.date,
+      readTime: `${Math.max(1, Math.round(stripHtml(p.content?.rendered || '').split(' ').length / 250))} min`
+    }));
 
   return (
     <>
@@ -165,8 +115,8 @@ export default function BlogPostPage() {
           {/* Imagen de fondo con overlay gradiente */}
           <div className="absolute inset-0">
             <Image
-              src={post.featured_image}
-              alt={post.title.rendered}
+              src={postData.featured_image}
+              alt={postData.title}
               fill
               className="object-cover"
               priority
@@ -179,25 +129,25 @@ export default function BlogPostPage() {
             <div className="max-w-4xl">
               {/* Meta información del artículo */}
               <div className="flex items-center gap-4 text-white/80 text-sm mb-8">
-                <span className="font-light tracking-wide">{post.category}</span>
+                <span className="font-light tracking-wide">{postData.category}</span>
                 <span className="text-white/40">•</span>
-                <time className="font-light tracking-wide">{formatDate(post.date)}</time>
+                <time className="font-light tracking-wide">{formatDate(postData.date)}</time>
                 <span className="text-white/40">•</span>
-                <span className="font-light tracking-wide">{post.readTime} de lectura</span>
+                <span className="font-light tracking-wide">{postData.readTime} de lectura</span>
               </div>
               
               {/* Título principal del artículo */}
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-light text-white leading-[1.15] mb-8 tracking-tight">
-                {post.title.rendered}
+                {postData.title}
               </h1>
               
               {/* Información del autor */}
               <div className="flex items-center gap-5">
                 <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full"></div>
                 <div>
-                  <p className="text-white font-light text-base mb-1">Por {post.author.name}</p>
+                  <p className="text-white font-light text-base mb-1">Por {postData.author.name}</p>
                   <p className="text-white/70 text-sm font-light leading-relaxed max-w-md">
-                    {post.author.bio}
+                    {postData.author.bio}
                   </p>
                 </div>
               </div>
@@ -212,16 +162,18 @@ export default function BlogPostPage() {
               {/* Barra de tags y compartir */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-8 mb-20 pb-12 border-b border-gray-100">
                 {/* Tags del artículo */}
-                <div className="flex flex-wrap items-center gap-3">
-                  {post.tags.map((tag, index) => (
-                    <span 
-                      key={index}
-                      className="px-5 py-2 bg-gray-50 text-gray-600 text-sm font-light rounded-full hover:bg-gray-100 transition-all duration-300 cursor-pointer"
-                    >
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
+                {postData.tags.length > 0 && (
+                  <div className="flex flex-wrap items-center gap-3">
+                    {postData.tags.map((tag, index) => (
+                      <span 
+                        key={index}
+                        className="px-5 py-2 bg-gray-50 text-gray-600 text-sm font-light rounded-full hover:bg-gray-100 transition-all duration-300 cursor-pointer"
+                      >
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
                 
                 {/* Botones de compartir en redes sociales */}
                 <div className="flex items-center gap-4">
@@ -252,6 +204,7 @@ export default function BlogPostPage() {
                   </button>
                 </div>
               </div>
+
               {/* 
                 Contenido HTML del post con estilos mejorados
                 
@@ -460,7 +413,7 @@ export default function BlogPostPage() {
                   [&_tbody_tr]:duration-200
                   hover:[&_tbody_tr]:bg-gray-50
                 "
-                dangerouslySetInnerHTML={{ __html: post.content.rendered }}
+                dangerouslySetInnerHTML={{ __html: postData.content }}
               />
             </article>
           </Container>
@@ -481,12 +434,10 @@ export default function BlogPostPage() {
                       Sobre el autor
                     </p>
                     <h3 className="text-3xl text-gray-900 mb-5 font-light leading-tight">
-                      {post.author.name}
+                      {postData.author.name}
                     </h3>
                     <p className="text-gray-600 text-lg leading-[1.8] font-light">
-                      {post.author.bio} Con una visión estratégica del mercado y un compromiso 
-                      inquebrantable con la excelencia, lidera el equipo de Versus Andorra 
-                      hacia nuevos horizontes en el sector inmobiliario del principado.
+                      {postData.author.bio}
                     </p>
                   </div>
                 </div>
@@ -496,64 +447,66 @@ export default function BlogPostPage() {
         </section>
 
         {/* Sección de posts relacionados - Diseño mejorado */}
-        <section className="py-24 lg:py-32 bg-gray-50">
-          <Container>
-            <div className="max-w-6xl mx-auto">
-              {/* Encabezado de la sección */}
-              <div className="text-center mb-20">
-                <h2 className="text-5xl text-gray-900 mb-6 font-light">
-                  Artículos relacionados
-                </h2>
-                <p className="text-gray-600 text-xl font-light">
-                  Continúa explorando temas del mercado inmobiliario
-                </p>
-              </div>
-              
-              {/* Grid de artículos relacionados */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-                {relatedPosts.map((relatedPost) => (
-                  <article key={relatedPost.id} className="group">
-                    <Link href={`/blog/${relatedPost.slug}`}>
-                      <div className="bg-white rounded-3xl overflow-hidden hover:shadow-2xl transition-all duration-500 border border-gray-100">
-                        {/* Imagen del artículo */}
-                        <div className="relative h-64 overflow-hidden bg-gray-100">
-                          <Image
-                            src={relatedPost.image}
-                            alt={relatedPost.title}
-                            fill
-                            className="object-cover transition-transform duration-700 group-hover:scale-105"
-                          />
-                        </div>
-                        {/* Contenido de la card */}
-                        <div className="p-8">
-                          {/* Meta información */}
-                          <div className="flex items-center gap-2 text-xs text-gray-500 mb-5 font-light">
-                            <time>{formatDate(relatedPost.date)}</time>
-                            <span className="text-gray-300">•</span>
-                            <span>{relatedPost.readTime}</span>
+        {relatedPosts.length > 0 && (
+          <section className="py-24 lg:py-32 bg-gray-50">
+            <Container>
+              <div className="max-w-6xl mx-auto">
+                {/* Encabezado de la sección */}
+                <div className="text-center mb-20">
+                  <h2 className="text-5xl text-gray-900 mb-6 font-light">
+                    Artículos relacionados
+                  </h2>
+                  <p className="text-gray-600 text-xl font-light">
+                    Continúa explorando temas del mercado inmobiliario
+                  </p>
+                </div>
+                
+                {/* Grid de artículos relacionados */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+                  {relatedPosts.map((relatedPost) => (
+                    <article key={relatedPost.id} className="group">
+                      <Link href={`/blog/${relatedPost.slug}`}>
+                        <div className="bg-white rounded-3xl overflow-hidden hover:shadow-2xl transition-all duration-500 border border-gray-100">
+                          {/* Imagen del artículo */}
+                          <div className="relative h-64 overflow-hidden bg-gray-100">
+                            <Image
+                              src={relatedPost.image}
+                              alt={relatedPost.title}
+                              fill
+                              className="object-cover transition-transform duration-700 group-hover:scale-105"
+                            />
                           </div>
-                          {/* Título del artículo */}
-                          <h3 className="text-xl text-gray-900 leading-snug font-light group-hover:text-gray-700 transition-colors duration-300 line-clamp-3">
-                            {relatedPost.title}
-                          </h3>
+                          {/* Contenido de la card */}
+                          <div className="p-8">
+                            {/* Meta información */}
+                            <div className="flex items-center gap-2 text-xs text-gray-500 mb-5 font-light">
+                              <time>{formatDate(relatedPost.date)}</time>
+                              <span className="text-gray-300">•</span>
+                              <span>{relatedPost.readTime}</span>
+                            </div>
+                            {/* Título del artículo */}
+                            <h3 className="text-xl text-gray-900 leading-snug font-light group-hover:text-gray-700 transition-colors duration-300 line-clamp-3">
+                              {relatedPost.title}
+                            </h3>
+                          </div>
                         </div>
-                      </div>
-                    </Link>
-                  </article>
-                ))}
+                      </Link>
+                    </article>
+                  ))}
+                </div>
+                
+                {/* Botón para ver todos los artículos */}
+                <div className="text-center mt-20">
+                  <Link href="/blog">
+                    <Button className="bg-white text-gray-900 hover:bg-gray-900 hover:text-white border border-gray-200 rounded-full px-12 py-4 text-base font-light transition-all duration-300 shadow-sm hover:shadow-lg">
+                      Ver todos los artículos
+                    </Button>
+                  </Link>
+                </div>
               </div>
-              
-              {/* Botón para ver todos los artículos */}
-              <div className="text-center mt-20">
-                <Link href="/blog">
-                  <Button className="bg-white text-gray-900 hover:bg-gray-900 hover:text-white border border-gray-200 rounded-full px-12 py-4 text-base font-light transition-all duration-300 shadow-sm hover:shadow-lg">
-                    Ver todos los artículos
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </Container>
-        </section>
+            </Container>
+          </section>
+        )}
 
         {/* CTA Newsletter - Diseño mejorado */}
         <section className="py-24 lg:py-32 bg-gradient-to-br from-gray-900 via-black to-gray-900">

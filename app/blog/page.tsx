@@ -2,15 +2,15 @@
  * Blog Page
  * 
  * Página principal del blog con diseño minimalista y elegante.
- * Preparada para conectar con WordPress REST API.
+ * Conectado a WordPress REST API.
  * 
  * @page /blog
- * @version 1.0.0
+ * @version 2.1.0 - Debug mode
  */
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { getSiteConfig } from '@/lib/wordpress';
+import { getSiteConfig, getPosts } from '@/lib/wordpress';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Container } from '@/components/layout/Container';
@@ -55,6 +55,7 @@ function stripHtml(html: string): string {
 
 /**
  * Mock de categorías para el filtro
+ * TODO: Obtener categorías dinámicamente desde WordPress
  */
 const categories = [
   { id: 'all', name: 'Todos', slug: 'all' },
@@ -67,78 +68,45 @@ const categories = [
 export default async function BlogPage() {
   const siteConfig = await getSiteConfig();
   
-  // Por ahora vamos a mockear los posts, pero la estructura está lista para WordPress
-  // const posts = await getPosts({ per_page: 12 });
+  // Obtener posts reales de WordPress (aumentado a 100 para debug)
+  const postsData = await getPosts({ per_page: 100 });
   
-  // Mock de posts para visualización
-  const posts = [
-    {
-      id: 1,
-      title: { rendered: 'El mercado inmobiliario en Andorra: Tendencias 2025' },
-      excerpt: { rendered: '<p>Análisis completo de las tendencias del mercado inmobiliario andorrano y las oportunidades de inversión para este año. Descubre por qué Andorra sigue siendo uno de los destinos más atractivos para inversores internacionales.</p>' },
-      slug: 'mercado-inmobiliario-andorra-2025',
-      date: '2024-01-15T10:00:00',
-      featured_image: 'https://images.pexels.com/photos/1370704/pexels-photo-1370704.jpeg?auto=compress&cs=tinysrgb&w=800',
-      author: { name: 'Txema Anaya' },
-      category: 'Mercado Inmobiliario',
-      readTime: '5 min'
+  // DEBUG: Logs temporales para diagnóstico
+  console.log('=== BLOG DEBUG ===');
+  console.log('[BLOG] Total posts recibidos de WordPress:', postsData?.length || 0);
+  if (postsData && postsData.length > 0) {
+    console.log('[BLOG] Títulos de posts recibidos:');
+    postsData.forEach((p: any, index: number) => {
+      console.log(`  ${index + 1}. ${p.title?.rendered || p.title} (slug: ${p.slug})`);
+    });
+  } else {
+    console.warn('[BLOG] ⚠️ No se recibieron posts de WordPress');
+  }
+  
+  // Transformar posts de WordPress al formato esperado por el frontend
+  const posts = (postsData || []).map((post: any) => ({
+    id: post.id,
+    title: post.title,
+    excerpt: post.excerpt,
+    slug: post.slug,
+    date: post.date,
+    // Extraer imagen destacada de _embedded si existe
+    featured_image: post._embedded?.['wp:featuredmedia']?.[0]?.source_url || 
+                   'https://images.pexels.com/photos/1370704/pexels-photo-1370704.jpeg?auto=compress&cs=tinysrgb&w=800',
+    // Extraer autor de _embedded si existe
+    author: { 
+      name: post._embedded?.author?.[0]?.name || 'Versus Andorra' 
     },
-    {
-      id: 2,
-      title: { rendered: 'Guía para inversores: Cómo comprar propiedad en Andorra' },
-      excerpt: { rendered: '<p>Todo lo que necesitas saber sobre el proceso de compra de propiedades en Andorra, desde los requisitos legales hasta los beneficios fiscales que ofrece el principado.</p>' },
-      slug: 'guia-comprar-propiedad-andorra',
-      date: '2024-01-10T10:00:00',
-      featured_image: 'https://images.pexels.com/photos/280222/pexels-photo-280222.jpeg?auto=compress&cs=tinysrgb&w=800',
-      author: { name: 'Alejandro García' },
-      category: 'Inversión',
-      readTime: '8 min'
-    },
-    {
-      id: 3,
-      title: { rendered: 'Las mejores zonas para vivir en Andorra la Vella' },
-      excerpt: { rendered: '<p>Descubre los barrios más exclusivos y las mejores zonas residenciales de la capital andorrana. Analizamos precio, calidad de vida y servicios de cada área.</p>' },
-      slug: 'mejores-zonas-andorra-la-vella',
-      date: '2024-01-05T10:00:00',
-      featured_image: 'https://images.pexels.com/photos/2462015/pexels-photo-2462015.jpeg?auto=compress&cs=tinysrgb&w=800',
-      author: { name: 'Angela García' },
-      category: 'Estilo de Vida',
-      readTime: '6 min'
-    },
-    {
-      id: 4,
-      title: { rendered: '5 razones para invertir en propiedades de lujo en Andorra' },
-      excerpt: { rendered: '<p>El mercado de propiedades de lujo en Andorra continúa creciendo. Te explicamos las principales ventajas de invertir en este segmento exclusivo del mercado.</p>' },
-      slug: 'invertir-propiedades-lujo-andorra',
-      date: '2024-01-03T10:00:00',
-      featured_image: 'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=800',
-      author: { name: 'Txema Anaya' },
-      category: 'Inversión',
-      readTime: '7 min'
-    },
-    {
-      id: 5,
-      title: { rendered: 'Residencia fiscal en Andorra: Ventajas y requisitos' },
-      excerpt: { rendered: '<p>Una guía completa sobre cómo obtener la residencia fiscal en Andorra y los beneficios que esto conlleva para inversores y empresarios internacionales.</p>' },
-      slug: 'residencia-fiscal-andorra',
-      date: '2024-01-02T10:00:00',
-      featured_image: 'https://images.pexels.com/photos/3184339/pexels-photo-3184339.jpeg?auto=compress&cs=tinysrgb&w=800',
-      author: { name: 'Alejandro García' },
-      category: 'Consejos',
-      readTime: '10 min'
-    },
-    {
-      id: 6,
-      title: { rendered: 'Arquitectura moderna: Los edificios más innovadores de Andorra' },
-      excerpt: { rendered: '<p>Un recorrido por la arquitectura contemporánea de Andorra, destacando los proyectos más innovadores y sostenibles del principado.</p>' },
-      slug: 'arquitectura-moderna-andorra',
-      date: '2023-12-28T10:00:00',
-      featured_image: 'https://images.pexels.com/photos/2102416/pexels-photo-2102416.jpeg?auto=compress&cs=tinysrgb&w=800',
-      author: { name: 'Angela García' },
-      category: 'Estilo de Vida',
-      readTime: '4 min'
-    }
-  ];
+    // Extraer categoría de _embedded si existe
+    category: post._embedded?.['wp:term']?.[0]?.[0]?.name || 'General',
+    // Calcular tiempo de lectura aproximado (250 palabras por minuto)
+    readTime: `${Math.max(1, Math.round(stripHtml(post.content?.rendered || '').split(' ').length / 250))} min`
+  }));
+
+  console.log('[BLOG] Posts después de transformar:', posts.length);
+  console.log('[BLOG] Post destacado:', posts[0]?.title?.rendered || 'No hay post destacado');
+  console.log('[BLOG] Posts en grid:', posts.slice(1).length);
+  console.log('=== FIN BLOG DEBUG ===\n');
 
   // Obtener el post destacado (el más reciente)
   const featuredPost = posts[0];
@@ -243,87 +211,97 @@ export default async function BlogPage() {
         {/* Posts Grid */}
         <section className="py-20 bg-white">
           <Container>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {recentPosts.map((post, index) => (
-                <article 
-                  key={post.id} 
-                  className="group fade-in"
-                  style={{
-                    animation: `slideInFromBottom ${0.5 + index * 0.1}s ease-out`
-                  }}
-                >
-                  <Link href={`/blog/${post.slug}`}>
-                    <div className="bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 h-full flex flex-col">
-                      {/* Imagen */}
-                      <div className="relative h-64 overflow-hidden bg-gray-100">
-                        <Image
-                          src={post.featured_image}
-                          alt={stripHtml(post.title.rendered)}
-                          fill
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                      </div>
-
-                      {/* Contenido */}
-                      <div className="p-6 flex-1 flex flex-col">
-                        <div className="flex items-center gap-3 text-xs text-gray-600 mb-3">
-                          <span className="font-light">{post.category}</span>
-                          <span className="text-gray-300">•</span>
-                          <span className="font-light">{formatDate(post.date)}</span>
-                        </div>
-
-                        <h3 className="text-xl font-light text-gray-900 mb-3 leading-tight group-hover:text-gray-700 transition-colors duration-300 line-clamp-2">
-                          {stripHtml(post.title.rendered)}
-                        </h3>
-
-                        <p className="text-gray-600 font-light text-sm leading-relaxed mb-4 line-clamp-3 flex-1">
-                          {stripHtml(post.excerpt.rendered)}
-                        </p>
-
-                        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                          <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 bg-gray-100 rounded-full"></div>
-                            <span className="text-xs text-gray-600 font-light">
-                              {post.author.name}
-                            </span>
+            {recentPosts.length > 0 ? (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {recentPosts.map((post, index) => (
+                    <article 
+                      key={post.id} 
+                      className="group fade-in"
+                      style={{
+                        animation: `slideInFromBottom ${0.5 + index * 0.1}s ease-out`
+                      }}
+                    >
+                      <Link href={`/blog/${post.slug}`}>
+                        <div className="bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+                          {/* Imagen */}
+                          <div className="relative h-64 overflow-hidden bg-gray-100">
+                            <Image
+                              src={post.featured_image}
+                              alt={stripHtml(post.title.rendered)}
+                              fill
+                              className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            />
                           </div>
-                          <span className="text-xs text-gray-500 font-light">
-                            {post.readTime}
-                          </span>
+
+                          {/* Contenido */}
+                          <div className="p-6 flex-1 flex flex-col">
+                            <div className="flex items-center gap-3 text-xs text-gray-600 mb-3">
+                              <span className="font-light">{post.category}</span>
+                              <span className="text-gray-300">•</span>
+                              <span className="font-light">{formatDate(post.date)}</span>
+                            </div>
+
+                            <h3 className="text-xl font-light text-gray-900 mb-3 leading-tight group-hover:text-gray-700 transition-colors duration-300 line-clamp-2">
+                              {stripHtml(post.title.rendered)}
+                            </h3>
+
+                            <p className="text-gray-600 font-light text-sm leading-relaxed mb-4 line-clamp-3 flex-1">
+                              {stripHtml(post.excerpt.rendered)}
+                            </p>
+
+                            <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                              <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 bg-gray-100 rounded-full"></div>
+                                <span className="text-xs text-gray-600 font-light">
+                                  {post.author.name}
+                                </span>
+                              </div>
+                              <span className="text-xs text-gray-500 font-light">
+                                {post.readTime}
+                              </span>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  </Link>
-                </article>
-              ))}
-            </div>
+                      </Link>
+                    </article>
+                  ))}
+                </div>
 
-            {/* Paginación */}
-            <div className="flex justify-center items-center gap-2 mt-16">
-              <button className="p-3 rounded-full hover:bg-gray-100 transition-colors duration-300" disabled>
-                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
+                {/* Paginación */}
+                <div className="flex justify-center items-center gap-2 mt-16">
+                  <button className="p-3 rounded-full hover:bg-gray-100 transition-colors duration-300" disabled>
+                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
 
-              <div className="flex gap-2">
-                <button className="w-10 h-10 rounded-full bg-gray-900 text-white text-sm font-light">
-                  1
-                </button>
-                <button className="w-10 h-10 rounded-full hover:bg-gray-100 text-gray-700 text-sm font-light transition-colors duration-300">
-                  2
-                </button>
-                <button className="w-10 h-10 rounded-full hover:bg-gray-100 text-gray-700 text-sm font-light transition-colors duration-300">
-                  3
-                </button>
+                  <div className="flex gap-2">
+                    <button className="w-10 h-10 rounded-full bg-gray-900 text-white text-sm font-light">
+                      1
+                    </button>
+                    <button className="w-10 h-10 rounded-full hover:bg-gray-100 text-gray-700 text-sm font-light transition-colors duration-300">
+                      2
+                    </button>
+                    <button className="w-10 h-10 rounded-full hover:bg-gray-100 text-gray-700 text-sm font-light transition-colors duration-300">
+                      3
+                    </button>
+                  </div>
+
+                  <button className="p-3 rounded-full hover:bg-gray-100 transition-colors duration-300">
+                    <svg className="w-5 h-5 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="text-center py-20">
+                <p className="text-gray-500 text-lg">
+                  No hay más artículos disponibles en este momento.
+                </p>
               </div>
-
-              <button className="p-3 rounded-full hover:bg-gray-100 transition-colors duration-300">
-                <svg className="w-5 h-5 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </div>
+            )}
           </Container>
         </section>
 
