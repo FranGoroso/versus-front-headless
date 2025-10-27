@@ -5,18 +5,18 @@
  * Diseño minimalista con tipografía optimizada para lectura.
  * Conectado a WordPress REST API.
  * 
- * Mejoras v3.0:
- * - Conectado a WordPress REST API
- * - Server Component para mejor SEO
- * - Datos dinámicos del CMS
- * - Manejo de 404 para posts no encontrados
- * - Espaciado generoso entre elementos para mejor respiración visual
- * - Primer párrafo destacado con drop cap (letra capital)
- * - Headings con mayor jerarquía visual y separación
- * - Blockquotes con diseño elegante y destacado
+ * Mejoras v4.0:
+ * - Barra de progreso de lectura
+ * - Botón flotante "Volver arriba"
+ * - Tags con colores y efectos mejorados
+ * - Animaciones suaves en posts relacionados
+ * - Botones de compartir más destacados
+ * - Bio del autor con diseño premium
+ * - Efectos hover mejorados
+ * - Espaciado optimizado
  * 
  * @page /blog/[slug]
- * @version 3.0.0
+ * @version 4.0.0
  */
 
 import Image from 'next/image';
@@ -27,6 +27,8 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Container } from '@/components/layout/Container';
 import { Button } from '@/components/ui/button';
+import { ReadingProgressBar } from '@/components/blog/ReadingProgressBar';
+import { BackToTop } from '@/components/blog/BackToTop';
 
 /**
  * Función para formatear fecha
@@ -50,8 +52,19 @@ function stripHtml(html: string): string {
 }
 
 /**
+ * Array de colores para tags (rotación automática)
+ */
+const tagColors = [
+  'bg-blue-50 text-blue-700 hover:bg-blue-100',
+  'bg-purple-50 text-purple-700 hover:bg-purple-100',
+  'bg-green-50 text-green-700 hover:bg-green-100',
+  'bg-amber-50 text-amber-700 hover:bg-amber-100',
+  'bg-rose-50 text-rose-700 hover:bg-rose-100',
+];
+
+/**
  * Componente principal de la página de detalle del blog
- * Ahora es un Server Component que obtiene datos de WordPress
+ * Server Component que obtiene datos de WordPress
  */
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
   // Obtener configuración del sitio y post desde WordPress
@@ -107,46 +120,96 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
   return (
     <>
+      {/* Barra de progreso de lectura */}
+      <ReadingProgressBar />
+      
+      {/* Botón flotante volver arriba */}
+      <BackToTop />
+
       <Header config={siteConfig} />
 
       <main className="min-h-screen bg-white">
-        {/* Hero Section con imagen destacada */}
-        <section className="relative h-[70vh] min-h-[500px] flex items-end">
-          {/* Imagen de fondo con overlay gradiente */}
+        {/* Hero Section con imagen destacada - Contraste mejorado */}
+        <section className="relative h-[75vh] min-h-[550px] flex items-end overflow-hidden">
+          {/* Imagen de fondo con overlay gradiente y vignette */}
           <div className="absolute inset-0">
             <Image
               src={postData.featured_image}
               alt={postData.title}
               fill
-              className="object-cover"
+              className="object-cover scale-105 transition-transform duration-700 hover:scale-100"
               priority
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+            {/* 
+              Overlay gradiente mejorado con mayor opacidad para mejor contraste.
+              - from-black/95: Parte inferior casi completamente oscura (95% opacidad)
+              - via-black/70: Zona media con 70% opacidad
+              - to-black/40: Parte superior con 40% opacidad (duplicado del original)
+            */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-black/40" />
+            
+            {/* 
+              Vignette effect: oscurece los bordes para mejorar contraste general
+              Crea un efecto de viñeta radial que oscurece las esquinas
+            */}
+            <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-black/60" />
           </div>
           
-          {/* Contenido del hero */}
-          <Container className="relative z-10 pb-16">
+          {/* Contenido del hero con text-shadow mejorado */}
+          <Container className="relative z-10 pb-20">
             <div className="max-w-4xl">
-              {/* Meta información del artículo */}
-              <div className="flex items-center gap-4 text-white/80 text-sm mb-8">
+              {/* 
+                Meta información del artículo con backdrop más fuerte
+                - backdrop-blur-md: desenfoque medio del fondo
+                - bg-black/30: fondo negro con 30% opacidad para mejor contraste
+                - shadow-2xl: sombra pronunciada para separar del fondo
+              */}
+              <div className="flex flex-wrap items-center gap-4 text-white text-sm mb-10 backdrop-blur-md bg-black/30 rounded-full px-6 py-3 w-fit shadow-2xl border border-white/20">
                 <span className="font-light tracking-wide">{postData.category}</span>
-                <span className="text-white/40">•</span>
+                <span className="text-white/60">•</span>
                 <time className="font-light tracking-wide">{formatDate(postData.date)}</time>
-                <span className="text-white/40">•</span>
-                <span className="font-light tracking-wide">{postData.readTime} de lectura</span>
+                <span className="text-white/60">•</span>
+                <span className="font-light tracking-wide flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  {postData.readTime} de lectura
+                </span>
               </div>
               
-              {/* Título principal del artículo */}
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-light text-white leading-[1.15] mb-8 tracking-tight">
+              {/* 
+                Título principal con text-shadow múltiple para máxima legibilidad
+                - Tres capas de sombra (0 2px, 0 4px, 0 8px) para efecto de profundidad
+                - drop-shadow-2xl de Tailwind como capa adicional
+              */}
+              <h1 
+                className="text-4xl md:text-5xl lg:text-6xl font-light text-white leading-[1.1] mb-10 tracking-tight drop-shadow-2xl"
+                style={{
+                  textShadow: '0 2px 10px rgba(0,0,0,0.8), 0 4px 20px rgba(0,0,0,0.6), 0 8px 40px rgba(0,0,0,0.4)'
+                }}
+              >
                 {postData.title}
               </h1>
               
-              {/* Información del autor */}
-              <div className="flex items-center gap-5">
-                <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full"></div>
+              {/* 
+                Información del autor con backdrop más pronunciado
+                - backdrop-blur-lg: desenfoque más fuerte
+                - bg-black/40: fondo negro con 40% opacidad (incrementado desde 10%)
+                - shadow-2xl: sombra fuerte para separación visual
+              */}
+              <div className="flex items-center gap-6 backdrop-blur-lg bg-black/40 rounded-2xl p-6 w-fit border border-white/20 shadow-2xl">
+                <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full ring-2 ring-white/40 shadow-lg"></div>
                 <div>
-                  <p className="text-white font-light text-base mb-1">Por {postData.author.name}</p>
-                  <p className="text-white/70 text-sm font-light leading-relaxed max-w-md">
+                  <p 
+                    className="text-white font-light text-lg mb-2"
+                    style={{ textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}
+                  >
+                    Por {postData.author.name}
+                  </p>
+                  <p 
+                    className="text-white/90 text-sm font-light leading-relaxed max-w-lg"
+                    style={{ textShadow: '0 1px 6px rgba(0,0,0,0.8)' }}
+                  >
                     {postData.author.bio}
                   </p>
                 </div>
@@ -159,15 +222,15 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         <section className="py-32 lg:py-40">
           <Container>
             <article className="max-w-3xl mx-auto">
-              {/* Barra de tags y compartir */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-8 mb-20 pb-12 border-b border-gray-100">
-                {/* Tags del artículo */}
+              {/* Barra de tags y compartir con diseño mejorado */}
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-24 pb-12 border-b-2 border-gray-100">
+                {/* Tags del artículo con colores */}
                 {postData.tags.length > 0 && (
                   <div className="flex flex-wrap items-center gap-3">
                     {postData.tags.map((tag, index) => (
                       <span 
                         key={index}
-                        className="px-5 py-2 bg-gray-50 text-gray-600 text-sm font-light rounded-full hover:bg-gray-100 transition-all duration-300 cursor-pointer"
+                        className={`px-5 py-2.5 text-sm font-light rounded-full transition-all duration-300 cursor-pointer transform hover:scale-105 hover:shadow-md ${tagColors[index % tagColors.length]}`}
                       >
                         #{tag}
                       </span>
@@ -175,65 +238,54 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                   </div>
                 )}
                 
-                {/* Botones de compartir en redes sociales */}
-                <div className="flex items-center gap-4">
-                  <span className="text-sm text-gray-500 font-light">Compartir:</span>
-                  <button 
-                    className="p-3 hover:bg-gray-50 rounded-full transition-all duration-300 text-gray-600 hover:text-gray-900 hover:scale-110"
-                    aria-label="Compartir en Facebook"
-                  >
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                    </svg>
-                  </button>
-                  <button 
-                    className="p-3 hover:bg-gray-50 rounded-full transition-all duration-300 text-gray-600 hover:text-gray-900 hover:scale-110"
-                    aria-label="Compartir en Twitter"
-                  >
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
-                    </svg>
-                  </button>
-                  <button 
-                    className="p-3 hover:bg-gray-50 rounded-full transition-all duration-300 text-gray-600 hover:text-gray-900 hover:scale-110"
-                    aria-label="Compartir en LinkedIn"
-                  >
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                    </svg>
-                  </button>
+                {/* Botones de compartir mejorados */}
+                <div className="flex items-center gap-4 shrink-0">
+                  <span className="text-sm text-gray-600 font-light">Compartir:</span>
+                  <div className="flex items-center gap-2">
+                    <button 
+                      className="p-3.5 bg-gray-50 hover:bg-blue-600 hover:text-white rounded-full transition-all duration-300 text-gray-700 hover:scale-110 hover:shadow-lg group"
+                      aria-label="Compartir en Facebook"
+                    >
+                      <svg className="w-5 h-5 transform group-hover:scale-110 transition-transform duration-300" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                      </svg>
+                    </button>
+                    <button 
+                      className="p-3.5 bg-gray-50 hover:bg-sky-500 hover:text-white rounded-full transition-all duration-300 text-gray-700 hover:scale-110 hover:shadow-lg group"
+                      aria-label="Compartir en Twitter"
+                    >
+                      <svg className="w-5 h-5 transform group-hover:scale-110 transition-transform duration-300" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
+                      </svg>
+                    </button>
+                    <button 
+                      className="p-3.5 bg-gray-50 hover:bg-blue-700 hover:text-white rounded-full transition-all duration-300 text-gray-700 hover:scale-110 hover:shadow-lg group"
+                      aria-label="Compartir en LinkedIn"
+                    >
+                      <svg className="w-5 h-5 transform group-hover:scale-110 transition-transform duration-300" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               </div>
 
-              {/* 
-                Contenido HTML del post con estilos mejorados
-                
-                Mejoras implementadas:
-                - Drop cap (letra capital) en el primer párrafo
-                - Espaciado generoso entre todos los elementos
-                - Headings con jerarquía visual clara
-                - Blockquotes elegantes con fondo y bordes
-                - Listas con más separación y padding
-                - Line-height optimizado (leading-relaxed)
-                - Colores de texto suavizados para mejor lectura
-              */}
+              {/* Contenido HTML del post con estilos mejorados */}
               <div 
                 className="blog-content
                   prose prose-xl max-w-none
                   
                   /* === CONFIGURACIÓN GENERAL === */
-                  /* Espaciado base y colores de texto */
                   prose-slate
                   
                   /* === PÁRRAFOS === */
-                  /* Párrafos con espaciado generoso y line-height optimizado */
                   prose-p:text-gray-700 
                   prose-p:text-[1.125rem] 
                   prose-p:leading-[2.1] 
                   prose-p:mb-16
                   prose-p:tracking-wide
                   
-                  /* Drop cap - Primera letra grande en el primer párrafo */
+                  /* Drop cap - Primera letra grande */
                   [&>p:first-of-type]:first-letter:text-7xl
                   [&>p:first-of-type]:first-letter:font-light
                   [&>p:first-of-type]:first-letter:float-left
@@ -249,13 +301,11 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                   [&>p:first-of-type]:mb-20
                   
                   /* === HEADINGS === */
-                  /* Configuración de scroll para navegación suave */
                   prose-headings:scroll-mt-28
                   prose-headings:font-light
                   prose-headings:text-gray-900
                   prose-headings:tracking-tight
                   
-                  /* H2 - Títulos de sección principales */
                   prose-h2:text-4xl
                   prose-h2:mt-32
                   prose-h2:mb-10
@@ -264,20 +314,17 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                   prose-h2:border-b
                   prose-h2:border-gray-100
                   
-                  /* H3 - Subtítulos */
                   prose-h3:text-3xl
                   prose-h3:mt-24
                   prose-h3:mb-8
                   prose-h3:leading-[1.3]
                   
-                  /* H4 - Títulos menores */
                   prose-h4:text-2xl
                   prose-h4:mt-12
                   prose-h4:mb-6
                   prose-h4:leading-[1.4]
                   
                   /* === ENLACES === */
-                  /* Enlaces con subrayado sutil y hover elegante */
                   prose-a:text-gray-900
                   prose-a:underline
                   prose-a:decoration-gray-300
@@ -286,10 +333,8 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                   hover:prose-a:decoration-gray-900
                   prose-a:transition-all
                   prose-a:duration-300
-                  prose-a:font-normal
                   
                   /* === BLOCKQUOTES === */
-                  /* Citas destacadas con diseño elegante */
                   prose-blockquote:border-l-4
                   prose-blockquote:border-gray-900
                   prose-blockquote:pl-10
@@ -306,11 +351,9 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                   prose-blockquote:leading-relaxed
                   prose-blockquote:shadow-sm
                   
-                  /* Párrafos dentro de blockquotes */
                   [&_blockquote_p]:mb-4
                   [&_blockquote_p]:last:mb-0
                   
-                  /* Citas (cite) dentro de blockquotes */
                   [&_blockquote_cite]:text-base
                   [&_blockquote_cite]:text-gray-500
                   [&_blockquote_cite]:font-normal
@@ -319,7 +362,6 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                   [&_blockquote_cite]:mt-4
                   
                   /* === LISTAS === */
-                  /* Listas con más separación y mejor legibilidad */
                   prose-ul:my-16
                   prose-ul:space-y-4
                   prose-ul:pl-2
@@ -328,18 +370,15 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                   prose-ol:space-y-4
                   prose-ol:pl-2
                   
-                  /* Items de lista */
                   prose-li:text-gray-700
                   prose-li:text-lg
                   prose-li:leading-[2.1]
                   prose-li:pl-3
                   prose-li:marker:text-gray-400
                   
-                  /* Párrafos dentro de listas */
                   [&_li_p]:my-2
                   
                   /* === STRONG Y EM === */
-                  /* Énfasis y negrita con colores adecuados */
                   prose-strong:text-gray-900
                   prose-strong:font-semibold
                   
@@ -347,13 +386,11 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                   prose-em:italic
                   
                   /* === IMÁGENES === */
-                  /* Imágenes con bordes redondeados y sombra */
                   prose-img:rounded-2xl
                   prose-img:shadow-2xl
                   prose-img:my-16
                   prose-img:w-full
                   
-                  /* Captions de imágenes */
                   prose-figcaption:text-center
                   prose-figcaption:text-sm
                   prose-figcaption:text-gray-500
@@ -362,13 +399,11 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                   prose-figcaption:italic
                   
                   /* === SEPARADORES === */
-                  /* Líneas horizontales con más espacio */
                   prose-hr:my-20
                   prose-hr:border-gray-100
                   prose-hr:border-t-2
                   
                   /* === CODE === */
-                  /* Código inline */
                   prose-code:text-gray-900
                   prose-code:bg-gray-50
                   prose-code:px-2
@@ -379,7 +414,6 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                   prose-code:before:content-['']
                   prose-code:after:content-['']
                   
-                  /* Bloques de código */
                   prose-pre:bg-gray-900
                   prose-pre:text-gray-100
                   prose-pre:rounded-2xl
@@ -389,7 +423,6 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                   prose-pre:shadow-xl
                   
                   /* === TABLAS === */
-                  /* Tablas con diseño limpio */
                   prose-table:my-12
                   prose-table:w-full
                   
@@ -408,7 +441,6 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                   prose-td:border-gray-100
                   prose-td:text-gray-700
                   
-                  /* Filas de tabla con hover */
                   [&_tbody_tr]:transition-colors
                   [&_tbody_tr]:duration-200
                   hover:[&_tbody_tr]:bg-gray-50
@@ -419,26 +451,33 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           </Container>
         </section>
 
-        {/* Sección de información del autor - Diseño mejorado */}
-        <section className="py-24 bg-gradient-to-b from-white via-gray-50 to-white">
+        {/* Sección de información del autor - Diseño premium mejorado */}
+        <section className="py-28 bg-gradient-to-b from-white via-gray-50 to-white">
           <Container>
-            <div className="max-w-3xl mx-auto">
-              <div className="bg-white rounded-3xl p-12 shadow-sm border border-gray-100 hover:shadow-lg transition-shadow duration-500">
-                <div className="flex flex-col md:flex-row items-start gap-10">
-                  {/* Avatar del autor */}
-                  <div className="w-28 h-28 bg-gradient-to-br from-gray-100 via-gray-200 to-gray-100 rounded-2xl flex-shrink-0 shadow-inner"></div>
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-gradient-to-br from-white via-gray-50 to-white rounded-3xl p-14 shadow-xl border-2 border-gray-100 hover:shadow-2xl hover:border-gray-200 transition-all duration-500 transform hover:-translate-y-1">
+                <div className="flex flex-col md:flex-row items-start gap-12">
+                  {/* Avatar del autor mejorado */}
+                  <div className="w-32 h-32 bg-gradient-to-br from-gray-200 via-gray-100 to-gray-200 rounded-2xl flex-shrink-0 shadow-lg ring-4 ring-white"></div>
                   
                   {/* Información del autor */}
                   <div className="flex-1">
-                    <p className="text-xs text-gray-500 mb-4 uppercase tracking-[0.2em] font-light">
+                    <p className="text-xs text-gray-500 mb-5 uppercase tracking-[0.25em] font-light">
                       Sobre el autor
                     </p>
-                    <h3 className="text-3xl text-gray-900 mb-5 font-light leading-tight">
+                    <h3 className="text-4xl text-gray-900 mb-6 font-light leading-tight">
                       {postData.author.name}
                     </h3>
-                    <p className="text-gray-600 text-lg leading-[1.8] font-light">
+                    <p className="text-gray-600 text-lg leading-[1.9] font-light mb-8">
                       {postData.author.bio}
                     </p>
+                    
+                    {/* Botón CTA opcional */}
+                    <Link href="/nuestro-equipo">
+                      <Button className="bg-gray-900 text-white hover:bg-black rounded-full px-8 py-3 text-sm font-light transition-all duration-300 shadow-md hover:shadow-xl">
+                        Ver perfil completo
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -446,48 +485,76 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           </Container>
         </section>
 
-        {/* Sección de posts relacionados - Diseño mejorado */}
+        {/* Sección de posts relacionados con animaciones mejoradas */}
         {relatedPosts.length > 0 && (
-          <section className="py-24 lg:py-32 bg-gray-50">
+          <section className="py-28 lg:py-36 bg-gradient-to-b from-gray-50 to-white">
             <Container>
-              <div className="max-w-6xl mx-auto">
+              <div className="max-w-7xl mx-auto">
                 {/* Encabezado de la sección */}
-                <div className="text-center mb-20">
-                  <h2 className="text-5xl text-gray-900 mb-6 font-light">
+                <div className="text-center mb-24">
+                  <h2 className="text-5xl md:text-6xl text-gray-900 mb-8 font-light">
                     Artículos relacionados
                   </h2>
-                  <p className="text-gray-600 text-xl font-light">
-                    Continúa explorando temas del mercado inmobiliario
+                  <p className="text-gray-600 text-xl font-light max-w-2xl mx-auto">
+                    Continúa explorando las últimas tendencias del mercado inmobiliario en Andorra
                   </p>
                 </div>
                 
-                {/* Grid de artículos relacionados */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-                  {relatedPosts.map((relatedPost) => (
-                    <article key={relatedPost.id} className="group">
+                {/* Grid de artículos relacionados con animaciones */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+                  {relatedPosts.map((relatedPost, index) => (
+                    <article 
+                      key={relatedPost.id} 
+                      className="group"
+                      style={{
+                        animation: `slideInFromBottom ${0.3 + index * 0.15}s ease-out`
+                      }}
+                    >
                       <Link href={`/blog/${relatedPost.slug}`}>
-                        <div className="bg-white rounded-3xl overflow-hidden hover:shadow-2xl transition-all duration-500 border border-gray-100">
-                          {/* Imagen del artículo */}
-                          <div className="relative h-64 overflow-hidden bg-gray-100">
+                        <div className="bg-white rounded-3xl overflow-hidden hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-gray-200 transform hover:-translate-y-2">
+                          {/* Imagen del artículo con efecto zoom */}
+                          <div className="relative h-72 overflow-hidden bg-gray-100">
                             <Image
                               src={relatedPost.image}
                               alt={relatedPost.title}
                               fill
-                              className="object-cover transition-transform duration-700 group-hover:scale-105"
+                              className="object-cover transition-transform duration-700 group-hover:scale-110"
                             />
+                            {/* Overlay sutil en hover */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                           </div>
+                          
                           {/* Contenido de la card */}
                           <div className="p-8">
                             {/* Meta información */}
-                            <div className="flex items-center gap-2 text-xs text-gray-500 mb-5 font-light">
-                              <time>{formatDate(relatedPost.date)}</time>
+                            <div className="flex items-center gap-3 text-xs text-gray-500 mb-6 font-light">
+                              <time className="flex items-center gap-2">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                {formatDate(relatedPost.date)}
+                              </time>
                               <span className="text-gray-300">•</span>
-                              <span>{relatedPost.readTime}</span>
+                              <span className="flex items-center gap-2">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                {relatedPost.readTime}
+                              </span>
                             </div>
+                            
                             {/* Título del artículo */}
-                            <h3 className="text-xl text-gray-900 leading-snug font-light group-hover:text-gray-700 transition-colors duration-300 line-clamp-3">
+                            <h3 className="text-2xl text-gray-900 leading-tight font-light group-hover:text-gray-700 transition-colors duration-300 line-clamp-3 mb-4">
                               {relatedPost.title}
                             </h3>
+                            
+                            {/* Indicador de lectura */}
+                            <div className="flex items-center gap-2 text-sm text-gray-600 font-light group-hover:text-gray-900 transition-colors duration-300">
+                              <span>Leer artículo</span>
+                              <svg className="w-4 h-4 transform group-hover:translate-x-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                              </svg>
+                            </div>
                           </div>
                         </div>
                       </Link>
@@ -495,11 +562,11 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                   ))}
                 </div>
                 
-                {/* Botón para ver todos los artículos */}
-                <div className="text-center mt-20">
+                {/* Botón para ver todos los artículos mejorado */}
+                <div className="text-center mt-24">
                   <Link href="/blog">
-                    <Button className="bg-white text-gray-900 hover:bg-gray-900 hover:text-white border border-gray-200 rounded-full px-12 py-4 text-base font-light transition-all duration-300 shadow-sm hover:shadow-lg">
-                      Ver todos los artículos
+                    <Button className="bg-gray-900 text-white hover:bg-black border-2 border-gray-900 hover:border-black rounded-full px-16 py-5 text-base font-light transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105">
+                      Ver todos los artículos del blog
                     </Button>
                   </Link>
                 </div>
@@ -508,24 +575,32 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           </section>
         )}
 
-        {/* CTA Newsletter - Diseño mejorado */}
-        <section className="py-24 lg:py-32 bg-gradient-to-br from-gray-900 via-black to-gray-900">
-          <Container>
-            <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-4xl md:text-5xl text-white mb-8 leading-tight font-light">
+        {/* CTA Newsletter con diseño mejorado */}
+        <section className="py-28 lg:py-36 bg-gradient-to-br from-gray-900 via-gray-800 to-black relative overflow-hidden">
+          {/* Patrón decorativo de fondo */}
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute inset-0" style={{
+              backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
+              backgroundSize: '48px 48px'
+            }} />
+          </div>
+          
+          <Container className="relative z-10">
+            <div className="max-w-4xl mx-auto text-center">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl text-white mb-10 leading-tight font-light">
                 ¿Te ha gustado este artículo?
               </h2>
-              <p className="text-gray-300 text-xl mb-12 leading-relaxed font-light">
-                Suscríbete y recibe contenido exclusivo sobre el mercado inmobiliario de Andorra directamente en tu email.
+              <p className="text-gray-300 text-xl md:text-2xl mb-14 leading-relaxed font-light max-w-3xl mx-auto">
+                Suscríbete a nuestro newsletter y recibe contenido exclusivo sobre el mercado inmobiliario de Andorra directamente en tu email.
               </p>
-              <div className="flex flex-col sm:flex-row gap-5 justify-center">
+              <div className="flex flex-col sm:flex-row gap-6 justify-center">
                 <Link href="/blog">
-                  <Button className="bg-white text-gray-900 hover:bg-gray-100 rounded-full px-12 py-5 text-base font-light transition-all duration-300 shadow-lg hover:shadow-2xl">
+                  <Button className="bg-white text-gray-900 hover:bg-gray-100 rounded-full px-14 py-6 text-lg font-light transition-all duration-300 shadow-2xl hover:shadow-white/20 transform hover:scale-105">
                     Más artículos del blog
                   </Button>
                 </Link>
                 <Link href="/contacto">
-                  <Button className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-gray-900 rounded-full px-12 py-5 text-base font-light transition-all duration-300">
+                  <Button className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-gray-900 rounded-full px-14 py-6 text-lg font-light transition-all duration-300 transform hover:scale-105">
                     Contactar con un experto
                   </Button>
                 </Link>
