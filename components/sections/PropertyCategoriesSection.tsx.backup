@@ -43,69 +43,27 @@ interface PropertyCategoriesSectionProps {
 
 /**
  * Mapeo de imágenes por tipo de propiedad (slug)
- * Fuente: Unsplash - Colección curada profesional
- * Optimización: formato crop, calidad 80, ancho 687px
- * Cada imagen es única y representativa del tipo de propiedad
  */
 const PROPERTY_TYPE_IMAGES: Record<string, string> = {
-  // Chalets - Chalet alpino con arquitectura de madera
-  'chalet': 'https://images.unsplash.com/photo-1542718610-a1d656d1884c?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
-  'chalé': 'https://images.unsplash.com/photo-1542718610-a1d656d1884c?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
-  
-  // Apartamentos/Pisos - Interior luminoso de apartamento moderno
-  'apartamento': 'https://images.unsplash.com/photo-1565953522043-baea26b83b7e?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
-  'piso': 'https://images.unsplash.com/photo-1565953522043-baea26b83b7e?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
-  
-  // Casas - Casa unifamiliar moderna con jardín
-  'casa': 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
-  
-  // Casas Adosadas - Townhouse/row house urbana
-  'casa-adosada': 'https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
-  'adosado': 'https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
-  
-  // Villas - Villa de lujo con piscina y jardines
-  'villa': 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
-  
-  // Áticos - Ático con terraza amplia y vistas
-  'atico': 'https://images.unsplash.com/photo-1604336667030-ede2c0ace6a5?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
-  'ático': 'https://images.unsplash.com/photo-1604336667030-ede2c0ace6a5?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
-  
-  // Dúplex - Propiedad de dos niveles con escaleras internas
-  'duplex': 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
-  'dúplex': 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
-  
-  // Estudios - Estudio tipo loft compacto y moderno
-  'estudio': 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
-  
-  // Bordas - Construcción tradicional de piedra de montaña
-  'borda': 'https://images.unsplash.com/photo-1518156677180-95a2893f3e9f?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
-  
-  // Terrenos - Parcela con vistas a montaña y naturaleza
-  'terreno': 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
-  
-  // Locales Comerciales - Local/tienda moderna en calle comercial
-  'local-comercial': 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
-  'local': 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
-  'comercial': 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
-  
-  // Oficinas - Espacio de oficina corporativa moderna
-  'oficina': 'https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
-  
-  // Naves Industriales - Warehouse/nave logística moderna
-  'nave-industrial': 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
-  'nave': 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
-  
-  // Edificios - Edificio residencial moderno de varias plantas
-  'edificio': 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
-  
-  // Hoteles - Hotel boutique de lujo
-  'hotel': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
-  
-  // Oportunidades - Propiedad de inversión con potencial
-  'oportunidad': 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
-  
-  // Default - Propiedad moderna genérica
-  'default': 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
+  'chalet': 'https://images.pexels.com/photos/1370704/pexels-photo-1370704.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'chalé': 'https://images.pexels.com/photos/1370704/pexels-photo-1370704.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'apartamento': 'https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'piso': 'https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'casa': 'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'villa': 'https://images.pexels.com/photos/1643389/pexels-photo-1643389.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'atico': 'https://images.pexels.com/photos/1643389/pexels-photo-1643389.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'ático': 'https://images.pexels.com/photos/1643389/pexels-photo-1643389.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'duplex': 'https://images.pexels.com/photos/1643389/pexels-photo-1643389.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'dúplex': 'https://images.pexels.com/photos/1643389/pexels-photo-1643389.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'estudio': 'https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'terreno': 'https://images.pexels.com/photos/2166711/pexels-photo-2166711.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'local-comercial': 'https://images.pexels.com/photos/264636/pexels-photo-264636.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'local': 'https://images.pexels.com/photos/264636/pexels-photo-264636.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'oficina': 'https://images.pexels.com/photos/380769/pexels-photo-380769.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'nave-industrial': 'https://images.pexels.com/photos/1438072/pexels-photo-1438072.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'edificio': 'https://images.pexels.com/photos/323705/pexels-photo-323705.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'hotel': 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=800',
+  'default': 'https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg?auto=compress&cs=tinysrgb&w=800',
 };
 
 function getImageForPropertyType(slug: string): string {
@@ -205,30 +163,26 @@ function CategoryCard({ category, isHero = false }: { category: PropertyCategory
   );
 }
 
-/**
- * Categorías de propiedades predeterminadas (fallback)
- * Se usa solo cuando no hay datos de WordPress disponibles
- */
 const propertyCategories: PropertyCategory[] = [
   {
     id: 'chalets',
     title: 'Chalets',
     description: 'Descubre nuestra selección de chalés de lujo en Andorra',
-    image: 'https://images.unsplash.com/photo-1542718610-a1d656d1884c?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
+    image: 'https://images.pexels.com/photos/1370704/pexels-photo-1370704.jpeg?auto=compress&cs=tinysrgb&w=800',
     href: '/propiedades?tipo=chalet',
   },
   {
     id: 'apartamentos-pisos',
     title: 'Apartamentos / Pisos',
     description: 'Pisos y apartamentos en el centro de las parroquias',
-    image: 'https://images.unsplash.com/photo-1565953522043-baea26b83b7e?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
+    image: 'https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?auto=compress&cs=tinysrgb&w=800',
     href: '/propiedades?tipo=apartamento',
   },
   {
     id: 'casas-adosadas',
     title: 'Casas Adosadas',
     description: 'Unifamiliares con vistas espectaculares',
-    image: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687',
+    image: 'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=800',
     href: '/propiedades?tipo=casa',
   },
 ];

@@ -4,8 +4,14 @@
  * Sección principal con efecto parallax en la imagen de fondo.
  * Diseño minimalista y elegante con scroll suave.
  * 
+ * VERSIÓN 2.0:
+ * - Recibe taxonomías reales de WordPress (propertyTypes, propertyCities)
+ * - Pasa las taxonomías al PropertySearchForm
+ * - Mantiene efecto parallax en cliente
+ * 
  * @component
- * @version 1.0.0
+ * @version 2.0.0
+ * @updated 2025-10-27 - Integración con WordPress taxonomías
  */
 
 'use client';
@@ -15,18 +21,25 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Container } from '@/components/layout/Container';
 import { PropertySearchForm } from '@/components/sections/PropertySearchForm';
+import { WPTaxonomy } from '@/types';
 
 /**
  * Props del componente
  */
 interface HeroSectionProps {
   className?: string;
+  propertyTypes?: WPTaxonomy[]; // Tipos de propiedades desde WordPress
+  propertyCities?: WPTaxonomy[]; // Ciudades desde WordPress
 }
 
 /**
  * Componente Hero con efecto parallax
  */
-export function HeroSection({ className = '' }: HeroSectionProps) {
+export function HeroSection({ 
+  className = '',
+  propertyTypes = [],
+  propertyCities = []
+}: HeroSectionProps) {
   const [scrollY, setScrollY] = useState(0);
 
   /**
@@ -89,6 +102,8 @@ export function HeroSection({ className = '' }: HeroSectionProps) {
             <PropertySearchForm 
               variant="hero"
               className="bg-white shadow-xl"
+              propertyTypes={propertyTypes}
+              propertyCities={propertyCities}
             />
           </div>
           

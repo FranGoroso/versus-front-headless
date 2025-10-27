@@ -4,14 +4,22 @@
  * Formulario de búsqueda de propiedades con diseño minimalista.
  * Mantiene la estética elegante del sitio con tipografía light y animaciones sutiles.
  * 
+ * VERSIÓN 2.0:
+ * - Integración con taxonomías reales de WordPress
+ * - Soporte para propertyTypes y propertyCities desde WordPress API
+ * - Construcción correcta de parámetros de URL (tipo, ciudad)
+ * - Fallback a datos mock si no se pasan taxonomías
+ * 
  * @component
- * @version 1.0.0
+ * @version 2.0.0
+ * @updated 2025-10-27 - Integración con WordPress taxonomías
  */
 
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { WPTaxonomy } from '@/types';
 
 /**
  * Tipos de datos para el componente
@@ -42,6 +50,8 @@ interface PropertySearchFormProps {
   variant?: 'default' | 'hero' | 'compact';
   className?: string;
   onSearch?: (filters: SearchFilters) => void;
+  propertyTypes?: WPTaxonomy[]; // Tipos de propiedades desde WordPress
+  propertyCities?: WPTaxonomy[]; // Ciudades desde WordPress
 }
 
 /**
@@ -138,10 +148,36 @@ const PROPERTY_FEATURES = [
 export function PropertySearchForm({
   variant = 'default',
   className = '',
-  onSearch
+  onSearch,
+  propertyTypes = [],
+  propertyCities = []
 }: PropertySearchFormProps) {
   const router = useRouter();
   const locationInputRef = useRef<HTMLInputElement>(null);
+  
+  /**
+   * Usar taxonomías reales de WordPress o fallback a datos mock
+   * Memorizado con useMemo para evitar recalcular en cada render
+   */
+  const availablePropertyTypes = useMemo(() => {
+    return propertyTypes.length > 0 ? [
+      { value: '', label: 'Todos los tipos' },
+      ...propertyTypes.map(type => ({
+        value: type.slug,
+        label: type.name
+      }))
+    ] : PROPERTY_TYPES;
+  }, [propertyTypes]);
+  
+  const availableCities = useMemo(() => {
+    return propertyCities.length > 0 ? 
+      propertyCities.map(city => ({
+        id: String(city.id),
+        name: city.name,
+        type: 'parish' as const
+      }))
+    : ANDORRA_LOCATIONS;
+  }, [propertyCities]);
   
   // Estado del formulario
   const [filters, setFilters] = useState<SearchFilters>({
@@ -168,7 +204,7 @@ export function PropertySearchForm({
    */
   useEffect(() => {
     if (filters.location.length > 0) {
-      const filtered = ANDORRA_LOCATIONS.filter(loc =>
+      const filtered = availableCities.filter(loc =>
         loc.name.toLowerCase().includes(filters.location.toLowerCase())
       );
       setLocationSuggestions(filtered);
@@ -177,7 +213,7 @@ export function PropertySearchForm({
       setLocationSuggestions([]);
       setShowLocationSuggestions(false);
     }
-  }, [filters.location]);
+  }, [filters.location, availableCities]);
 
   /**
    * Manejar cambio en los filtros
@@ -214,6 +250,7 @@ export function PropertySearchForm({
 
   /**
    * Ejecutar búsqueda
+   * Construye los parámetros de URL correctamente para /propiedades page
    */
   const handleSearch = async () => {
     setIsSearching(true);
@@ -222,17 +259,63 @@ export function PropertySearchForm({
     if (onSearch) {
       onSearch(filters);
     } else {
-      // Construir query string y navegar
+      // Construir query string con parámetros correctos
       const params = new URLSearchParams();
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value && value !== '') {
-          if (Array.isArray(value)) {
-            value.forEach(v => params.append(key, v));
-          } else {
-            params.append(key, value);
+      
+      // Mapear propertyType → tipo (slug de la taxonomía)
+      if (filters.propertyType) {
+        params.append('tipo', filters.propertyType);
+      }
+      
+      // Mapear location → ciudad (slug de la taxonomía)
+      if (filters.location) {
+        // Buscar el slug de la ciudad seleccionada
+        const selectedCity = availableCities.find(city => 
+          city.name.toLowerCase() === filters.location.toLowerCase()
+        );
+        if (selectedCity) {
+          // Si usamos taxonomías reales, usar el slug
+          const citySlug = propertyCities.length > 0 
+            ? propertyCities.find(c => c.name === selectedCity.name)?.slug
+            : selectedCity.name.toLowerCase().replace(/\s+/g, '-');
+          if (citySlug) {
+            params.append('ciudad', citySlug);
           }
         }
-      });
+      }
+      
+      // Habitaciones
+      if (filters.bedrooms) {
+        params.append('habitaciones', filters.bedrooms);
+      }
+      
+      // Precio (solo si está definido)
+      if (filters.priceMax) {
+        params.append('precio_max', filters.priceMax);
+      }
+      if (filters.priceMin) {
+        params.append('precio_min', filters.priceMin);
+      }
+      
+      // Superficie
+      if (filters.surfaceMin) {
+        params.append('superficie_min', filters.surfaceMin);
+      }
+      if (filters.surfaceMax) {
+        params.append('superficie_max', filters.surfaceMax);
+      }
+      
+      // Baños
+      if (filters.bathrooms) {
+        params.append('banos', filters.bathrooms);
+      }
+      
+      // Características (features)
+      if (filters.features.length > 0) {
+        filters.features.forEach(feature => {
+          params.append('caracteristica', feature);
+        });
+      }
       
       router.push(`/propiedades?${params.toString()}`);
     }
@@ -331,7 +414,7 @@ export function PropertySearchForm({
                      focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900
                      transition-all duration-300 cursor-pointer"
           >
-            {PROPERTY_TYPES.map(type => (
+            {availablePropertyTypes.map(type => (
               <option key={type.value} value={type.value}>
                 {type.label}
               </option>

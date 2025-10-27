@@ -11,6 +11,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { SiteConfig } from '@/types';
 
 interface FooterProps {
@@ -105,9 +106,14 @@ export function Footer({ config }: FooterProps) {
           {/* Brand Column - Spans 4 columns */}
           <div className="lg:col-span-4">
             <Link href="/" className="inline-block mb-6">
-              <span className="text-2xl font-light tracking-[0.2em] text-white">
-                {siteName}
-              </span>
+              <Image
+                src="/img/versusandorra-LOGO-NEGRO-.png"
+                alt="Versus Real Estate Andorra"
+                width={200}
+                height={60}
+                className="h-14 w-auto"
+                priority
+              />
             </Link>
             <p className="text-white/80 font-light leading-relaxed mb-8 max-w-xs">
               Tu socio de confianza en el mercado inmobiliario de Andorra. 

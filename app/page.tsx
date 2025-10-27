@@ -7,7 +7,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { getFeaturedProperties, getSiteConfig, transformToPropertyCard } from "@/lib/wordpress";
+import { getFeaturedProperties, getSiteConfig, transformToPropertyCard, getPropertyTypes, getPropertyCities } from "@/lib/wordpress";
 import { PropertyCard as PropertyCardType } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -46,14 +46,18 @@ export default async function Home() {
    */
   let featuredProperties: PropertyCardType[] = [];
   let siteConfig = null;
+  let propertyTypes = [];
+  let propertyCities = [];
   let error = null;
 
   try {
-    // Obtener propiedades destacadas (máximo 6)
-    featuredProperties = await getFeaturedProperties(6);
-
-    // Obtener configuración del sitio
-    siteConfig = await getSiteConfig();
+    // Obtener propiedades destacadas, configuración del sitio y taxonomías en paralelo
+    [featuredProperties, siteConfig, propertyTypes, propertyCities] = await Promise.all([
+      getFeaturedProperties(6),
+      getSiteConfig(),
+      getPropertyTypes(),
+      getPropertyCities(),
+    ]);
   } catch (err) {
     console.error("Error loading data:", err);
     error =
@@ -78,8 +82,11 @@ export default async function Home() {
       <Header config={siteConfig} />
 
       <main className="min-h-screen bg-white">
-        {/* Hero Section con efecto parallax */}
-        <HeroSection />
+        {/* Hero Section con efecto parallax - Ahora con taxonomías */}
+        <HeroSection 
+          propertyTypes={propertyTypes}
+          propertyCities={propertyCities}
+        />
 
         {/* Propiedades Destacadas */}
         <section className="py-32 bg-white">
@@ -131,8 +138,8 @@ export default async function Home() {
           </Container>
         </section>
 
-        {/* Propiedades en Venta - Categorías */}
-        <PropertyCategoriesSection />
+        {/* Propiedades en Venta - Categorías con taxonomías reales */}
+        <PropertyCategoriesSection propertyTypes={propertyTypes} />
 
         {/* Sección Experiencia */}
         <section className="relative py-40 px-6 overflow-hidden">
