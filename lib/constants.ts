@@ -25,12 +25,12 @@ export const API_ENDPOINTS = {
   PROPERTIES: '/wp/v2/properties',
   AGENTS: '/wp/v2/team',
   
-  // Taxonomías de propiedades (singular según Easy Real Estate)
-  PROPERTY_TYPES: '/wp/v2/property-type',
-  PROPERTY_STATUS: '/wp/v2/property-status',
-  PROPERTY_FEATURES: '/wp/v2/property-feature',
-  PROPERTY_CITIES: '/wp/v2/property-city',
-  PROPERTY_AREAS: '/wp/v2/property-area',
+  // Taxonomías de propiedades (endpoints reales en español de WordPress)
+  PROPERTY_TYPES: '/wp/v2/tipos-propiedad',
+  PROPERTY_STATUS: '/wp/v2/estatus-propiedad',
+  PROPERTY_FEATURES: '/wp/v2/características-propiedad',
+  PROPERTY_CITIES: '/wp/v2/ciudades-propiedad',
+  PROPERTY_AREAS: '/wp/v2/areas-propiedad',
   
   // Endpoints custom de Versus Headless API
   SITE_CONFIG: '/versus/v1/config',

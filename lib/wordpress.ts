@@ -461,31 +461,10 @@ export async function getTaxonomy(
 }
 
 /**
- * Obtener tipos de propiedad
- */
-export async function getPropertyTypes(): Promise<WPTaxonomy[]> {
-  return getTaxonomy(API_ENDPOINTS.PROPERTY_TYPES);
-}
-
-/**
- * Obtener estados de propiedad (Venta, Alquiler, etc.)
- */
-export async function getPropertyStatuses(): Promise<WPTaxonomy[]> {
-  return getTaxonomy(API_ENDPOINTS.PROPERTY_STATUS);
-}
-
-/**
  * Obtener características de propiedad
  */
 export async function getPropertyFeatures(): Promise<WPTaxonomy[]> {
   return getTaxonomy(API_ENDPOINTS.PROPERTY_FEATURES);
-}
-
-/**
- * Obtener ciudades
- */
-export async function getPropertyCities(): Promise<WPTaxonomy[]> {
-  return getTaxonomy(API_ENDPOINTS.PROPERTY_CITIES);
 }
 
 /**
@@ -937,5 +916,175 @@ export async function getTeamMemberById(id: string | number) {
       console.error(`Error fetching team member with ID ${id}:`, err);
       return null;
     }
+  }
+}
+
+/**
+ * ==============================================================
+ * TAXONOMÍAS DE PROPIEDADES
+ * ==============================================================
+ * Funciones para obtener taxonomías de propiedades (tipos, ciudades, estados)
+ * Usadas para poblar filtros dinámicamente desde WordPress
+ */
+
+/**
+ * Obtener tipos de propiedades (property_type)
+ * Ejemplos: Apartamento, Casa, Chalet, Local Comercial, etc.
+ * @param params - Parámetros de consulta opcionales
+ * @returns Lista de tipos de propiedades
+ */
+export async function getPropertyTypes(params: WPQueryParams = {}) {
+  const defaultParams = {
+    per_page: 100, // Obtener todos los tipos
+    hide_empty: true, // Solo tipos con propiedades
+    ...params,
+  };
+
+  const queryString = buildQueryString(defaultParams);
+  
+  try {
+    const types = await fetchAPI<WPTaxonomy[]>(`${API_ENDPOINTS.PROPERTY_TYPES}${queryString}`);
+    
+    if (IS_DEV) {
+      console.log(`[WordPress API] Found ${types.length} property types`);
+    }
+    
+    // Si no hay datos de WordPress, usar datos de fallback
+    if (!types || types.length === 0) {
+      if (IS_DEV) {
+        console.log('[WordPress API] Using fallback property types');
+      }
+      return [
+        { id: 1, name: 'Apartamento', slug: 'apartamento', count: 0, taxonomy: 'property-type' },
+        { id: 2, name: 'Casa', slug: 'casa', count: 0, taxonomy: 'property-type' },
+        { id: 3, name: 'Chalet', slug: 'chalet', count: 0, taxonomy: 'property-type' },
+        { id: 4, name: 'Villa', slug: 'villa', count: 0, taxonomy: 'property-type' },
+        { id: 5, name: 'Piso', slug: 'piso', count: 0, taxonomy: 'property-type' },
+        { id: 6, name: 'Local Comercial', slug: 'local-comercial', count: 0, taxonomy: 'property-type' },
+        { id: 7, name: 'Ático', slug: 'atico', count: 0, taxonomy: 'property-type' },
+        { id: 8, name: 'Estudio', slug: 'estudio', count: 0, taxonomy: 'property-type' },
+      ] as WPTaxonomy[];
+    }
+    
+    return types;
+  } catch (error) {
+    if (IS_DEV) {
+      console.error('[WordPress API] Error fetching property types:', error);
+      console.log('[WordPress API] Using fallback property types');
+    }
+    // Retornar datos de fallback en caso de error
+    return [
+      { id: 1, name: 'Apartamento', slug: 'apartamento', count: 0, taxonomy: 'property-type' },
+      { id: 2, name: 'Casa', slug: 'casa', count: 0, taxonomy: 'property-type' },
+      { id: 3, name: 'Chalet', slug: 'chalet', count: 0, taxonomy: 'property-type' },
+      { id: 4, name: 'Villa', slug: 'villa', count: 0, taxonomy: 'property-type' },
+      { id: 5, name: 'Piso', slug: 'piso', count: 0, taxonomy: 'property-type' },
+    ] as WPTaxonomy[];
+  }
+}
+
+/**
+ * Obtener ciudades/parroquias de propiedades (property_city)
+ * Ejemplos: Andorra la Vella, Escaldes-Engordany, Encamp, etc.
+ * @param params - Parámetros de consulta opcionales
+ * @returns Lista de ciudades/parroquias
+ */
+export async function getPropertyCities(params: WPQueryParams = {}) {
+  const defaultParams = {
+    per_page: 100, // Obtener todas las ciudades
+    hide_empty: true, // Solo ciudades con propiedades
+    ...params,
+  };
+
+  const queryString = buildQueryString(defaultParams);
+  
+  try {
+    const cities = await fetchAPI<WPTaxonomy[]>(`${API_ENDPOINTS.PROPERTY_CITIES}${queryString}`);
+    
+    if (IS_DEV) {
+      console.log(`[WordPress API] Found ${cities.length} property cities`);
+    }
+    
+    // Si no hay datos de WordPress, usar datos de fallback (parroquias de Andorra)
+    if (!cities || cities.length === 0) {
+      if (IS_DEV) {
+        console.log('[WordPress API] Using fallback property cities (Andorra parishes)');
+      }
+      return [
+        { id: 1, name: 'Andorra la Vella', slug: 'andorra-la-vella', count: 0, taxonomy: 'property-city' },
+        { id: 2, name: 'Canillo', slug: 'canillo', count: 0, taxonomy: 'property-city' },
+        { id: 3, name: 'Encamp', slug: 'encamp', count: 0, taxonomy: 'property-city' },
+        { id: 4, name: 'Escaldes-Engordany', slug: 'escaldes-engordany', count: 0, taxonomy: 'property-city' },
+        { id: 5, name: 'La Massana', slug: 'la-massana', count: 0, taxonomy: 'property-city' },
+        { id: 6, name: 'Ordino', slug: 'ordino', count: 0, taxonomy: 'property-city' },
+        { id: 7, name: 'Sant Julià de Lòria', slug: 'sant-julia-de-loria', count: 0, taxonomy: 'property-city' },
+      ] as WPTaxonomy[];
+    }
+    
+    return cities;
+  } catch (error) {
+    if (IS_DEV) {
+      console.error('[WordPress API] Error fetching property cities:', error);
+      console.log('[WordPress API] Using fallback property cities');
+    }
+    // Retornar datos de fallback en caso de error (parroquias de Andorra)
+    return [
+      { id: 1, name: 'Andorra la Vella', slug: 'andorra-la-vella', count: 0, taxonomy: 'property-city' },
+      { id: 2, name: 'Canillo', slug: 'canillo', count: 0, taxonomy: 'property-city' },
+      { id: 3, name: 'Encamp', slug: 'encamp', count: 0, taxonomy: 'property-city' },
+      { id: 4, name: 'Escaldes-Engordany', slug: 'escaldes-engordany', count: 0, taxonomy: 'property-city' },
+      { id: 5, name: 'La Massana', slug: 'la-massana', count: 0, taxonomy: 'property-city' },
+      { id: 6, name: 'Ordino', slug: 'ordino', count: 0, taxonomy: 'property-city' },
+      { id: 7, name: 'Sant Julià de Lòria', slug: 'sant-julia-de-loria', count: 0, taxonomy: 'property-city' },
+    ] as WPTaxonomy[];
+  }
+}
+
+/**
+ * Obtener estados de propiedades (property_status)
+ * Ejemplos: En Venta, En Alquiler, Vendido, Reservado, etc.
+ * @param params - Parámetros de consulta opcionales
+ * @returns Lista de estados de propiedades
+ */
+export async function getPropertyStatuses(params: WPQueryParams = {}) {
+  const defaultParams = {
+    per_page: 100, // Obtener todos los estados
+    hide_empty: true, // Solo estados con propiedades
+    ...params,
+  };
+
+  const queryString = buildQueryString(defaultParams);
+  
+  try {
+    const statuses = await fetchAPI<WPTaxonomy[]>(`${API_ENDPOINTS.PROPERTY_STATUS}${queryString}`);
+    
+    if (IS_DEV) {
+      console.log(`[WordPress API] Found ${statuses.length} property statuses`);
+    }
+    
+    // Si no hay datos de WordPress, usar datos de fallback
+    if (!statuses || statuses.length === 0) {
+      if (IS_DEV) {
+        console.log('[WordPress API] Using fallback property statuses');
+      }
+      return [
+        { id: 1, name: 'En Venta', slug: 'en-venta', count: 0, taxonomy: 'property-status' },
+        { id: 2, name: 'En Alquiler', slug: 'en-alquiler', count: 0, taxonomy: 'property-status' },
+        { id: 3, name: 'Vendido', slug: 'vendido', count: 0, taxonomy: 'property-status' },
+        { id: 4, name: 'Alquilado', slug: 'alquilado', count: 0, taxonomy: 'property-status' },
+      ] as WPTaxonomy[];
+    }
+    
+    return statuses;
+  } catch (error) {
+    if (IS_DEV) {
+      console.error('[WordPress API] Error fetching property statuses:', error);
+      console.log('[WordPress API] Using fallback property statuses');
+    }
+    // Retornar datos de fallback en caso de error
+    return [
+      { id: 1, name: 'En Venta', slug: 'en-venta', count: 0, taxonomy: 'property-status' },
+      { id: 2, name: 'En Alquiler', slug: 'en-alquiler', count: 0, taxonomy: 'property-status' },
+    ] as WPTaxonomy[];
   }
 }
