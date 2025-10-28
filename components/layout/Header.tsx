@@ -2,10 +2,37 @@
  * Header Component
  * 
  * Header principal del sitio con diseño premium y minimalista.
- * Incluye navegación dinámica con dropdowns, selector de idiomas y logo.
+ * Incluye navegación dinámica con dropdowns mejorados, selector de idiomas y logo.
+ * 
+ * CHANGELOG v5.1.0:
+ * 
+ * DROPDOWN PROPIEDADES:
+ * - Dropdown rediseñado con diseño premium y mayor ancho (520px)
+ * - Iconos SVG en headers de sección (ubicación y edificio)
+ * - Botón "Ver todas las parroquias" al final de la columna Parroquias
+ * - Botón "Ver todos los tipos" al final de la columna Tipos
+ * - Ambos botones con iconos y flechas animadas
+ * - Efectos hover mejorados: gradient backgrounds y transformaciones
+ * - Links con iconos de flecha que cambian de color en hover
+ * - Versión móvil con mismo diseño y funcionalidad
+ * 
+ * DROPDOWN SOBRE NOSOTROS:
+ * - Ancho aumentado a 288px (w-72) para mejor visualización
+ * - Iconos de empresa y equipo en cada link
+ * - Iconos de flecha animados en cada opción
+ * - Hover con gradiente (igual que Propiedades)
+ * - Efecto de traducción en textos en hover
+ * - Sombra premium (shadow-2xl)
+ * - Versión móvil actualizada con mismo estilo
+ * 
+ * COHERENCIA VISUAL:
+ * - Todos los dropdowns con mismo estilo de diseño
+ * - Mismos efectos hover y transiciones
+ * - Padding y spacing consistentes
+ * - Iconos y flechas uniformes en todo el header
  * 
  * @component
- * @version 4.0.0
+ * @version 5.1.0
  */
 
 'use client';
@@ -213,43 +240,107 @@ export function Header({ config }: HeaderProps) {
 
                         {/* Dropdown Desktop */}
                         {isPropertiesDropdownOpen && (
-                          <div className="absolute top-full left-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden">
+                          <div className="absolute top-full left-0 mt-2 w-[520px] bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden">
                             <div className="grid grid-cols-2 divide-x divide-gray-100">
                               {/* Columna Parroquias */}
-                              <div className="p-4">
-                                <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3 px-4">
-                                  Parroquias
-                                </h3>
-                                <div className="space-y-1">
+                              <div className="p-5">
+                                <div className="flex items-center gap-2 mb-4 px-3">
+                                  <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                  </svg>
+                                  <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Parroquias
+                                  </h3>
+                                </div>
+                                <div className="space-y-0.5 mb-3">
                                   {parishes.map((parish) => (
                                     <Link
                                       key={parish.slug}
-                                      href={`/propiedades?parroquia=${parish.slug}`}
+                                      href={`/propiedades?ciudad=${parish.slug}`}
                                       onClick={() => setIsPropertiesDropdownOpen(false)}
-                                      className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors duration-200 font-light"
+                                      className="group flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100/50 rounded-lg transition-all duration-200 font-light"
                                     >
-                                      {parish.name}
+                                      <svg className="w-4 h-4 text-gray-400 group-hover:text-brand transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                      </svg>
+                                      <span className="group-hover:translate-x-0.5 transition-transform duration-200">
+                                        {parish.name}
+                                      </span>
                                     </Link>
                                   ))}
+                                </div>
+                                
+                                {/* Botón Ver Todas Parroquias */}
+                                <div className="pt-3 border-t border-gray-100">
+                                  <Link
+                                    href="/propiedades"
+                                    onClick={() => setIsPropertiesDropdownOpen(false)}
+                                    className="group flex items-center justify-between px-3 py-2.5 text-sm font-medium text-brand hover:bg-brand/5 rounded-lg transition-all duration-200"
+                                  >
+                                    <span className="flex items-center gap-2">
+                                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                                          d="M4 6h16M4 12h16M4 18h16" />
+                                      </svg>
+                                      Ver todas las parroquias
+                                    </span>
+                                    <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                    </svg>
+                                  </Link>
                                 </div>
                               </div>
 
                               {/* Columna Tipos */}
-                              <div className="p-4">
-                                <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3 px-4">
-                                  Tipo
-                                </h3>
-                                <div className="space-y-1">
+                              <div className="p-5">
+                                <div className="flex items-center gap-2 mb-4 px-3">
+                                  <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                  </svg>
+                                  <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Tipo de Propiedad
+                                  </h3>
+                                </div>
+                                <div className="space-y-0.5 mb-3">
                                   {propertyTypes.map((type) => (
                                     <Link
                                       key={type.slug}
-                                      href={`/propiedades?tipo=${type.slug}`}
+                                      href={type.slug === 'todas' ? '/propiedades' : `/propiedades?tipo=${type.slug}`}
                                       onClick={() => setIsPropertiesDropdownOpen(false)}
-                                      className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors duration-200 font-light"
+                                      className="group flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100/50 rounded-lg transition-all duration-200 font-light"
                                     >
-                                      {type.name}
+                                      <svg className="w-4 h-4 text-gray-400 group-hover:text-brand transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                      </svg>
+                                      <span className="group-hover:translate-x-0.5 transition-transform duration-200">
+                                        {type.name}
+                                      </span>
                                     </Link>
                                   ))}
+                                </div>
+                                
+                                {/* Botón Ver Todos los Tipos */}
+                                <div className="pt-3 border-t border-gray-100">
+                                  <Link
+                                    href="/propiedades"
+                                    onClick={() => setIsPropertiesDropdownOpen(false)}
+                                    className="group flex items-center justify-between px-3 py-2.5 text-sm font-medium text-brand hover:bg-brand/5 rounded-lg transition-all duration-200"
+                                  >
+                                    <span className="flex items-center gap-2">
+                                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                                          d="M4 6h16M4 12h16M4 18h16" />
+                                      </svg>
+                                      Ver todos los tipos
+                                    </span>
+                                    <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                    </svg>
+                                  </Link>
                                 </div>
                               </div>
                             </div>
@@ -299,24 +390,45 @@ export function Header({ config }: HeaderProps) {
 
                         {/* Dropdown Desktop - Sobre Nosotros */}
                         {isAboutDropdownOpen && (
-                          <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden">
-                            <div className="p-2">
-                              <Link
-                                href="/nosotros"
-                                onClick={() => setIsAboutDropdownOpen(false)}
-                                className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors duration-200 font-light"
-                              >
-                                <div className="font-medium mb-0.5">Quiénes somos</div>
-                                <div className="text-xs text-gray-500">Conoce nuestra historia</div>
-                              </Link>
-                              <Link
-                                href="/nuestro-equipo"
-                                onClick={() => setIsAboutDropdownOpen(false)}
-                                className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors duration-200 font-light"
-                              >
-                                <div className="font-medium mb-0.5">Nuestro equipo</div>
-                                <div className="text-xs text-gray-500">Profesionales expertos</div>
-                              </Link>
+                          <div className="absolute top-full left-0 mt-2 w-72 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden">
+                            <div className="p-5">
+                              <div className="space-y-0.5">
+                                <Link
+                                  href="/nosotros"
+                                  onClick={() => setIsAboutDropdownOpen(false)}
+                                  className="group flex items-start gap-3 px-3 py-3 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100/50 rounded-lg transition-all duration-200"
+                                >
+                                  <svg className="w-5 h-5 text-gray-400 group-hover:text-brand transition-colors flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                  </svg>
+                                  <div className="flex-1">
+                                    <div className="font-medium text-sm text-gray-900 mb-0.5 group-hover:translate-x-0.5 transition-transform duration-200">Quiénes somos</div>
+                                    <div className="text-xs text-gray-500 font-light">Conoce nuestra historia</div>
+                                  </div>
+                                  <svg className="w-4 h-4 text-gray-400 group-hover:text-brand group-hover:translate-x-0.5 transition-all flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                  </svg>
+                                </Link>
+                                
+                                <Link
+                                  href="/nuestro-equipo"
+                                  onClick={() => setIsAboutDropdownOpen(false)}
+                                  className="group flex items-start gap-3 px-3 py-3 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100/50 rounded-lg transition-all duration-200"
+                                >
+                                  <svg className="w-5 h-5 text-gray-400 group-hover:text-brand transition-colors flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                  </svg>
+                                  <div className="flex-1">
+                                    <div className="font-medium text-sm text-gray-900 mb-0.5 group-hover:translate-x-0.5 transition-transform duration-200">Nuestro equipo</div>
+                                    <div className="text-xs text-gray-500 font-light">Profesionales expertos</div>
+                                  </div>
+                                  <svg className="w-4 h-4 text-gray-400 group-hover:text-brand group-hover:translate-x-0.5 transition-all flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                  </svg>
+                                </Link>
+                              </div>
                             </div>
                           </div>
                         )}
@@ -508,51 +620,102 @@ export function Header({ config }: HeaderProps) {
                       {isMobilePropertiesOpen && (
                         <div className="pb-3 px-4 bg-white/5 rounded-b-lg">
                           <div className="space-y-1 pt-2">
-                            <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mb-2 px-2">
-                              Parroquias
+                            <div className="flex items-center gap-2 mb-2 px-2">
+                              <svg className="w-3.5 h-3.5 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                              </svg>
+                              <div className="text-xs font-semibold text-white/60 uppercase tracking-wider">
+                                Parroquias
+                              </div>
                             </div>
                             {parishes.slice(0, 4).map((parish) => (
                               <Link
                                 key={parish.slug}
-                                href={`/propiedades?parroquia=${parish.slug}`}
+                                href={`/propiedades?ciudad=${parish.slug}`}
                                 onClick={() => {
                                   setIsMobileMenuOpen(false);
                                   setIsMobilePropertiesOpen(false);
                                 }}
-                                className="block py-2 px-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded font-light transition-colors"
+                                className="group flex items-center gap-2 py-2 px-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded font-light transition-all"
                               >
+                                <svg className="w-3.5 h-3.5 text-white/40 group-hover:text-brand transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                </svg>
                                 {parish.name}
                               </Link>
                             ))}
                             
-                            <div className="border-t border-white/10 my-3 mx-2"></div>
-                            
-                            <div className="text-xs font-semibold text-white/60 uppercase tracking-wider mt-3 mb-2 px-2">
-                              Tipo de propiedad
-                            </div>
-                            {propertyTypes.slice(0, 4).map((type) => (
-                              <Link
-                                key={type.slug}
-                                href={`/propiedades?tipo=${type.slug}`}
-                                onClick={() => {
-                                  setIsMobileMenuOpen(false);
-                                  setIsMobilePropertiesOpen(false);
-                                }}
-                                className="block py-2 px-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded font-light transition-colors"
-                              >
-                                {type.name}
-                              </Link>
-                            ))}
-                            
+                            {/* Botón Ver Todas Parroquias - Móvil */}
                             <Link
                               href="/propiedades"
                               onClick={() => {
                                 setIsMobileMenuOpen(false);
                                 setIsMobilePropertiesOpen(false);
                               }}
-                              className="block py-2 px-2 mt-2 text-sm text-brand font-medium hover:bg-white/10 rounded transition-colors"
+                              className="group flex items-center justify-between py-2.5 px-2 mt-1 text-sm text-brand font-medium hover:bg-brand/10 rounded transition-all"
                             >
-                              Ver todas →
+                              <span className="flex items-center gap-2">
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                                    d="M4 6h16M4 12h16M4 18h16" />
+                                </svg>
+                                Ver todas las parroquias
+                              </span>
+                              <svg className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                              </svg>
+                            </Link>
+                            
+                            <div className="border-t border-white/10 my-3 mx-2"></div>
+                            
+                            <div className="flex items-center gap-2 mb-2 px-2">
+                              <svg className="w-3.5 h-3.5 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                              </svg>
+                              <div className="text-xs font-semibold text-white/60 uppercase tracking-wider">
+                                Tipo de propiedad
+                              </div>
+                            </div>
+                            {propertyTypes.slice(0, 4).map((type) => (
+                              <Link
+                                key={type.slug}
+                                href={type.slug === 'todas' ? '/propiedades' : `/propiedades?tipo=${type.slug}`}
+                                onClick={() => {
+                                  setIsMobileMenuOpen(false);
+                                  setIsMobilePropertiesOpen(false);
+                                }}
+                                className="group flex items-center gap-2 py-2 px-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded font-light transition-all"
+                              >
+                                <svg className="w-3.5 h-3.5 text-white/40 group-hover:text-brand transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                </svg>
+                                {type.name}
+                              </Link>
+                            ))}
+                            
+                            {/* Botón Ver Todos los Tipos - Móvil */}
+                            <Link
+                              href="/propiedades"
+                              onClick={() => {
+                                setIsMobileMenuOpen(false);
+                                setIsMobilePropertiesOpen(false);
+                              }}
+                              className="group flex items-center justify-between py-2.5 px-2 mt-1 text-sm text-brand font-medium hover:bg-brand/10 rounded transition-all"
+                            >
+                              <span className="flex items-center gap-2">
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                                    d="M4 6h16M4 12h16M4 18h16" />
+                                </svg>
+                                Ver todos los tipos
+                              </span>
+                              <svg className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                              </svg>
                             </Link>
                           </div>
                         </div>
@@ -589,26 +752,47 @@ export function Header({ config }: HeaderProps) {
                       {/* Mobile Dropdown Content - Sobre Nosotros */}
                       {isMobileAboutOpen && (
                         <div className="pb-3 px-4 bg-white/5 rounded-b-lg">
-                          <div className="space-y-1 pt-2">
+                          <div className="space-y-0.5 pt-2">
                             <Link
                               href="/nosotros"
                               onClick={() => {
                                 setIsMobileMenuOpen(false);
                                 setIsMobileAboutOpen(false);
                               }}
-                              className="block py-2 px-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded font-light transition-colors"
+                              className="group flex items-start gap-2 py-2.5 px-2 hover:bg-white/10 rounded font-light transition-all"
                             >
-                              Quiénes somos
+                              <svg className="w-4 h-4 text-white/40 group-hover:text-brand transition-colors flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                              </svg>
+                              <div className="flex-1">
+                                <div className="text-sm text-white/90 font-normal">Quiénes somos</div>
+                                <div className="text-xs text-white/60 mt-0.5">Conoce nuestra historia</div>
+                              </div>
+                              <svg className="w-3.5 h-3.5 text-white/40 group-hover:text-brand group-hover:translate-x-0.5 transition-all flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                              </svg>
                             </Link>
+                            
                             <Link
                               href="/nuestro-equipo"
                               onClick={() => {
                                 setIsMobileMenuOpen(false);
                                 setIsMobileAboutOpen(false);
                               }}
-                              className="block py-2 px-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded font-light transition-colors"
+                              className="group flex items-start gap-2 py-2.5 px-2 hover:bg-white/10 rounded font-light transition-all"
                             >
-                              Nuestro equipo
+                              <svg className="w-4 h-4 text-white/40 group-hover:text-brand transition-colors flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                              </svg>
+                              <div className="flex-1">
+                                <div className="text-sm text-white/90 font-normal">Nuestro equipo</div>
+                                <div className="text-xs text-white/60 mt-0.5">Profesionales expertos</div>
+                              </div>
+                              <svg className="w-3.5 h-3.5 text-white/40 group-hover:text-brand group-hover:translate-x-0.5 transition-all flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                              </svg>
                             </Link>
                           </div>
                         </div>
