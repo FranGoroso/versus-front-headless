@@ -29,7 +29,7 @@
 
 import Link from 'next/link';
 import { getProperties, getSiteConfig, transformToPropertyCard, getPropertyTypes, getPropertyCities } from '@/lib/wordpress';
-import { PropertyCard as PropertyCardType } from '@/types';
+import { PropertyCard as PropertyCardType, WPTaxonomy } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
@@ -137,8 +137,8 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
    */
   let properties: PropertyCardType[] = [];
   let siteConfig = null;
-  let propertyTypes = [];
-  let propertyCities = [];
+  let propertyTypes: WPTaxonomy[] = [];
+  let propertyCities: WPTaxonomy[] = [];
   let error = null;
 
   try {
@@ -188,7 +188,11 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
           name: typeName,
           slug: typeSlug,
           count: 1,
-          taxonomy: 'property-type'
+          taxonomy: 'property-type',
+          description: '',
+          link: '',
+          parent: 0,
+          meta: []
         });
       }
     });
@@ -203,7 +207,11 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
           name: cityName,
           slug: citySlug,
           count: 1,
-          taxonomy: 'property-city'
+          taxonomy: 'property-city',
+          description: '',
+          link: '',
+          parent: 0,
+          meta: []
         });
       }
     });

@@ -27,7 +27,7 @@ export interface SiteConfig {
  * Idiomas disponibles en el sitio
  */
 export interface SiteLanguages {
-  [key: string]: string;
+  [key: string]: string | undefined;
   es: string;
   en: string;
   fr: string;

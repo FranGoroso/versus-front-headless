@@ -4,6 +4,31 @@
  */
 
 /**
+ * Estructura de datos embebidos (_embedded) de WordPress API
+ * Se obtiene cuando se usa el parámetro ?_embed=1 en la API
+ */
+export interface WPEmbedded {
+  author?: WPAuthor[];
+  'wp:featuredmedia'?: WPMedia[];
+  'wp:term'?: WPTerm[][];
+  replies?: WPPost[][];
+}
+
+/**
+ * Término de taxonomía (categoría, etiqueta, etc.)
+ */
+export interface WPTerm {
+  id: number;
+  link: string;
+  name: string;
+  slug: string;
+  taxonomy: string;
+  count?: number;
+  description?: string;
+  parent?: number;
+}
+
+/**
  * Estructura base de respuesta de WordPress API
  */
 export interface WordPressAPIResponse<T> {
@@ -74,6 +99,7 @@ export interface WPPost {
   categories?: number[];
   tags?: number[];
   acf?: Record<string, any>;
+  _embedded?: WPEmbedded; // Datos embebidos cuando se usa ?_embed=1
 }
 
 /**

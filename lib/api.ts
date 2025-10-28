@@ -275,7 +275,7 @@ export function generateBreadcrumbs(path: string, title?: string) {
     
     breadcrumbs.push({
       title: isLast && title ? title : segment.replace(/-/g, ' '),
-      url: isLast ? undefined : currentPath,
+      url: isLast ? '' : currentPath,
       isActive: isLast,
     });
   });

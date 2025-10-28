@@ -8,7 +8,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getFeaturedProperties, getSiteConfig, transformToPropertyCard, getPropertyTypes, getPropertyCities } from "@/lib/wordpress";
-import { PropertyCard as PropertyCardType } from "@/types";
+import { PropertyCard as PropertyCardType, WPTaxonomy } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Header } from "@/components/layout/Header";
@@ -46,8 +46,8 @@ export default async function Home() {
    */
   let featuredProperties: PropertyCardType[] = [];
   let siteConfig = null;
-  let propertyTypes = [];
-  let propertyCities = [];
+  let propertyTypes: WPTaxonomy[] = [];
+  let propertyCities: WPTaxonomy[] = [];
   let error = null;
 
   try {

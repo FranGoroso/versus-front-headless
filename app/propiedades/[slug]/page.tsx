@@ -17,6 +17,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getPropertyBySlug, getAllPropertySlugs, getSiteConfig, formatPrice, getProperties, transformToPropertyCard } from '@/lib/wordpress';
+import { PropertyCard as PropertyCardType } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Header } from '@/components/layout/Header';
@@ -130,7 +131,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
    * 3. Excluir la propiedad actual
    * 4. Limitar a 3 propiedades
    */
-  let similarProperties = [];
+  let similarProperties: PropertyCardType[] = [];
   try {
     // Obtener propiedades (más de las que necesitamos para poder filtrar)
     const allProps = await getProperties({ per_page: 20 });
@@ -202,7 +203,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
         <section className="py-8">
           <Container>
             <PropertyGallery
-              featuredImage={featured_image}
+              featuredImage={featured_image || undefined}
               gallery={gallery}
               title={title.rendered}
             />
