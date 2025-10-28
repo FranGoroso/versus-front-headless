@@ -21,6 +21,13 @@ const nextConfig = {
         port: '',
         pathname: '/wp-content/uploads/**',
       },
+      // WordPress en VPS Hostinger (NUEVO)
+      {
+        protocol: 'https',
+        hostname: 'srv871306.hstgr.cloud',
+        port: '',
+        pathname: '/wp-content/uploads/**',
+      },
       // Mantener imágenes de Pexels para placeholders
       {
         protocol: 'https',
@@ -44,9 +51,6 @@ const nextConfig = {
       },
     ],
   },
-  
-  // Habilitar standalone para mejores builds
-  output: 'standalone',
 };
 
 module.exports = nextConfig;
