@@ -5,10 +5,10 @@
 
 /**
  * URLs de WordPress API
- * Se obtienen de las variables de entorno
+ * HARDCODEADO temporalmente para producción
  */
-export const WORDPRESS_API_URL = process.env.WORDPRESS_API_URL || process.env.NEXT_PUBLIC_WORDPRESS_API_URL || '';
-export const WORDPRESS_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || '';
+export const WORDPRESS_API_URL = 'https://srv871306.hstgr.cloud/wp-json';
+export const WORDPRESS_URL = 'https://srv871306.hstgr.cloud';
 
 /**
  * Endpoints de WordPress API
