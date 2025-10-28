@@ -4,20 +4,25 @@
  * Tarjeta de propiedad minimalista y elegante con detalles en color brand.
  * Diseño compacto con énfasis en la simplicidad y toques visuales sutiles.
  * 
- * Mejoras visuales v3.0:
+ * Mejoras visuales v4.0:
  * - Borde superior amarillo en hover (sutil pero elegante)
  * - Badge "Destacada" con fondo brand (#E6E258)
  * - Badge de tipo de propiedad (Chalet, Ático, etc.)
  * - Badge de estado (Venta/Alquiler) en esquina superior derecha
  * - Ciudad mostrada si no hay dirección específica
- * - Precio con acento brand al hacer hover
+ * - Precio en negro que se pone en negrita al hacer hover
  * - Iconos con transición suave a color brand
  * - Flecha de navegación con efecto brand en hover
- * - Overlay de imagen con gradiente más rico
+ * - Overlay de imagen con precio eliminado (más limpio)
+ * 
+ * CAMBIOS v4.0:
+ * - Eliminado overlay con precio en hover sobre la imagen
+ * - Precio inferior ahora se mantiene en negro y se pone en negrita en hover
+ * - Experiencia más limpia y minimalista
  * 
  * @component
- * @version 3.0.0
- * @updated 2025-10-26
+ * @version 4.0.0
+ * @updated 2025-10-28
  * @example
  * ```tsx
  * <PropertyCard property={propertyData} />
@@ -95,16 +100,6 @@ export function PropertyCard({ property, priority = false }: PropertyCardProps) 
             {property.status}
           </div>
         )}
-
-        {/* Overlay con gradiente mejorado - visible on hover */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent 
-                        opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-          <div className="absolute bottom-4 left-4 text-white">
-            <p className="text-2xl font-light tracking-tight drop-shadow-lg">
-              {formatPrice(property.price)}
-            </p>
-          </div>
-        </div>
       </Link>
 
       {/* Contenido de la tarjeta */}
@@ -166,10 +161,10 @@ export function PropertyCard({ property, priority = false }: PropertyCardProps) 
           )}
         </div>
 
-        {/* Precio y enlace con efectos brand */}
+        {/* Precio y enlace */}
         <div className="flex items-center justify-between pt-4 border-t border-gray-100">
           <div>
-            <p className="text-2xl font-light tracking-tight text-gray-900 group-hover:text-brand transition-colors duration-300">
+            <p className="text-2xl font-light tracking-tight text-gray-900 group-hover:font-medium transition-all duration-300">
               {formatPrice(property.price)}
             </p>
           </div>
@@ -189,22 +184,50 @@ export function PropertyCard({ property, priority = false }: PropertyCardProps) 
 /**
  * PropertyCardSkeleton
  * 
- * Skeleton loader minimalista para las cards con animación suave
+ * Skeleton loader minimalista para las cards con animación suave.
+ * Versión mejorada v2.0 con más detalles y animación más fluida.
+ * 
+ * @version 2.0.0
+ * @updated 2025-10-28
  */
 export function PropertyCardSkeleton() {
   return (
     <Card className="overflow-hidden border-0 shadow-sm bg-white">
-      <div className="relative h-52 bg-gray-100 animate-pulse" />
+      {/* Imagen skeleton con gradiente animado */}
+      <div className="relative h-52 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 animate-pulse">
+        {/* Badges skeleton */}
+        <div className="absolute top-3 left-3 flex gap-2">
+          <div className="h-6 bg-white/60 backdrop-blur-sm rounded-full w-20" />
+          <div className="h-6 bg-white/60 backdrop-blur-sm rounded-full w-16" />
+        </div>
+        {/* Badge derecha skeleton */}
+        <div className="absolute top-3 right-3">
+          <div className="h-6 bg-white/60 backdrop-blur-sm rounded-full w-16" />
+        </div>
+      </div>
+
+      {/* Contenido skeleton */}
       <div className="p-5">
+        {/* Ubicación skeleton */}
         <div className="h-3 bg-gray-100 rounded w-1/3 mb-2 animate-pulse" />
-        <div className="h-5 bg-gray-100 rounded mb-3 animate-pulse" />
+        
+        {/* Título skeleton - 2 líneas */}
+        <div className="space-y-2 mb-3">
+          <div className="h-5 bg-gray-100 rounded animate-pulse" />
+          <div className="h-5 bg-gray-100 rounded w-4/5 animate-pulse" />
+        </div>
+
+        {/* Características skeleton */}
         <div className="flex gap-4 mb-4">
           <div className="h-4 bg-gray-100 rounded w-12 animate-pulse" />
           <div className="h-4 bg-gray-100 rounded w-12 animate-pulse" />
           <div className="h-4 bg-gray-100 rounded w-16 animate-pulse" />
         </div>
-        <div className="pt-4 border-t border-gray-100">
+
+        {/* Divider + Precio skeleton */}
+        <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
           <div className="h-7 bg-gray-100 rounded w-32 animate-pulse" />
+          <div className="h-6 w-6 bg-gray-100 rounded-full animate-pulse" />
         </div>
       </div>
     </Card>

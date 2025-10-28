@@ -1,12 +1,13 @@
 /**
- * PropertyFilters Component (v3.1 - Debug Mode)
+ * PropertyFilters Component (v4.0 - Production Ready)
  * 
  * Barra de filtros fija con glassmorphism para la página de listado de propiedades.
- * VERSIÓN 3.1: Logs de debug para diagnosticar dropdowns vacíos
+ * VERSIÓN 4.0: Diseño profesional sin emojis, código limpio sin debug logs
  * 
- * Características v3.0:
- * - ✅ Filtros funcionales (no solo visuales)
- * - ✅ URL state management (SEO-friendly, sharable links)
+ * Características v4.0:
+ * - ✅ Diseño profesional con iconos SVG (sin emojis)
+ * - ✅ Código limpio (debug logs removidos)
+ * - ✅ Filtros funcionales con URL state management
  * - ✅ Taxonomías dinámicas desde WordPress API
  * - ✅ Glassmorphism effect premium
  * - ✅ Posición fixed siempre visible
@@ -14,14 +15,13 @@
  * - ✅ Back button compatible
  * 
  * @component
- * @version 3.1.0
+ * @version 4.0.0
  * @created 2025-10-26
- * @updated 2025-10-27 - Logs de debug agregados
+ * @updated 2025-10-28 - Diseño profesional sin emojis
  */
 
 'use client';
 
-import { useEffect } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Container } from '@/components/layout/Container';
 import { WPTaxonomy } from '@/types';
@@ -66,32 +66,6 @@ export function PropertyFilters({
   propertyTypes,
   propertyCities 
 }: PropertyFiltersProps) {
-  // ====================================================================
-  // DEBUG: Logs para diagnosticar dropdowns vacíos
-  // ====================================================================
-  console.log('\n🔧 [PropertyFilters] RENDER COMPONENT');
-  console.log('   Property Count:', propertyCount);
-  console.log('   Property Types:', {
-    isArray: Array.isArray(propertyTypes),
-    length: propertyTypes?.length || 0,
-    isEmpty: !propertyTypes || propertyTypes.length === 0,
-    first3: propertyTypes?.slice(0, 3)
-  });
-  console.log('   Property Cities:', {
-    isArray: Array.isArray(propertyCities),
-    length: propertyCities?.length || 0,
-    isEmpty: !propertyCities || propertyCities.length === 0,
-    first3: propertyCities?.slice(0, 3)
-  });
-
-  // DEBUG: Verificar en useEffect (ciclo de vida)
-  useEffect(() => {
-    console.log('\n🔧 [PropertyFilters] useEffect TRIGGERED');
-    console.log('   Property Types length:', propertyTypes?.length);
-    console.log('   Property Cities length:', propertyCities?.length);
-  }, [propertyTypes, propertyCities]);
-  // ====================================================================
-
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -136,11 +110,6 @@ export function PropertyFilters({
    */
   const hasActiveFilters = currentType || currentCity || currentBedrooms || (currentSort && currentSort !== 'date-desc');
 
-  // DEBUG: Log antes de renderizar los selects
-  console.log('🔧 [PropertyFilters] About to render selects with:');
-  console.log('   - propertyTypes.length:', propertyTypes?.length);
-  console.log('   - propertyCities.length:', propertyCities?.length);
-
   return (
     <div className="fixed top-[80px] left-0 right-0 z-40 backdrop-blur-xl bg-white/80 border-b border-gray-100 shadow-sm transition-all duration-300">
       <Container>
@@ -157,14 +126,11 @@ export function PropertyFilters({
                 className="appearance-none h-10 pl-4 pr-10 bg-white/90 border border-gray-200 rounded-full text-sm font-light text-gray-700 hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-300 cursor-pointer backdrop-blur-sm"
               >
                 <option value="">Tipo de propiedad</option>
-                {propertyTypes?.map((type) => {
-                  console.log('🔧 [PropertyFilters] Rendering option for type:', type.name);
-                  return (
-                    <option key={type.id} value={type.slug}>
-                      {type.name}
-                    </option>
-                  );
-                })}
+                {propertyTypes?.map((type) => (
+                  <option key={type.id} value={type.slug}>
+                    {type.name}
+                  </option>
+                ))}
               </select>
               <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
                 <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -181,14 +147,11 @@ export function PropertyFilters({
                 className="appearance-none h-10 pl-4 pr-10 bg-white/90 border border-gray-200 rounded-full text-sm font-light text-gray-700 hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-300 cursor-pointer backdrop-blur-sm"
               >
                 <option value="">Parroquia</option>
-                {propertyCities?.map((city) => {
-                  console.log('🔧 [PropertyFilters] Rendering option for city:', city.name);
-                  return (
-                    <option key={city.id} value={city.slug}>
-                      {city.name}
-                    </option>
-                  );
-                })}
+                {propertyCities?.map((city) => (
+                  <option key={city.id} value={city.slug}>
+                    {city.name}
+                  </option>
+                ))}
               </select>
               <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
                 <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -202,7 +165,11 @@ export function PropertyFilters({
 
             {/* Filtro: Habitaciones */}
             <div className="flex items-center gap-2">
-              <span className="text-sm font-light text-gray-600">🛏️</span>
+              {/* Icono SVG profesional de cama */}
+              <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} 
+                      d="M3 12h18M3 12v6h18v-6M3 12V9a3 3 0 013-3h12a3 3 0 013 3v3M7 21v-3m10 3v-3" />
+              </svg>
               <div className="flex gap-1">
                 {BEDROOMS_OPTIONS.map((option) => (
                   <button
@@ -307,7 +274,11 @@ export function PropertyFilters({
               {/* Fila 2: Habitaciones y Ordenar */}
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xs font-light text-gray-600">🛏️</span>
+                  {/* Icono SVG profesional de cama (mobile) */}
+                  <svg className="w-3.5 h-3.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} 
+                          d="M3 12h18M3 12v6h18v-6M3 12V9a3 3 0 013-3h12a3 3 0 013 3v3M7 21v-3m10 3v-3" />
+                  </svg>
                   {BEDROOMS_OPTIONS.map((option) => (
                     <button
                       key={option.value}

@@ -955,14 +955,17 @@ export async function getPropertyTypes(params: WPQueryParams = {}) {
         console.log('[WordPress API] Using fallback property types');
       }
       return [
-        { id: 1, name: 'Apartamento', slug: 'apartamento', count: 0, taxonomy: 'property-type' },
+        { id: 1, name: 'Apartamento / Piso', slug: 'apartamento-piso', count: 0, taxonomy: 'property-type' },
         { id: 2, name: 'Casa', slug: 'casa', count: 0, taxonomy: 'property-type' },
-        { id: 3, name: 'Chalet', slug: 'chalet', count: 0, taxonomy: 'property-type' },
-        { id: 4, name: 'Villa', slug: 'villa', count: 0, taxonomy: 'property-type' },
-        { id: 5, name: 'Piso', slug: 'piso', count: 0, taxonomy: 'property-type' },
-        { id: 6, name: 'Local Comercial', slug: 'local-comercial', count: 0, taxonomy: 'property-type' },
-        { id: 7, name: 'Ático', slug: 'atico', count: 0, taxonomy: 'property-type' },
-        { id: 8, name: 'Estudio', slug: 'estudio', count: 0, taxonomy: 'property-type' },
+        { id: 3, name: 'Casa adosada', slug: 'casa-adosada', count: 0, taxonomy: 'property-type' },
+        { id: 4, name: 'Chalet', slug: 'chalet', count: 0, taxonomy: 'property-type' },
+        { id: 5, name: 'Atico', slug: 'atico', count: 0, taxonomy: 'property-type' },
+        { id: 6, name: 'Atico duplex', slug: 'atico-duplex', count: 0, taxonomy: 'property-type' },
+        { id: 7, name: 'Borda', slug: 'borda', count: 0, taxonomy: 'property-type' },
+        { id: 8, name: 'Hotel', slug: 'hotel', count: 0, taxonomy: 'property-type' },
+        { id: 9, name: 'Comercial', slug: 'comercial', count: 0, taxonomy: 'property-type' },
+        { id: 10, name: 'Terrenos', slug: 'terrenos', count: 0, taxonomy: 'property-type' },
+        { id: 11, name: 'Nave industrial', slug: 'nave-industrial', count: 0, taxonomy: 'property-type' },
       ] as WPTaxonomy[];
     }
     
