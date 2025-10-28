@@ -4,8 +4,14 @@
  * Página principal del blog con diseño minimalista y elegante.
  * Conectado a WordPress REST API.
  * 
+ * Features:
+ * - Paginación funcional con URL Search Params
+ * - 9 posts por página (grid 3x3)
+ * - SEO-friendly URLs (/blog?page=2)
+ * - Post destacado en la primera página
+ * 
  * @page /blog
- * @version 2.1.0 - Debug mode
+ * @version 3.0.0 - Paginación funcional
  */
 
 import Image from 'next/image';
@@ -15,6 +21,7 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Container } from '@/components/layout/Container';
 import { NewsletterForm } from '@/components/sections/NewsletterForm';
+import { Pagination } from '@/components/blog/Pagination';
 
 /**
  * Revalidación ISR - cada hora
@@ -65,10 +72,26 @@ const categories = [
   { id: 4, name: 'Consejos', slug: 'consejos' },
 ];
 
-export default async function BlogPage() {
+/**
+ * Número de posts por página (grid 3x3)
+ */
+const POSTS_PER_PAGE = 9;
+
+/**
+ * Props de la página con searchParams para paginación
+ */
+interface BlogPageProps {
+  searchParams: {
+    page?: string;
+  };
+}
+
+export default async function BlogPage({ searchParams }: BlogPageProps) {
+  // Obtener página actual de URL (default: 1)
+  const currentPage = Number(searchParams.page) || 1;
   const siteConfig = await getSiteConfig();
   
-  // Obtener posts reales de WordPress (aumentado a 100 para debug)
+  // Obtener TODOS los posts de WordPress
   const postsData = await getPosts({ per_page: 100 });
   
   // DEBUG: Logs temporales para diagnóstico
@@ -104,13 +127,30 @@ export default async function BlogPage() {
   }));
 
   console.log('[BLOG] Posts después de transformar:', posts.length);
-  console.log('[BLOG] Post destacado:', posts[0]?.title?.rendered || 'No hay post destacado');
-  console.log('[BLOG] Posts en grid:', posts.slice(1).length);
+  console.log('[BLOG] Página actual:', currentPage);
   console.log('=== FIN BLOG DEBUG ===\n');
 
-  // Obtener el post destacado (el más reciente)
-  const featuredPost = posts[0];
-  const recentPosts = posts.slice(1);
+  // Calcular total de páginas
+  // Si estamos en página 1, el primer post es destacado, entonces usamos posts-1
+  const totalPosts = posts.length;
+  const postsForPagination = currentPage === 1 ? totalPosts - 1 : totalPosts;
+  const totalPages = Math.ceil(postsForPagination / POSTS_PER_PAGE);
+
+  // Post destacado: solo en la primera página
+  const featuredPost = currentPage === 1 ? posts[0] : null;
+
+  // Calcular posts para la página actual
+  let recentPosts: typeof posts = [];
+  
+  if (currentPage === 1) {
+    // Página 1: Mostrar posts 2-10 (porque el 1 es destacado)
+    recentPosts = posts.slice(1, 1 + POSTS_PER_PAGE);
+  } else {
+    // Páginas siguientes: Calcular offset considerando el post destacado
+    const startIndex = 1 + (currentPage - 1) * POSTS_PER_PAGE;
+    const endIndex = startIndex + POSTS_PER_PAGE;
+    recentPosts = posts.slice(startIndex, endIndex);
+  }
 
   return (
     <>
@@ -269,31 +309,11 @@ export default async function BlogPage() {
                 </div>
 
                 {/* Paginación */}
-                <div className="flex justify-center items-center gap-2 mt-16">
-                  <button className="p-3 rounded-full hover:bg-gray-100 transition-colors duration-300" disabled>
-                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
-                    </svg>
-                  </button>
-
-                  <div className="flex gap-2">
-                    <button className="w-10 h-10 rounded-full bg-gray-900 text-white text-sm font-light">
-                      1
-                    </button>
-                    <button className="w-10 h-10 rounded-full hover:bg-gray-100 text-gray-700 text-sm font-light transition-colors duration-300">
-                      2
-                    </button>
-                    <button className="w-10 h-10 rounded-full hover:bg-gray-100 text-gray-700 text-sm font-light transition-colors duration-300">
-                      3
-                    </button>
-                  </div>
-
-                  <button className="p-3 rounded-full hover:bg-gray-100 transition-colors duration-300">
-                    <svg className="w-5 h-5 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </button>
-                </div>
+                <Pagination 
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  basePath="/blog"
+                />
               </>
             ) : (
               <div className="text-center py-20">
