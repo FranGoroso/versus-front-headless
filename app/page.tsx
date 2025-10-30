@@ -141,57 +141,6 @@ export default async function Home() {
         {/* Propiedades en Venta - Categorías con taxonomías reales */}
         <PropertyCategoriesSection propertyTypes={propertyTypes} />
 
-        {/* Sección Experiencia */}
-        <section className="relative py-40 px-6 overflow-hidden">
-          <div className="absolute inset-0">
-            <Image
-              src="https://images.pexels.com/photos/1643389/pexels-photo-1643389.jpeg?auto=compress&cs=tinysrgb&w=1920"
-              alt="Luxury interior"
-              fill
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-black/75" />
-          </div>
-
-          <div className="relative z-10 max-w-4xl mx-auto text-center text-white">
-            <h2 className="text-4xl md:text-6xl font-light tracking-tight mb-8">
-              Experiencia que marca la diferencia
-            </h2>
-            <p className="text-xl mb-12 text-white/90 leading-relaxed font-light">
-              En Versus, cada propiedad cuenta una historia única. Nuestro
-              compromiso es conectarte con espacios que reflejen tu estilo de
-              vida y aspiraciones.
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-16 mt-20">
-              <div className="text-center">
-                <div className="text-lg font-light tracking-[0.3em] mb-4 text-white/90 uppercase">
-                  Cada Detalle
-                </div>
-                <div className="text-white/60 font-light text-base leading-relaxed">
-                  Importa en la búsqueda de tu espacio perfecto
-                </div>
-              </div>
-              <div className="text-center">
-                <div className="text-lg font-light tracking-[0.3em] mb-4 text-white/90 uppercase">
-                  Tu Visión
-                </div>
-                <div className="text-white/60 font-light text-base leading-relaxed">
-                  Nuestra misión es hacerla realidad
-                </div>
-              </div>
-              <div className="text-center">
-                <div className="text-lg font-light tracking-[0.3em] mb-4 text-white/90 uppercase">
-                  Más Que Propiedades
-                </div>
-                <div className="text-white/60 font-light text-base leading-relaxed">
-                  Construimos relaciones duraderas
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* Servicios */}
         <section id="servicios" className="py-32 bg-white">
           <Container>

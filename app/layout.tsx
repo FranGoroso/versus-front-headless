@@ -2,6 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Inter, Playfair_Display } from 'next/font/google';
 import { FloatingWhatsApp } from '@/components/common/FloatingWhatsApp';
+import { ScrollToTop } from '@/components/common/ScrollToTop';
 import { CookieBanner } from '@/components/common/CookieBanner';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
@@ -31,10 +32,14 @@ export default function RootLayout({
     <html lang="es">
       <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
         {children}
+        {/* Botón flotante de WhatsApp */}
         <FloatingWhatsApp 
           phoneNumber="+376600000000"
           message="Hola, estoy interesado en obtener más información sobre las propiedades en Andorra"
         />
+        {/* Botón scroll to top - aparece al hacer scroll */}
+        <ScrollToTop />
+        {/* Banner de cookies */}
         <CookieBanner />
       </body>
     </html>

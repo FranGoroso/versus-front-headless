@@ -331,3 +331,72 @@
     @apply text-black bg-white;
   }
 }
+
+/* Animaciones elegantes para PropertyCategoriesSection */
+/* Fade-in desde abajo para títulos de cards */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide-up para tooltips */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade-in simple para descripciones de tooltip */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-slideUp {
+  animation: slideUp 0.3s ease-out;
+}
+
+/* Animación para dropdown de filtros */
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Scrollbar personalizado para dropdown de filtros */
+/* Más fino y elegante para componentes pequeños */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-gray-200 rounded-full;
+  transition: background-color 0.2s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-300;
+}
+
+/* Firefox - scrollbar fino para dropdown */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #e5e7eb transparent;
+}

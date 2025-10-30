@@ -4,14 +4,26 @@
  * Sección que muestra las categorías principales de propiedades disponibles
  * en Andorra con imágenes representativas y descripciones.
  * 
+ * VERSIÓN 2.2:
+ * - Grid de 4 columnas en lugar de 5 para mejor visualización
+ * - Todas las cards con tamaño uniforme (sin card destacada)
+ * - Filtrado de categorías: excluye Ático dúplex, Borda y Nave industrial
+ * - Límite de 8 cards máximo para diseño 4x2 consistente
+ * - Overlay más suave (60% a 30%) para mostrar colores de las imágenes
+ * - Animaciones elegantes: fade-in, slide-up, y efectos de hover suaves
+ * - Texto CTA optimizado: "Explorar" en lugar de "Ver propiedades"
+ * - Sombras dinámicas que crecen con el hover para mayor profundidad
+ * - Descripciones truncadas a 80 caracteres para mantener elegancia
+ * - Animaciones fadeIn en tooltips con delay escalonado
+ * 
  * VERSIÓN 2.1:
  * - Mejor contraste: Overlay oscuro 70% + text-shadow
  * - Tooltip interactivo con descripción
  * - Soporte móvil: tap para mostrar tooltip, segundo tap para navegar
  * 
  * @component
- * @version 2.1.0
- * @updated 2025-10-27 - Mejoras de UI/UX
+ * @version 2.2.0
+ * @updated 2025-10-30 - Optimización de grid y filtrado de categorías
  */
 
 'use client';
@@ -129,7 +141,11 @@ function stripHTML(html: string): string {
   return text;
 }
 
-function truncateText(text: string, maxLength: number = 200): string {
+/**
+ * Truncar texto y limitar longitud para mantener descripciones cortas y elegantes
+ * Por defecto limita a 80 caracteres para cards
+ */
+function truncateText(text: string, maxLength: number = 80): string {
   if (!text || text.length <= maxLength) return text;
   const truncated = text.substring(0, maxLength);
   const lastSpace = truncated.lastIndexOf(' ');
@@ -137,7 +153,8 @@ function truncateText(text: string, maxLength: number = 200): string {
 }
 
 /**
- * Componente individual de categoría con tooltip
+ * Componente individual de categoría con animaciones elegantes
+ * Incluye efectos de hover, transiciones suaves y mejor contraste de color
  */
 function CategoryCard({ category, isHero = false }: { category: PropertyCategory; isHero?: boolean }) {
   const [showTooltip, setShowTooltip] = useState(false);
@@ -158,46 +175,83 @@ function CategoryCard({ category, isHero = false }: { category: PropertyCategory
       onClick={handleClick}
       onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
-      className={`group relative overflow-hidden rounded-2xl block ${
+      className={`group relative overflow-hidden rounded-2xl block shadow-lg hover:shadow-2xl transition-shadow duration-500 ${
         isHero ? 'aspect-[4/5] h-full' : 'aspect-[4/5]'
       }`}
     >
+      {/* Contenedor de imagen con efectos */}
       <div className="absolute inset-0">
         <Image
           src={category.image}
           alt={category.title}
           fill
-          className="object-cover group-hover:scale-110 group-hover:brightness-110 transition-all duration-700"
+          className="object-cover group-hover:scale-110 group-hover:brightness-110 transition-all duration-700 ease-out"
           sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30" />
+        {/* Overlay más suave para mostrar colores de las imágenes */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent group-hover:from-black/70 group-hover:via-black/40 transition-all duration-500" />
       </div>
 
+      {/* Contenedor de texto con animaciones escalonadas */}
       <div className="relative h-full flex flex-col justify-end p-6">
-        <h3 className={`text-white font-light tracking-tight mb-2 leading-tight ${
-          isHero ? 'text-2xl md:text-3xl lg:text-4xl' : 'text-lg md:text-xl'
-        }`} style={{ textShadow: '0 2px 8px rgba(0,0,0,0.6)' }}>
+        {/* Título con animación fade-in desde abajo */}
+        <h3 
+          className={`text-white font-light tracking-tight mb-3 leading-tight transform transition-all duration-500 group-hover:translate-y-[-4px] ${
+            isHero ? 'text-2xl md:text-3xl lg:text-4xl' : 'text-lg md:text-xl'
+          }`} 
+          style={{ 
+            textShadow: '0 2px 12px rgba(0,0,0,0.8)',
+            animation: 'fadeInUp 0.6s ease-out'
+          }}
+        >
           {category.title}
           {category.count !== undefined && category.count > 0 && (
             <span className="ml-2 text-sm text-white/90">({category.count})</span>
           )}
         </h3>
 
-        <div className="flex items-center gap-2 text-white/90 text-sm font-light opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
-          <span>Ver propiedades</span>
-          <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        {/* CTA con animación elegante y texto corto */}
+        <div 
+          className="flex items-center gap-2 text-white text-sm font-light opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-500 ease-out"
+          style={{ 
+            textShadow: '0 2px 8px rgba(0,0,0,0.8)',
+            transitionDelay: '0.1s'
+          }}
+        >
+          <span>Explorar</span>
+          <svg 
+            className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
           </svg>
         </div>
       </div>
 
+      {/* Tooltip con descripción corta y animaciones elegantes */}
       {showTooltip && category.description && (
-        <div className="absolute inset-x-0 bottom-0 bg-black/95 backdrop-blur-sm p-4 transform transition-all duration-300 ease-out">
-          <p className="text-white/90 text-sm font-light leading-relaxed" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}>
+        <div className="absolute inset-x-0 bottom-0 bg-black/95 backdrop-blur-sm p-4 transform transition-all duration-400 ease-out">
+          {/* Descripción con fade-in suave */}
+          <p 
+            className="text-white text-sm font-light leading-relaxed"
+            style={{ 
+              textShadow: '0 1px 3px rgba(0,0,0,0.8)',
+              animation: 'fadeIn 0.4s ease-out'
+            }}
+          >
             {category.description}
           </p>
-          <p className="text-white/60 text-xs mt-2 md:hidden" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}>
-            Toca de nuevo para ver propiedades
+          {/* Texto de instrucción para móvil con animación */}
+          <p 
+            className="text-white/70 text-xs mt-2 md:hidden"
+            style={{ 
+              textShadow: '0 1px 2px rgba(0,0,0,0.6)',
+              animation: 'fadeIn 0.5s ease-out 0.1s both'
+            }}
+          >
+            Toca de nuevo para explorar
           </p>
         </div>
       )}
@@ -234,9 +288,18 @@ const propertyCategories: PropertyCategory[] = [
 ];
 
 export function PropertyCategoriesSection({ propertyTypes = [] }: PropertyCategoriesSectionProps) {
+  // Lista de slugs de categorías a excluir del grid
+  // Ático dúplex se incluye dentro de Ático, Borda y Nave industrial se eliminan por diseño
+  const excludedSlugs = ['atico-duplex', 'duplex', 'borda', 'nave-industrial', 'nave'];
+  
   const categories: PropertyCategory[] = propertyTypes.length > 0
     ? propertyTypes
-        .filter(type => type.count && type.count > 0)
+        // Filtrar categorías con propiedades y excluir las no deseadas
+        .filter(type => {
+          return type.count && type.count > 0 && !excludedSlugs.includes(type.slug);
+        })
+        // Limitar a 8 cards máximo para mantener el diseño 4x2
+        .slice(0, 8)
         .map(type => {
           const cleanDescription = type.description 
             ? truncateText(stripHTML(type.description))
@@ -265,28 +328,13 @@ export function PropertyCategoriesSection({ propertyTypes = [] }: PropertyCatego
           </p>
         </div>
 
-        {/* Grid responsivo con primera card destacada */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 auto-rows-fr">
-          {categories.map((category, index) => {
-            if (index === 0) {
-              // Primera card: 2 columnas de ancho, 2 filas de alto
-              return (
-                <div
-                  key={category.id}
-                  className="col-span-2 row-span-2"
-                >
-                  <CategoryCard category={category} isHero={true} />
-                </div>
-              );
-            }
-            
-            // Resto de cards normales
-            return (
-              <div key={category.id}>
-                <CategoryCard category={category} isHero={false} />
-              </div>
-            );
-          })}
+        {/* Grid responsivo de 4 columnas - todas las cards del mismo tamaño */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 auto-rows-fr">
+          {categories.map((category) => (
+            <div key={category.id}>
+              <CategoryCard category={category} />
+            </div>
+          ))}
         </div>
       </Container>
     </section>

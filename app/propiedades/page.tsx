@@ -28,7 +28,7 @@
  */
 
 import Link from 'next/link';
-import { getProperties, getSiteConfig, transformToPropertyCard, getPropertyTypes, getPropertyCities } from '@/lib/wordpress';
+import { getProperties, getSiteConfig, transformToPropertyCard, getPropertyTypes, getPropertyCities, getPropertyStatuses } from '@/lib/wordpress';
 import { PropertyCard as PropertyCardType, WPTaxonomy } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Header } from '@/components/layout/Header';
@@ -36,6 +36,7 @@ import { Footer } from '@/components/layout/Footer';
 import { Container } from '@/components/layout/Container';
 import { PropertyGrid } from '@/components/property/PropertyGrid';
 import { PropertyFilters } from '@/components/property/PropertyFilters';
+import { PropertyLoader } from '@/components/property/PropertyLoader';
 
 import { PAGINATION } from '@/lib/constants';
 
@@ -63,11 +64,16 @@ export async function generateMetadata() {
 interface PropertiesPageProps {
   searchParams: {
     page?: string;
-    tipo?: string;        // Slug del tipo de propiedad
-    ciudad?: string;      // Slug de la ciudad/parroquia
-    habitaciones?: string; // Número de habitaciones
-    precio_max?: string;  // Precio máximo para filtrar
-    orden?: string;       // Orden: date-desc, date-asc, price-asc, price-desc
+    tipo?: string;          // Slug del tipo de propiedad
+    ciudad?: string;        // Slug de la ciudad/parroquia
+    estado?: string;        // Slug del estado (venta, alquiler, etc.)
+    habitaciones?: string;  // Número de habitaciones
+    banos?: string;         // Número de baños
+    precio_min?: string;    // Precio mínimo para filtrar
+    precio_max?: string;    // Precio máximo para filtrar
+    superficie_min?: string; // Superficie mínima (m²)
+    superficie_max?: string; // Superficie máxima (m²)
+    orden?: string;         // Orden: date-desc, date-asc, price-asc, price-desc
   };
 }
 
@@ -128,8 +134,13 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
   
   const filterTipo = searchParams.tipo || '';
   const filterCiudad = searchParams.ciudad || '';
+  const filterEstado = searchParams.estado || '';
   const filterHabitaciones = searchParams.habitaciones || '';
+  const filterBanos = searchParams.banos || '';
+  const filterPrecioMin = searchParams.precio_min || '';
   const filterPrecioMax = searchParams.precio_max || '';
+  const filterSuperficieMin = searchParams.superficie_min || '';
+  const filterSuperficieMax = searchParams.superficie_max || '';
   const filterOrden = searchParams.orden || 'date-desc';
 
   /**
@@ -139,6 +150,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
   let siteConfig = null;
   let propertyTypes: WPTaxonomy[] = [];
   let propertyCities: WPTaxonomy[] = [];
+  let propertyStatuses: WPTaxonomy[] = [];
   let error = null;
 
   try {
@@ -146,16 +158,18 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
      * PASO 1: Obtener TODOS los datos necesarios en paralelo
      * No aplicamos filtros en WordPress, los haremos en Next.js
      */
-    const [siteConfigData, propertyTypesData, propertyCitiesData, allPropertiesRaw] = await Promise.all([
+    const [siteConfigData, propertyTypesData, propertyCitiesData, propertyStatusesData, allPropertiesRaw] = await Promise.all([
       getSiteConfig(),
       getPropertyTypes(),
       getPropertyCities(),
+      getPropertyStatuses(),
       getProperties({ per_page: 100 }), // Obtener todas las propiedades sin filtros
     ]);
 
     siteConfig = siteConfigData;
     propertyTypes = propertyTypesData;
     propertyCities = propertyCitiesData;
+    propertyStatuses = propertyStatusesData;
 
     /**
      * PASO 2: Transformar propiedades a PropertyCard
@@ -239,6 +253,15 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
       });
     }
 
+    // Filtro por ESTADO (En Venta, En Alquiler, etc.)
+    if (filterEstado) {
+      allProperties = allProperties.filter(property => {
+        // Normalizar el estado de la propiedad a slug
+        const propertyStatusSlug = normalizeToSlug(property.status || '');
+        return propertyStatusSlug === filterEstado;
+      });
+    }
+
     // Filtro por HABITACIONES
     if (filterHabitaciones) {
       allProperties = allProperties.filter(property => {
@@ -254,6 +277,33 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
       });
     }
 
+    // Filtro por BAÑOS
+    if (filterBanos) {
+      allProperties = allProperties.filter(property => {
+        const bathrooms = parseInt(property.bathrooms) || 0;
+        
+        // Si selecciona "4+", mostrar propiedades con 4 o más baños
+        if (filterBanos === '4') {
+          return bathrooms >= 4;
+        }
+        
+        // Si no, comparación exacta
+        return bathrooms === parseInt(filterBanos);
+      });
+    }
+
+    // Filtro por PRECIO MÍNIMO
+    if (filterPrecioMin) {
+      allProperties = allProperties.filter(property => {
+        // Extraer valor numérico del precio (eliminar caracteres no numéricos)
+        const price = parseFloat(String(property.price).replace(/[^0-9.-]/g, '')) || 0;
+        const minPrice = parseFloat(filterPrecioMin);
+        
+        // Filtrar solo propiedades con precio válido y mayor o igual al mínimo
+        return price > 0 && price >= minPrice;
+      });
+    }
+
     // Filtro por PRECIO MÁXIMO
     if (filterPrecioMax) {
       allProperties = allProperties.filter(property => {
@@ -263,6 +313,30 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
         
         // Filtrar solo propiedades con precio válido y menor o igual al máximo
         return price > 0 && price <= maxPrice;
+      });
+    }
+
+    // Filtro por SUPERFICIE MÍNIMA
+    if (filterSuperficieMin) {
+      allProperties = allProperties.filter(property => {
+        // Extraer valor numérico de la superficie
+        const area = parseFloat(String(property.area).replace(/[^0-9.-]/g, '')) || 0;
+        const minArea = parseFloat(filterSuperficieMin);
+        
+        // Filtrar propiedades con superficie mayor o igual al mínimo
+        return area > 0 && area >= minArea;
+      });
+    }
+
+    // Filtro por SUPERFICIE MÁXIMA
+    if (filterSuperficieMax) {
+      allProperties = allProperties.filter(property => {
+        // Extraer valor numérico de la superficie
+        const area = parseFloat(String(property.area).replace(/[^0-9.-]/g, '')) || 0;
+        const maxArea = parseFloat(filterSuperficieMax);
+        
+        // Filtrar propiedades con superficie menor o igual al máximo
+        return area > 0 && area <= maxArea;
       });
     }
 
@@ -318,6 +392,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
               propertyCount={properties.length}
               propertyTypes={propertyTypes}
               propertyCities={propertyCities}
+              propertyStatuses={propertyStatuses}
             />
           </Container>
         </section>
