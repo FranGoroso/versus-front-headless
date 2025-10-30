@@ -1118,3 +1118,54 @@ export async function getPropertyStatuses(params: WPQueryParams = {}) {
     ] as WPTaxonomy[];
   }
 }
+
+/**
+ * Obtener categorías del blog (category)
+ * Ejemplos: Mercado Inmobiliario, Inversión, Estilo de Vida, Consejos, etc.
+ * @param params - Parámetros de consulta opcionales
+ * @returns Lista de categorías del blog
+ */
+export async function getBlogCategories(params: WPQueryParams = {}) {
+  const defaultParams = {
+    per_page: 100, // Obtener todas las categorías
+    hide_empty: true, // Solo categorías con posts
+    ...params,
+  };
+
+  const queryString = buildQueryString(defaultParams);
+  
+  try {
+    const categories = await fetchAPI<WPTaxonomy[]>(`${API_ENDPOINTS.CATEGORIES}${queryString}`);
+    
+    if (IS_DEV) {
+      console.log(`[WordPress API] Found ${categories.length} blog categories`);
+    }
+    
+    // Si no hay datos de WordPress, usar datos de fallback
+    if (!categories || categories.length === 0) {
+      if (IS_DEV) {
+        console.log('[WordPress API] Using fallback blog categories');
+      }
+      return [
+        { id: 1, name: 'Mercado Inmobiliario', slug: 'mercado-inmobiliario', count: 0, taxonomy: 'category', description: '', link: '', parent: 0, meta: [] },
+        { id: 2, name: 'Inversión', slug: 'inversion', count: 0, taxonomy: 'category', description: '', link: '', parent: 0, meta: [] },
+        { id: 3, name: 'Estilo de Vida', slug: 'estilo-de-vida', count: 0, taxonomy: 'category', description: '', link: '', parent: 0, meta: [] },
+        { id: 4, name: 'Consejos', slug: 'consejos', count: 0, taxonomy: 'category', description: '', link: '', parent: 0, meta: [] },
+      ] as WPTaxonomy[];
+    }
+    
+    return categories;
+  } catch (error) {
+    if (IS_DEV) {
+      console.error('[WordPress API] Error fetching blog categories:', error);
+      console.log('[WordPress API] Using fallback blog categories');
+    }
+    // Retornar datos de fallback en caso de error
+    return [
+      { id: 1, name: 'Mercado Inmobiliario', slug: 'mercado-inmobiliario', count: 0, taxonomy: 'category', description: '', link: '', parent: 0, meta: [] },
+      { id: 2, name: 'Inversión', slug: 'inversion', count: 0, taxonomy: 'category', description: '', link: '', parent: 0, meta: [] },
+      { id: 3, name: 'Estilo de Vida', slug: 'estilo-de-vida', count: 0, taxonomy: 'category', description: '', link: '', parent: 0, meta: [] },
+      { id: 4, name: 'Consejos', slug: 'consejos', count: 0, taxonomy: 'category', description: '', link: '', parent: 0, meta: [] },
+    ] as WPTaxonomy[];
+  }
+}

@@ -7,3 +7,6 @@
  */
 
 export { Pagination } from './Pagination';
+export { BlogFilters } from './BlogFilters';
+export { ReadingProgressBar } from './ReadingProgressBar';
+export { BackToTop } from './BackToTop';

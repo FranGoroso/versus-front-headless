@@ -1,9 +1,21 @@
 /**
- * Blog Post Detail Page - Versión Mejorada
+ * Blog Post Detail Page - Versión Premium v5.0
  * 
  * Página de detalle de cada post del blog.
- * Diseño minimalista con tipografía optimizada para lectura.
+ * Diseño minimalista premium con tipografía optimizada para lectura.
  * Conectado a WordPress REST API.
+ * 
+ * Mejoras v5.0 (2025-10-30): ESTILOS DE CONTENIDO PREMIUM
+ * - Párrafos más espaciados (mb-20) con line-height 2.2
+ * - Drop cap editorial más grande (8xl) y elegante
+ * - Headings con mayor jerarquía visual y espacio (mt-40 para h2)
+ * - Listas más legibles con bullets negros y space-y-6
+ * - Imágenes con más margen (my-24) y border sutil
+ * - Blockquotes estilo revista con sombra y padding generoso
+ * - Código con estilo GitHub/VSCode mejorado
+ * - Tablas profesionales con header negro
+ * - Enlaces con underline offset más pronunciado
+ * - Separadores más visibles (border-2)
  * 
  * Mejoras v4.0:
  * - Barra de progreso de lectura
@@ -16,7 +28,8 @@
  * - Espaciado optimizado
  * 
  * @page /blog/[slug]
- * @version 4.0.0
+ * @version 5.0.0
+ * @updated 2025-10-30 - Estilos de contenido premium optimizados
  */
 
 import Image from 'next/image';
@@ -270,7 +283,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                 </div>
               </div>
 
-              {/* Contenido HTML del post con estilos mejorados */}
+              {/* Contenido HTML del post con estilos profesionales optimizados */}
               <div 
                 className="blog-content
                   prose prose-xl max-w-none
@@ -278,80 +291,88 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                   /* === CONFIGURACIÓN GENERAL === */
                   prose-slate
                   
-                  /* === PÁRRAFOS === */
+                  /* === PÁRRAFOS - Más espaciados y legibles === */
                   prose-p:text-gray-700 
-                  prose-p:text-[1.125rem] 
-                  prose-p:leading-[2.1] 
-                  prose-p:mb-16
+                  prose-p:text-[1.15rem] 
+                  prose-p:leading-[2.2] 
+                  prose-p:mb-20
                   prose-p:tracking-wide
+                  prose-p:font-light
                   
-                  /* Drop cap - Primera letra grande */
-                  [&>p:first-of-type]:first-letter:text-7xl
+                  /* Drop cap - Primera letra grande tipo editorial */
+                  [&>p:first-of-type]:first-letter:text-8xl
                   [&>p:first-of-type]:first-letter:font-light
                   [&>p:first-of-type]:first-letter:float-left
-                  [&>p:first-of-type]:first-letter:mr-3
+                  [&>p:first-of-type]:first-letter:mr-4
                   [&>p:first-of-type]:first-letter:mt-1
-                  [&>p:first-of-type]:first-letter:leading-[0.85]
+                  [&>p:first-of-type]:first-letter:leading-[0.8]
                   [&>p:first-of-type]:first-letter:text-gray-900
                   
-                  /* Primer párrafo destacado */
-                  [&>p:first-of-type]:text-xl
+                  /* Primer párrafo destacado tipo intro */
+                  [&>p:first-of-type]:text-[1.25rem]
                   [&>p:first-of-type]:leading-[2.0]
                   [&>p:first-of-type]:text-gray-600
-                  [&>p:first-of-type]:mb-20
+                  [&>p:first-of-type]:mb-24
                   
-                  /* === HEADINGS === */
+                  /* === HEADINGS - Mayor jerarquía y espacio === */
                   prose-headings:scroll-mt-28
                   prose-headings:font-light
                   prose-headings:text-gray-900
                   prose-headings:tracking-tight
                   
-                  prose-h2:text-4xl
-                  prose-h2:mt-32
-                  prose-h2:mb-10
+                  /* H2 - Títulos principales */
+                  prose-h2:text-[2.5rem]
+                  prose-h2:mt-40
+                  prose-h2:mb-12
                   prose-h2:leading-[1.2]
-                  prose-h2:pb-4
-                  prose-h2:border-b
-                  prose-h2:border-gray-100
+                  prose-h2:pb-6
+                  prose-h2:border-b-2
+                  prose-h2:border-gray-200
                   
-                  prose-h3:text-3xl
-                  prose-h3:mt-24
-                  prose-h3:mb-8
+                  /* H3 - Subtítulos */
+                  prose-h3:text-[2rem]
+                  prose-h3:mt-32
+                  prose-h3:mb-10
                   prose-h3:leading-[1.3]
                   
-                  prose-h4:text-2xl
-                  prose-h4:mt-12
-                  prose-h4:mb-6
+                  /* H4 - Subtítulos menores */
+                  prose-h4:text-[1.5rem]
+                  prose-h4:mt-24
+                  prose-h4:mb-8
                   prose-h4:leading-[1.4]
                   
-                  /* === ENLACES === */
+                  /* === ENLACES - Elegantes y sutiles === */
                   prose-a:text-gray-900
                   prose-a:underline
                   prose-a:decoration-gray-300
                   prose-a:decoration-2
-                  prose-a:underline-offset-4
+                  prose-a:underline-offset-[6px]
                   hover:prose-a:decoration-gray-900
+                  hover:prose-a:decoration-[3px]
                   prose-a:transition-all
                   prose-a:duration-300
+                  prose-a:font-normal
                   
-                  /* === BLOCKQUOTES === */
-                  prose-blockquote:border-l-4
+                  /* === BLOCKQUOTES - Estilo revista premium === */
+                  prose-blockquote:border-l-[6px]
                   prose-blockquote:border-gray-900
-                  prose-blockquote:pl-10
-                  prose-blockquote:pr-10
-                  prose-blockquote:py-8
-                  prose-blockquote:my-20
+                  prose-blockquote:pl-12
+                  prose-blockquote:pr-12
+                  prose-blockquote:py-10
+                  prose-blockquote:my-28
                   prose-blockquote:bg-gradient-to-r
                   prose-blockquote:from-gray-50
+                  prose-blockquote:via-gray-50/50
                   prose-blockquote:to-transparent
-                  prose-blockquote:rounded-r-2xl
+                  prose-blockquote:rounded-r-3xl
                   prose-blockquote:not-italic
-                  prose-blockquote:text-gray-700
-                  prose-blockquote:text-xl
-                  prose-blockquote:leading-relaxed
-                  prose-blockquote:shadow-sm
+                  prose-blockquote:text-gray-800
+                  prose-blockquote:text-[1.35rem]
+                  prose-blockquote:leading-[1.9]
+                  prose-blockquote:font-light
+                  prose-blockquote:shadow-lg
                   
-                  [&_blockquote_p]:mb-4
+                  [&_blockquote_p]:mb-6
                   [&_blockquote_p]:last:mb-0
                   
                   [&_blockquote_cite]:text-base
@@ -359,91 +380,121 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                   [&_blockquote_cite]:font-normal
                   [&_blockquote_cite]:not-italic
                   [&_blockquote_cite]:block
-                  [&_blockquote_cite]:mt-4
+                  [&_blockquote_cite]:mt-6
                   
-                  /* === LISTAS === */
-                  prose-ul:my-16
-                  prose-ul:space-y-4
+                  /* === LISTAS - Más espaciadas y legibles === */
+                  prose-ul:my-24
+                  prose-ul:space-y-6
                   prose-ul:pl-2
                   
-                  prose-ol:my-16
-                  prose-ol:space-y-4
+                  prose-ol:my-24
+                  prose-ol:space-y-6
                   prose-ol:pl-2
                   
+                  /* Items de lista más legibles */
                   prose-li:text-gray-700
-                  prose-li:text-lg
-                  prose-li:leading-[2.1]
-                  prose-li:pl-3
-                  prose-li:marker:text-gray-400
+                  prose-li:text-[1.1rem]
+                  prose-li:leading-[2.0]
+                  prose-li:pl-4
+                  prose-li:marker:text-gray-900
+                  prose-li:marker:font-bold
                   
-                  [&_li_p]:my-2
+                  [&_li_p]:my-3
+                  [&_li_p]:leading-[2.0]
                   
-                  /* === STRONG Y EM === */
+                  /* Sublistas anidadas */
+                  [&_li_ul]:mt-4
+                  [&_li_ul]:mb-2
+                  [&_li_ol]:mt-4
+                  [&_li_ol]:mb-2
+                  
+                  /* === STRONG Y EM - Más contraste === */
                   prose-strong:text-gray-900
                   prose-strong:font-semibold
                   
                   prose-em:text-gray-700
                   prose-em:italic
                   
-                  /* === IMÁGENES === */
-                  prose-img:rounded-2xl
+                  /* === IMÁGENES - Profesionales con sombra === */
+                  prose-img:rounded-3xl
                   prose-img:shadow-2xl
-                  prose-img:my-16
+                  prose-img:my-24
                   prose-img:w-full
+                  prose-img:border
+                  prose-img:border-gray-100
                   
                   prose-figcaption:text-center
                   prose-figcaption:text-sm
                   prose-figcaption:text-gray-500
-                  prose-figcaption:mt-6
+                  prose-figcaption:mt-8
                   prose-figcaption:font-light
                   prose-figcaption:italic
+                  prose-figcaption:tracking-wide
                   
-                  /* === SEPARADORES === */
-                  prose-hr:my-20
-                  prose-hr:border-gray-100
+                  /* === SEPARADORES - Más visibles === */
+                  prose-hr:my-28
+                  prose-hr:border-gray-200
                   prose-hr:border-t-2
                   
-                  /* === CODE === */
+                  /* === CODE - Estilo GitHub/VSCode === */
                   prose-code:text-gray-900
-                  prose-code:bg-gray-50
-                  prose-code:px-2
-                  prose-code:py-1
-                  prose-code:rounded-md
-                  prose-code:text-sm
+                  prose-code:bg-gray-100
+                  prose-code:px-2.5
+                  prose-code:py-1.5
+                  prose-code:rounded-lg
+                  prose-code:text-[0.9rem]
                   prose-code:font-mono
+                  prose-code:font-normal
                   prose-code:before:content-['']
                   prose-code:after:content-['']
+                  prose-code:border
+                  prose-code:border-gray-200
                   
+                  /* Bloques de código */
                   prose-pre:bg-gray-900
                   prose-pre:text-gray-100
-                  prose-pre:rounded-2xl
-                  prose-pre:my-12
-                  prose-pre:p-8
+                  prose-pre:rounded-3xl
+                  prose-pre:my-24
+                  prose-pre:p-10
                   prose-pre:overflow-x-auto
-                  prose-pre:shadow-xl
+                  prose-pre:shadow-2xl
+                  prose-pre:border
+                  prose-pre:border-gray-800
                   
-                  /* === TABLAS === */
-                  prose-table:my-12
+                  [&_pre_code]:bg-transparent
+                  [&_pre_code]:text-gray-100
+                  [&_pre_code]:p-0
+                  [&_pre_code]:border-none
+                  
+                  /* === TABLAS - Estilo profesional === */
+                  prose-table:my-24
                   prose-table:w-full
+                  prose-table:border-collapse
+                  prose-table:shadow-lg
+                  prose-table:rounded-2xl
+                  prose-table:overflow-hidden
                   
                   prose-th:text-left
-                  prose-th:py-4
+                  prose-th:py-5
                   prose-th:px-6
-                  prose-th:bg-gray-50
+                  prose-th:bg-gray-900
                   prose-th:font-semibold
-                  prose-th:text-gray-900
-                  prose-th:border-b-2
-                  prose-th:border-gray-200
+                  prose-th:text-white
+                  prose-th:text-base
+                  prose-th:tracking-wide
                   
-                  prose-td:py-4
+                  prose-td:py-5
                   prose-td:px-6
                   prose-td:border-b
                   prose-td:border-gray-100
                   prose-td:text-gray-700
+                  prose-td:text-base
                   
                   [&_tbody_tr]:transition-colors
                   [&_tbody_tr]:duration-200
                   hover:[&_tbody_tr]:bg-gray-50
+                  
+                  [&_tbody_tr:last-child_td]:border-b-0
                 "
                 dangerouslySetInnerHTML={{ __html: postData.content }}
               />

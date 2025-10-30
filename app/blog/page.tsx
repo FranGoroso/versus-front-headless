@@ -9,19 +9,24 @@
  * - 9 posts por página (grid 3x3)
  * - SEO-friendly URLs (/blog?page=2)
  * - Post destacado en la primera página
+ * - Filtrado por categoría funcional (/blog?categoria=mercado-inmobiliario)
+ * - Categorías dinámicas desde WordPress
  * 
  * @page /blog
- * @version 3.0.0 - Paginación funcional
+ * @version 4.0.0 - Filtrado por categoría funcional
+ * @updated 2025-10-30
  */
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { getSiteConfig, getPosts } from '@/lib/wordpress';
+import { getSiteConfig, getPosts, getBlogCategories } from '@/lib/wordpress';
+import { IS_DEV } from '@/lib/constants';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Container } from '@/components/layout/Container';
 import { NewsletterForm } from '@/components/sections/NewsletterForm';
 import { Pagination } from '@/components/blog/Pagination';
+import { BlogFilters } from '@/components/blog/BlogFilters';
 
 /**
  * Revalidación ISR - cada hora
@@ -61,35 +66,29 @@ function stripHtml(html: string): string {
 }
 
 /**
- * Mock de categorías para el filtro
- * TODO: Obtener categorías dinámicamente desde WordPress
- */
-const categories = [
-  { id: 'all', name: 'Todos', slug: 'all' },
-  { id: 1, name: 'Mercado Inmobiliario', slug: 'mercado-inmobiliario' },
-  { id: 2, name: 'Inversión', slug: 'inversion' },
-  { id: 3, name: 'Estilo de Vida', slug: 'estilo-de-vida' },
-  { id: 4, name: 'Consejos', slug: 'consejos' },
-];
-
-/**
  * Número de posts por página (grid 3x3)
  */
 const POSTS_PER_PAGE = 9;
 
 /**
- * Props de la página con searchParams para paginación
+ * Props de la página con searchParams para paginación y filtros
  */
 interface BlogPageProps {
   searchParams: {
     page?: string;
+    categoria?: string;
   };
 }
 
 export default async function BlogPage({ searchParams }: BlogPageProps) {
-  // Obtener página actual de URL (default: 1)
+  // Obtener página actual y categoría de URL (default: 1 y '')
   const currentPage = Number(searchParams.page) || 1;
+  const selectedCategory = searchParams.categoria || '';
+  
   const siteConfig = await getSiteConfig();
+  
+  // Obtener categorías del blog desde WordPress
+  const blogCategories = await getBlogCategories();
   
   // Obtener TODOS los posts de WordPress
   const postsData = await getPosts({ per_page: 100 });
@@ -107,7 +106,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   }
   
   // Transformar posts de WordPress al formato esperado por el frontend
-  const posts = (postsData || []).map((post: any) => ({
+  let posts = (postsData || []).map((post: any) => ({
     id: post.id,
     title: post.title,
     excerpt: post.excerpt,
@@ -122,9 +121,19 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
     },
     // Extraer categoría de _embedded si existe
     category: post._embedded?.['wp:term']?.[0]?.[0]?.name || 'General',
+    category_slug: post._embedded?.['wp:term']?.[0]?.[0]?.slug || '',
     // Calcular tiempo de lectura aproximado (250 palabras por minuto)
     readTime: `${Math.max(1, Math.round(stripHtml(post.content?.rendered || '').split(' ').length / 250))} min`
   }));
+
+  // FILTRAR POSTS POR CATEGORÍA si hay una selección
+  if (selectedCategory) {
+    posts = posts.filter((post: any) => post.category_slug === selectedCategory);
+    
+    if (IS_DEV) {
+      console.log(`[BLOG] Posts filtrados por categoría '${selectedCategory}':`, posts.length);
+    }
+  }
 
   console.log('[BLOG] Posts después de transformar:', posts.length);
   console.log('[BLOG] Página actual:', currentPage);
@@ -170,22 +179,9 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
               </p>
             </div>
 
-            {/* Categorías */}
-            <div className="flex flex-wrap justify-center gap-3 mb-16">
-              {categories.map((category) => (
-                <button
-                  key={category.id}
-                  className={`
-                    px-6 py-2.5 rounded-full text-sm font-light transition-all duration-300
-                    ${category.id === 'all' 
-                      ? 'bg-gray-900 text-white' 
-                      : 'bg-white border border-gray-200 text-gray-700 hover:border-gray-900 hover:bg-gray-50'
-                    }
-                  `}
-                >
-                  {category.name}
-                </button>
-              ))}
+            {/* Categorías - Componente dinámico con filtrado funcional */}
+            <div className="mb-16">
+              <BlogFilters categories={blogCategories} />
             </div>
 
             {/* Post Destacado */}
