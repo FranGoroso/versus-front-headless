@@ -31,7 +31,7 @@ export default async function ContactPage() {
         <section className="bg-gradient-to-br from-gray-50 to-gray-100 py-20">
           <Container>
             <div className="text-center max-w-3xl mx-auto">
-              <h1 className="text-5xl md:text-6xl font-light tracking-tight mb-6">
+              <h1 className="font-serif text-5xl md:text-6xl font-bold mb-6">
                 Contáctanos
               </h1>
               <p className="text-gray-600 text-lg mb-8">
@@ -56,7 +56,7 @@ export default async function ContactPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {/* Información de Contacto */}
               <div>
-                <h2 className="text-3xl font-light tracking-tight mb-8">
+                <h2 className="font-serif text-3xl font-bold mb-8">
                   Información de contacto
                 </h2>
 
@@ -156,7 +156,7 @@ export default async function ContactPage() {
               {/* Formulario */}
               <div>
                 <Card className="p-8">
-                  <h2 className="text-3xl font-light tracking-tight mb-6">
+                  <h2 className="font-serif text-3xl font-bold mb-6">
                     Envíanos un mensaje
                   </h2>
                   
