@@ -577,18 +577,20 @@ export function Header({ config }: HeaderProps) {
         </nav>
       </header>
 
-      {/* Botón X flotante - Solo visible cuando el menú móvil está abierto */}
-      {isMobileMenuOpen && (
-        <button
-          onClick={() => setIsMobileMenuOpen(false)}
-          className="lg:hidden fixed top-6 right-6 w-10 h-10 flex items-center justify-center text-white z-[9999] bg-black/50 rounded-full backdrop-blur-sm hover:bg-black/70 transition-all"
-          aria-label="Cerrar menú"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      )}
+      {/* Botón X flotante - Solo visible cuando el menú móvil está abierto EN MÓVIL */}
+      <div className="lg:hidden">
+        {isMobileMenuOpen && (
+          <button
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="fixed top-6 right-6 w-10 h-10 flex items-center justify-center text-white z-[9999] bg-black/50 rounded-full backdrop-blur-sm hover:bg-black/70 transition-all"
+            aria-label="Cerrar menú"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        )}
+      </div>
 
       {/* Mobile Menu - FUERA del header */}
       <div className={`
