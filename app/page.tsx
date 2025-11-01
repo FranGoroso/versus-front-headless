@@ -19,6 +19,7 @@ import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { GoogleReviews } from "@/components/sections/GoogleReviews";
 import { PropertyCategoriesSection } from "@/components/sections/PropertyCategoriesSection";
+import { FAQSection } from "@/components/sections/FAQSection";
 
 /**
  * Configurar revalidación ISR
@@ -324,6 +325,9 @@ export default async function Home() {
             </div>
           </Container>
         </section>
+
+        {/* Preguntas Frecuentes */}
+        <FAQSection />
 
         {/* Reseñas de Google */}
         <GoogleReviews />
