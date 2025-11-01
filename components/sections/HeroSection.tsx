@@ -1,23 +1,24 @@
 /**
- * Hero Section Component
+ * Hero Section Component - VERSIÓN CON VIDEO
  * 
- * Sección principal con efecto parallax en la imagen de fondo.
+ * Sección principal con video de fondo y efecto parallax.
  * Diseño minimalista y elegante con scroll suave.
  * 
- * VERSIÓN 2.0:
+ * VERSIÓN 3.0:
+ * - Reemplaza imagen por video de Andorra
+ * - Mantiene efecto parallax adaptado para video
  * - Recibe taxonomías reales de WordPress (propertyTypes, propertyCities)
- * - Pasa las taxonomías al PropertySearchForm
- * - Mantiene efecto parallax en cliente
+ * - Pasa las taxonomías al PropertySearchForm compacto
+ * - Video autoplay, loop, muted para mejor UX
  * 
  * @component
- * @version 2.0.0
- * @updated 2025-10-27 - Integración con WordPress taxonomías
+ * @version 3.0.0
+ * @updated 2025-11-01 - Integración de video de fondo con parallax
  */
 
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { Container } from '@/components/layout/Container';
 import { PropertySearchForm } from '@/components/sections/PropertySearchForm';
@@ -33,7 +34,7 @@ interface HeroSectionProps {
 }
 
 /**
- * Componente Hero con efecto parallax
+ * Componente Hero con video de fondo y efecto parallax
  */
 export function HeroSection({ 
   className = '',
@@ -43,7 +44,7 @@ export function HeroSection({
   const [scrollY, setScrollY] = useState(0);
 
   /**
-   * Efecto para capturar el scroll
+   * Efecto para capturar el scroll y aplicar parallax
    */
   useEffect(() => {
     const handleScroll = () => {
@@ -61,13 +62,13 @@ export function HeroSection({
 
   /**
    * Calcular el desplazamiento parallax
-   * La imagen se mueve más lento que el scroll (50% de velocidad)
+   * El video se mueve más lento que el scroll (50% de velocidad)
    */
   const parallaxOffset = scrollY * 0.5;
 
   return (
     <section className={`relative min-h-screen flex items-center justify-center overflow-hidden pt-20 ${className}`}>
-      {/* Imagen de fondo con efecto parallax */}
+      {/* Video de fondo con efecto parallax */}
       <div className="absolute inset-0 overflow-hidden">
         <div 
           className="absolute inset-0 w-full h-[120%]"
@@ -76,14 +77,26 @@ export function HeroSection({
             willChange: 'transform',
           }}
         >
-          <Image
-            src="https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg"
-            alt="Montañas de Andorra"
-            fill
-            className="object-cover"
-            priority
-          />
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover"
+            style={{
+              minWidth: '100%',
+              minHeight: '100%',
+            }}
+          >
+            <source 
+              src="https://www.shutterstock.com/shutterstock/videos/3917897889/preview/stock-footage-aerial-view-showcasing-the-stunning-natural-beauty-of-andorra-featuring-a-charming-mountain.webm" 
+              type="video/webm" 
+            />
+            {/* Fallback para navegadores que no soporten el formato */}
+            Tu navegador no soporta la reproducción de video.
+          </video>
         </div>
+        {/* Overlay oscuro para mejorar legibilidad del texto */}
         <div className="absolute inset-0 bg-black/40 z-10" />
       </div>
       
@@ -97,7 +110,7 @@ export function HeroSection({
             </h1>
           </div>
           
-          {/* Buscador en tarjeta blanca */}
+          {/* Buscador compacto en tarjeta blanca */}
           <div className="max-w-5xl mx-auto mb-20">
             <PropertySearchForm 
               variant="hero"
